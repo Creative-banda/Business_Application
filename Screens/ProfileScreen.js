@@ -1,8 +1,10 @@
 import React from 'react';
 import { StyleSheet, View, Text, Image } from 'react-native';
-import ProfileButton from '../SearchScreenComponents/ProfileButton';
+import ProfileButton from '../ProfileComponents/ProfileButton';
+
 
 const ProfileScreen = () => {
+    
     return (
         <View style={styles.container}>
             <View style={styles.headerContainer}>

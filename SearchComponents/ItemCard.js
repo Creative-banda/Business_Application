@@ -1,8 +1,7 @@
-import { StyleSheet, Text, View, FlatList, Image, ScrollView } from 'react-native'
+import { StyleSheet, Text, View, FlatList, Image } from 'react-native'
 import React from 'react'
 
 const ItemCard = ({STORES_DATA}) => {
-
     const renderItem = ({ item }) => {
         return (
 
@@ -18,7 +17,6 @@ const ItemCard = ({STORES_DATA}) => {
             </View> 
         )
     }
-
 
     return (
         <View style={{height:'70%'}}>

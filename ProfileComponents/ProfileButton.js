@@ -1,15 +1,17 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import React from 'react';
+import React, {useContext} from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { ThemeContext } from '../Globals/ThemeContext';
 
 const ProfileButton = ({ title, Icon, IconName, bgColor }) => {
+    const { themeColor } = useContext(ThemeContext);
     const renderIcon = () => {
         switch (Icon) {
             case 'MaterialIcons':
-                return <MaterialIcons name={IconName} size={28} color="#673fd2" />;
+                return <MaterialIcons name={IconName} size={28} color={themeColor} />;
             case 'Ionicons':
-                return <Ionicons name={IconName} size={28} color="#673fd2" />;
+                return <Ionicons name={IconName} size={28} color={themeColor} />;
             default:
                 return null;
         }

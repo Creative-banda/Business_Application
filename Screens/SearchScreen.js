@@ -83,7 +83,6 @@ const SearchScreen = () => {
     const [filterData, setFilteredData] = useState(data);
     const [selectedCategory, setSelectedCategory] = useState('');
 
-    // Filter data when a category is selected
     useEffect(() => {
         if (selectedCategory) {
             const filteredData = data.filter(store => store.category === selectedCategory);
