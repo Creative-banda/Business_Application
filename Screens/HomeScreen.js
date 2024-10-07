@@ -5,7 +5,7 @@ import Slider from '../HomeComponents/Slider';
 import CategorySlider from '../HomeComponents/CategorySlider';
 import BusinessSlider from '../HomeComponents/BusinessSlider';
 
-const HomeScreen = () => {
+const HomeScreen = ({navigation}) => {
     const [Search, Setsearch] = useState('');
 
     return (
@@ -13,6 +13,7 @@ const HomeScreen = () => {
             <HeaderContainer
             Search={Search}
             onChangeText={Setsearch}
+            navigation={navigation}
             />
             <View style={styles.sliderHolder}>
             <Slider />

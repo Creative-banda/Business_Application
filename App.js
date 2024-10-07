@@ -4,9 +4,10 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import InitalizePage from './Screens/InitalizePage';
 import Tab_Navigation from './Globals/Tab_Navigation';
+import ThemeScreen from './Screens/ThemeScreen';
 import { ThemeProvider } from './Globals/ThemeContext';
 
-const stack = createStackNavigator()
+const Stack = createStackNavigator()
 
 const App = () => {
 
@@ -36,10 +37,11 @@ const App = () => {
     <ThemeProvider>
       <NavigationContainer>
 
-        <stack.Navigator initialRouteName='InitPage'>
-          <stack.Screen name='InitPage' component={InitalizePage} options={{ headerShown: false }} />
-          <stack.Screen name='HomeScreen' component={Tab_Navigation} options={{ headerShown: false }} />
-        </stack.Navigator>
+        <Stack.Navigator initialRouteName='HomeScreen'>
+          <Stack.Screen name='InitPage' component={InitalizePage} options={{ headerShown: false }} />
+          <Stack.Screen name='HomeScreen' component={Tab_Navigation} options={{ headerShown: false }} />
+          <Stack.Screen name='ThemeScreen' component={ThemeScreen} options={{ headerShown: false }} />
+        </Stack.Navigator>
       </NavigationContainer>
     </ThemeProvider>
 
