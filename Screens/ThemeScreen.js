@@ -1,82 +1,78 @@
 import React, { useState, useContext } from 'react';
-import { StyleSheet, Text, View, FlatList, TouchableOpacity, StatusBar } from 'react-native';
+import { StyleSheet, Text, View, FlatList, TouchableOpacity, StatusBar, Dimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
 import { ThemeContext } from '../Globals/ThemeContext';
 
+const { width } = Dimensions.get('window');
+const ITEM_WIDTH = width * 0.8;
+
 const colorThemes = {
+  Default: {
+    colorName: 'Default',
+    hexCode: '#fff',
+    backgroundColor: '#673fd2'
+  },
   oceanBreeze: {
     colorName: 'Ocean Breeze',
-    hexCode: '#1E88E5', // Slightly darker, richer blue
-    backgroundColor: '#E3F2FD' // Lighter, cleaner background for better contrast
+    hexCode: '#141115',
+    backgroundColor: '#799496'
   },
   sunsetGlow: {
-    colorName: 'Sunset Glow',
-    hexCode: '#FF6F61', // A brighter coral tone for energy
-    backgroundColor: '#FFE9E3' // A softer peach for contrast
+    colorName: 'Coyota',
+    hexCode: '#FF6F61',
+    backgroundColor: '#8D6346'
   },
   forestMist: {
-    colorName: 'Forest Mist',
-    hexCode: '#3A6F41', // Darker green for a more natural look
-    backgroundColor: '#E9F5E8' // Soft green background to complement
+    colorName: 'Ultra Violet',
+    hexCode: '#fff',
+    backgroundColor: '#4D5382'
   },
   berryBliss: {
     colorName: 'Berry Bliss',
-    hexCode: '#A1458A', // Deep berry tone, slightly more vibrant
-    backgroundColor: '#F9E5F7' // Softer lavender-pink background
+    hexCode: '#443730',
+    backgroundColor: '#A5907E'
   },
   desertSand: {
-    colorName: 'Desert Sand',
-    hexCode: '#C77F3D', // Slightly more muted, rustic orange
-    backgroundColor: '#FAF0E6' // Warm beige for a subtle background
+    colorName: 'Eggplant',
+    hexCode: '#ECF0F1',
+    backgroundColor: '#65334D'
   },
-  arcticFrost: {
-    colorName: 'Arctic Frost',
-    hexCode: '#52A1AF', // Cooler, crisper frost blue
-    backgroundColor: '#ECF7F8' // Icy, bright background for freshness
-  },
-  goldenMeadow: {
-    colorName: 'Golden Meadow',
-    hexCode: '#E5C100', // Bright gold for vibrancy
-    backgroundColor: '#FFF9D6' // A soft yellow hue for a warm effect
-  },
-  lavenderDream: {
-    colorName: 'Lavender Dream',
-    hexCode: '#8E44AD', // Richer purple for depth
-    backgroundColor: '#F4EBF9' // Soft pastel lavender for balance
-  },
-  Default: {
-    colorName: 'Purple',
-    hexCode: '#673FD2', // Your original deep purple tone
-    backgroundColor: '#EDE7F6' // Light lavender for soft contrast
-  }
+  
 };
-
 
 const ThemeScreen = () => {
   const [selectedTheme, setSelectedTheme] = useState(null);
-  const { setThemeColor } = useContext(ThemeContext);
+  const { setThemeColor, setTextColor, themeColor, textColor } = useContext(ThemeContext);
 
   const handleThemeSelect = (theme) => {
     setSelectedTheme(theme);
   };
 
   const renderItem = ({ item }) => {
-    const isSelected = selectedTheme && selectedTheme.hexCode === item.hexCode;
+    const isSelected = selectedTheme && selectedTheme.backgroundColor === item.backgroundColor;
 
     return (
       <TouchableOpacity
-        style={[styles.card, isSelected && styles.selectedCard, { backgroundColor: item.backgroundColor }]}
+        style={[
+          styles.themeOption,
+          { backgroundColor: item.backgroundColor },
+          isSelected && styles.selectedThemeOption
+        ]}
         onPress={() => handleThemeSelect(item)}
       >
-        <View style={[styles.cardContent, { backgroundColor: item.backgroundColor }]}>
-          <Text style={[styles.colorName, {color:item.hexCode}]}>{item.colorName}</Text>
-          <Text style={styles.hexCode}>This is a Demo Color Text</Text>
+        <View style={styles.themeContent}>
+          <View style={styles.colorPreview}>
+            <View style={[styles.colorCircle, { backgroundColor: item.hexCode }]} />
+            <Text style={[styles.colorName, { color: item.hexCode }]}>{item.colorName}</Text>
+          </View>
+          <View style={styles.demoTextContainer}>
+            <Text style={[styles.demoText, { color: item.hexCode }]}>Aa</Text>
+          </View>
         </View>
-        <View style={[styles.backgroundPreview, { backgroundColor: item.backgroundColor }]} />
         {isSelected && (
-          <View style={styles.checkmarkContainer}>
-            <Feather name="check" size={24} color="#fff" />
+          <View style={[styles.checkmarkContainer, { backgroundColor: item.hexCode }]}>
+            <Feather name="check" size={24} color={item.backgroundColor} />
           </View>
         )}
       </TouchableOpacity>
@@ -84,22 +80,28 @@ const ThemeScreen = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" />
+    <SafeAreaView style={[styles.container, { backgroundColor: themeColor }]}>
+      <StatusBar barStyle={textColor === '#fff' ? 'light-content' : 'dark-content'} />
       <View style={styles.header}>
-        <Text style={styles.title}>Choose Your Theme</Text>
+        <Text style={[styles.title, { color: textColor }]}>Choose Your Theme</Text>
       </View>
       <FlatList
         data={Object.values(colorThemes)}
         renderItem={renderItem}
-        keyExtractor={item => item.hexCode}
+        keyExtractor={item => item.backgroundColor}
         contentContainerStyle={styles.listContainer}
+        showsVerticalScrollIndicator={false}
       />
       {selectedTheme && (
-        <View style={styles.selectedThemeFooter}>
-          <Text style={styles.selectedThemeText}>Selected: {selectedTheme.colorName}</Text>
-          <TouchableOpacity style={[styles.applyButton, {backgroundColor:selectedTheme.hexCode}]} onPress={()=>setThemeColor(selectedTheme.backgroundColor)}>
-            <Text style={styles.applyButtonText}>Apply Theme</Text>
+        <View style={styles.footer}>
+          <TouchableOpacity
+            style={[styles.applyButton, { backgroundColor: selectedTheme.hexCode }]}
+            onPress={() => {
+              setThemeColor(selectedTheme.backgroundColor);
+              setTextColor(selectedTheme.hexCode);
+            }}
+          >
+            <Text style={[styles.applyButtonText, { color: selectedTheme.backgroundColor }]}>Apply Theme</Text>
           </TouchableOpacity>
         </View>
       )}
@@ -107,89 +109,99 @@ const ThemeScreen = () => {
   );
 };
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
   },
   header: {
-    padding: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    paddingVertical: 25,
+    paddingHorizontal: 15,
     borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
+    borderBottomColor: 'rgba(255, 255, 255, 0.1)',
   },
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
+    fontSize: 32,
     textAlign: 'center',
+    fontFamily: 'Outfit-bold',
+    letterSpacing: 1,
   },
   listContainer: {
-    padding: 15,
+    paddingVertical: 20,
+    paddingHorizontal: 15,
+    alignItems: 'center',
   },
-  card: {
+  themeOption: {
+    width: ITEM_WIDTH,
+    marginBottom: 20,
+    borderRadius: 20,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+  selectedThemeOption: {
+    shadowOpacity: 0.2,
+    shadowRadius: 12,
+    elevation: 8,
+  },
+  themeContent: {
+    padding: 20,
+  },
+  colorPreview: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 12,
     marginBottom: 15,
-    padding: 15,
   },
-  selectedCard: {
+  colorCircle: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    marginRight: 15,
     borderWidth: 2,
-    borderColor: '#0077BE',
-  },
-
-  cardContent: {
-    flex: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
   colorName: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#333',
+    fontSize: 22,
+    fontFamily: 'Outfit',
   },
-  hexCode: {
-    fontSize: 14,
-    color: '#666',
-    marginTop: 4,
+  demoTextContainer: {
+    alignItems: 'center',
   },
-  backgroundPreview: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    marginRight: 10,
+  demoText: {
+    fontSize: 48,
+    fontFamily: 'Outfit-bold',
   },
   checkmarkContainer: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    backgroundColor: '#0077BE',
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  selectedThemeFooter: {
+  footer: {
     padding: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
     borderTopWidth: 1,
-    borderTopColor: '#e0e0e0',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  selectedThemeText: {
-    fontSize: 16,
-    color: '#333',
+    borderTopColor: 'rgba(255, 255, 255, 0.1)',
   },
   applyButton: {
-    backgroundColor: '#0077BE',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 20,
+    padding: 18,
+    borderRadius: 15,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 8,
   },
   applyButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
+    fontFamily: 'Outfit-bold',
+    fontSize: 20,
+    letterSpacing: 0.5,
   },
 });
 

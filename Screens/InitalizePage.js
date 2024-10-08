@@ -1,9 +1,9 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import { StyleSheet, View, Text, Image,TouchableOpacity } from 'react-native';
-
-const PURPLE = "#673fd2"
+import { ThemeContext } from '../Globals/ThemeContext';
 
 const InitalizePage = ({navigation}) => {
+    const { themeColor, textColor } = useContext(ThemeContext);
 
     const handleClick = ()=>{
         navigation.navigate("HomeScreen")
@@ -15,15 +15,15 @@ const InitalizePage = ({navigation}) => {
             <Image source={require('../assets/Images/Demo-Image.png')} style={styles.TopImage} />
             <View style={styles.TextContainer}>
                 <Text style={styles.Text}>
-                    Your Ultimate <Text style={[styles.Text, { color: PURPLE}]}>
+                    Your Ultimate <Text style={[styles.Text, { color: themeColor}]}>
                     Community Business Directory   
                     </Text> App
                 </Text>
 
-                <Text style={styles.BottomText}>
+                <Text style={[styles.BottomText,{color:'#000'}]}>
                     Find your favorite business near your and post your own business to your community
                 </Text>
-                <TouchableOpacity style={styles.button} onPress={handleClick}>
+                <TouchableOpacity style={[styles.button, {backgroundColor:themeColor}]} onPress={handleClick}>
                     <Text style={styles.buttonText}>
                         Let's Get Started
                     </Text>
@@ -43,9 +43,9 @@ const styles = StyleSheet.create({
 
     Text:{fontSize:30, rowGap:10, textAlign:'center', fontFamily:'Outfit-bold',},
 
-    BottomText: {textAlign:'center', marginTop:30, color:'#4C4A48',marginHorizontal:20, fontFamily:'Outfit', fontWeight:'600'},
+    BottomText: {textAlign:'center', marginTop:30,marginHorizontal:20, fontFamily:'Outfit', fontWeight:'600'},
 
-    button:{backgroundColor:PURPLE, marginTop:30, paddingVertical:12,width:'100%', justifyContent:'center',alignItems:'center', borderRadius:20},
+    button:{ marginTop:30, paddingVertical:12,width:'100%', justifyContent:'center',alignItems:'center', borderRadius:20},
 
     buttonText:{color:'#fff', fontFamily:'Outfit-bold'}
 })

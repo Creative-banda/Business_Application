@@ -5,7 +5,7 @@ import { ThemeContext } from '../Globals/ThemeContext';
 import ThreeDot from './ThreeDot';
 
 const HeaderContainer = ({ Search, onChangeText, navigation }) => {
-    const { themeColor } = useContext(ThemeContext);
+    const { themeColor, textColor} = useContext(ThemeContext);
     const [isVisible, setIsVisible] = useState(false);
 
     const handleTheme = () => {
@@ -25,8 +25,8 @@ const HeaderContainer = ({ Search, onChangeText, navigation }) => {
                 <View style={{ flexDirection: 'row', gap: 15, width: '100%', paddingVertical: 15 }}>
                     <Image source={require('../assets/Images/icon.png')} style={styles.image} />
                     <View>
-                        <Text style={styles.welcomeText}>Welcome,</Text>
-                        <Text style={styles.userName}>UserName</Text>
+                        <Text style={[styles.welcomeText, {color: textColor}]}>Welcome,</Text>
+                        <Text style={[styles.userName, {color: textColor}]}>UserName</Text>
                     </View>
                     <ThreeDot handleTheme={handleTheme} isVisible={isVisible} handlePress={handlePress} />
                 </View>
@@ -57,12 +57,10 @@ const styles = StyleSheet.create({
     },
     welcomeText: {
         fontFamily: 'Outfit',
-        color: '#fff',
     },
     userName: {
         fontFamily: 'Outfit',
         fontSize: 20,
-        color: '#fff',
     },
 });
 
