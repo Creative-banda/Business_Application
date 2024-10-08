@@ -9,7 +9,7 @@ import { ThemeContext } from './ThemeContext';
 const Tab = createBottomTabNavigator();
 
 export default function Tab_Navigation() {
-  const { themeColor } = useContext(ThemeContext);
+  const { themeColor, textColor } = useContext(ThemeContext);
   
   return (
     <Tab.Navigator
@@ -28,8 +28,12 @@ export default function Tab_Navigation() {
 
           return <Icon name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: themeColor,  // Active tab color
-        tabBarInactiveTintColor: 'gray',  // Inactive tab color
+        tabBarActiveTintColor: themeColor,  // Use textColor for active tab icon color
+        tabBarInactiveTintColor: 'gray',  // Inactive tab icon color
+        tabBarStyle: {
+          backgroundColor: textColor,  // Change this to your desired color
+          borderTopWidth: 0, // Optional: Remove border at the top
+        },
       })}
     >
       <Tab.Screen name="Home" component={HomeScreen} />

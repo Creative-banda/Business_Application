@@ -94,11 +94,11 @@ const SearchScreen = () => {
     }, [selectedCategory]);
 
     const [Search, setSearch] = useState('');
-    const { themeColor } = useContext(ThemeContext);
+    const { themeColor, textColor } = useContext(ThemeContext);
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.header}>
+        <View style={[styles.container, {backgroundColor : textColor}]}>
+            <Text style={[styles.header, {color : themeColor}]}>
                 Explore More
             </Text>
 
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingVertical: 15,
         paddingHorizontal: 20,
-        gap: 20
+        gap: 20,
     },
     header: {
         fontSize: 26,

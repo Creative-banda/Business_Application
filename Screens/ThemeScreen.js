@@ -3,9 +3,11 @@ import { StyleSheet, Text, View, FlatList, TouchableOpacity, StatusBar, Dimensio
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
 import { ThemeContext } from '../Globals/ThemeContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import CustomAlert from '../Globals/customalert';
 
 const { width } = Dimensions.get('window');
-const ITEM_WIDTH = width * 0.8;
+const ITEM_WIDTH = width * 0.9;
 
 const colorThemes = {
   Default: {
@@ -38,16 +40,24 @@ const colorThemes = {
     hexCode: '#ECF0F1',
     backgroundColor: '#65334D'
   },
-  
+
 };
 
 const ThemeScreen = () => {
   const [selectedTheme, setSelectedTheme] = useState(null);
+  const [visible, setVisible] = useState(false);
   const { setThemeColor, setTextColor, themeColor, textColor } = useContext(ThemeContext);
 
   const handleThemeSelect = (theme) => {
     setSelectedTheme(theme);
   };
+  const handleApplyTheme = async () =>{
+    setThemeColor(selectedTheme.backgroundColor);
+    setTextColor(selectedTheme.hexCode);
+    await AsyncStorage.setItem('themeColor', selectedTheme.backgroundColor);
+    await AsyncStorage.setItem('textColor', selectedTheme.hexCode);
+    setVisible(true);
+  }
 
   const renderItem = ({ item }) => {
     const isSelected = selectedTheme && selectedTheme.backgroundColor === item.backgroundColor;
@@ -67,7 +77,8 @@ const ThemeScreen = () => {
             <Text style={[styles.colorName, { color: item.hexCode }]}>{item.colorName}</Text>
           </View>
           <View style={styles.demoTextContainer}>
-            <Text style={[styles.demoText, { color: item.hexCode }]}>Aa</Text>
+            <Text style={[styles.demoText, { color: item.hexCode }]}> This is an example of a paragraph where we want to check the text color. 
+            You can see how the text appears across multiple lines.</Text>
           </View>
         </View>
         {isSelected && (
@@ -96,15 +107,18 @@ const ThemeScreen = () => {
         <View style={styles.footer}>
           <TouchableOpacity
             style={[styles.applyButton, { backgroundColor: selectedTheme.hexCode }]}
-            onPress={() => {
-              setThemeColor(selectedTheme.backgroundColor);
-              setTextColor(selectedTheme.hexCode);
-            }}
+            onPress={handleApplyTheme}
           >
             <Text style={[styles.applyButtonText, { color: selectedTheme.backgroundColor }]}>Apply Theme</Text>
           </TouchableOpacity>
         </View>
       )}
+     {selectedTheme && <CustomAlert
+      visible={visible} 
+      onClose={() => setVisible(false)}
+      background={selectedTheme.backgroundColor}
+      textColor={selectedTheme.hexCode}
+      />}
     </SafeAreaView>
   );
 };
@@ -170,7 +184,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   demoText: {
-    fontSize: 48,
+    fontSize: 18,
     fontFamily: 'Outfit-bold',
   },
   checkmarkContainer: {
