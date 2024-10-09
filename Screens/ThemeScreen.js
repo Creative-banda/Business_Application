@@ -17,28 +17,28 @@ const colorThemes = {
   },
   oceanBreeze: {
     colorName: 'Ocean Breeze',
-    hexCode: '#141115',
-    backgroundColor: '#799496'
+    hexCode: '#0D0C0D',
+    backgroundColor: '#ACBDBE'
   },
   sunsetGlow: {
     colorName: 'Coyota',
-    hexCode: '#FF6F61',
-    backgroundColor: '#8D6346'
+    hexCode: '#FFDAD6',
+    backgroundColor: '#3E2B1E'
   },
   forestMist: {
     colorName: 'Ultra Violet',
     hexCode: '#fff',
-    backgroundColor: '#4D5382'
+    backgroundColor: '#3A3F64'
   },
   berryBliss: {
     colorName: 'Berry Bliss',
-    hexCode: '#443730',
-    backgroundColor: '#A5907E'
+    hexCode: '#120F0D',
+    backgroundColor: '#C9BCB1'
   },
   desertSand: {
     colorName: 'Eggplant',
-    hexCode: '#ECF0F1',
-    backgroundColor: '#65334D'
+    hexCode: '#CFCFCD',
+    backgroundColor: '#536B78'
   },
 
 };

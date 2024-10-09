@@ -1,5 +1,6 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import { StyleSheet, View, Text, FlatList, Image, Dimensions } from 'react-native';
+import { ThemeContext } from '../Globals/ThemeContext';
 
 const DATA = [
     {
@@ -20,9 +21,10 @@ const DATA = [
 const screenWidth = Dimensions.get('window').width;
 
 const Slider = () => {
+    const {themeColor} = useContext(ThemeContext)
     return (
         <View style={styles.container}>
-            <Text style={styles.specialText}> #Special for you</Text>
+            <Text style={[styles.specialText, {color : themeColor}]}> #Special for you</Text>
             <FlatList
                 data={DATA}
                 horizontal

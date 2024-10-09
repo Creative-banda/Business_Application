@@ -1,5 +1,5 @@
 import React, { useState, useContext} from 'react';
-import { StyleSheet, View, ScrollView, RefreshControl } from 'react-native';
+import { StyleSheet, View, ScrollView, RefreshControl,StatusBar } from 'react-native';
 import HeaderContainer from '../HomeComponents/HeaderContainer';
 import Slider from '../HomeComponents/Slider';
 import CategorySlider from '../HomeComponents/CategorySlider';

@@ -1,8 +1,6 @@
 import React, { useContext } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import { ThemeContext } from '../Globals/ThemeContext.js'
-
-
 import Category from '../GlobalComponents/Category.js'
 
 const CategorySlider = () => {
@@ -11,7 +9,7 @@ const CategorySlider = () => {
     return (
         <View style={styles.container}>
             <View style={styles.categoryHolder}>
-                <Text style={styles.topText}>Category</Text>
+                <Text style={[styles.topText, {color : themeColor}]}>Category</Text>
                 <TouchableOpacity>
                     <Text style={{ color: themeColor, fontFamily: 'Outfit-bold' }}>See all</Text>
                 </TouchableOpacity>

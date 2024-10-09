@@ -3,7 +3,7 @@ import { StyleSheet, View, Text, Image,TouchableOpacity } from 'react-native';
 import { ThemeContext } from '../Globals/ThemeContext';
 
 const InitalizePage = ({navigation}) => {
-    const { themeColor, textColor } = useContext(ThemeContext);
+    const { themeColor } = useContext(ThemeContext);
 
     const handleClick = ()=>{
         navigation.navigate("HomeScreen")
@@ -12,7 +12,7 @@ const InitalizePage = ({navigation}) => {
 
     return (
         <View style={styles.container}>
-            <Image source={require('../assets/Images/Demo-Image.png')} style={styles.TopImage} />
+            <Image source={require('../assets/Images/Home.png')} style={styles.TopImage} />
             <View style={styles.TextContainer}>
                 <Text style={styles.Text}>
                     Your Ultimate <Text style={[styles.Text, { color: themeColor}]}>

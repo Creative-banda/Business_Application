@@ -1,13 +1,15 @@
-import React from 'react'
+import React, {useContext} from 'react'
 import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native'
 import Gloserry from '../assets/SVG/Gloserry.js'
 import ShoppingCart from '../assets/SVG/ShoppingCart.js'
 import PlumberIcon from '../assets/SVG/Plumber.js'
 import Restaurant from '../assets/SVG/Restaurant.js'
 import SalonIcon from '../assets/SVG/Salon.js'
+import { ThemeContext } from '../Globals/ThemeContext.js'
 
 
 const Category = ({ color, handleCategory }) => {
+    const {themeColor} = useContext(ThemeContext)
 
     DATA = [
         {
@@ -51,7 +53,7 @@ const Category = ({ color, handleCategory }) => {
                             <View style={styles.IconButton} >
                                 {item.Icon}
                             </View>
-                            <Text style={styles.iconText}>{item.title}</Text>
+                            <Text style={[styles.iconText, {color: themeColor}]}>{item.title}</Text>
                         </View>
                     </TouchableOpacity>
                 )}
