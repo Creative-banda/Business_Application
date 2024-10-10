@@ -37,7 +37,7 @@ const App = () => {
     <ThemeProvider>
       <NavigationContainer>
 
-        <Stack.Navigator initialRouteName='InitPage'>
+        <Stack.Navigator initialRouteName='HomeScreen'>
           <Stack.Screen name='InitPage' component={InitalizePage} options={{ headerShown: false }} />
           <Stack.Screen name='HomeScreen' component={Tab_Navigation} options={{ headerShown: false }} />
           <Stack.Screen name='ThemeScreen' component={ThemeScreen} options={{ headerShown: false }} />

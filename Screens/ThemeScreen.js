@@ -1,94 +1,152 @@
-import React, { useState, useContext } from 'react';
-import { StyleSheet, Text, View, FlatList, TouchableOpacity, StatusBar, Dimensions } from 'react-native';
+import React, { useState, useContext, useRef, useCallback } from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  StatusBar,
+  Dimensions,
+  Animated,
+  Easing,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Feather } from '@expo/vector-icons';
 import { ThemeContext } from '../Globals/ThemeContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomAlert from '../Globals/customalert';
+import { LinearGradient } from 'expo-linear-gradient';
 
-const { width } = Dimensions.get('window');
-const ITEM_WIDTH = width * 0.9;
+const { width, height } = Dimensions.get('window');
+const ITEM_WIDTH = width * 0.8;
+const ITEM_HEIGHT = height * 0.6;
 
 const colorThemes = {
   Default: {
     colorName: 'Default',
     hexCode: '#fff',
-    backgroundColor: '#673fd2'
+    backgroundColor: '#673fd2',
+    gradientColors: ['#7b4fd6', '#5730c5'],
   },
   oceanBreeze: {
     colorName: 'Ocean Breeze',
-    hexCode: '#0D0C0D',
-    backgroundColor: '#ACBDBE'
+    hexCode: '#E0F2F1',
+    backgroundColor: '#0277BD',
+    gradientColors: ['#039BE5', '#01579B'],
   },
   sunsetGlow: {
-    colorName: 'Coyota',
+    colorName: 'Sunset Glow',
     hexCode: '#FFDAD6',
-    backgroundColor: '#3E2B1E'
+    backgroundColor: '#3E2B1E',
+    gradientColors: ['#5D4037', '#3E2723'],
   },
   forestMist: {
-    colorName: 'Ultra Violet',
-    hexCode: '#fff',
-    backgroundColor: '#3A3F64'
+    colorName: 'Forest Mist',
+    hexCode: '#E8F5E9',
+    backgroundColor: '#2E7D32',
+    gradientColors: ['#388E3C', '#1B5E20'],
   },
   berryBliss: {
     colorName: 'Berry Bliss',
-    hexCode: '#120F0D',
-    backgroundColor: '#C9BCB1'
+    hexCode: '#FCE4EC',
+    backgroundColor: '#880E4F',
+    gradientColors: ['#AD1457', '#6A0080'],
   },
   desertSand: {
-    colorName: 'Eggplant',
-    hexCode: '#CFCFCD',
-    backgroundColor: '#536B78'
+    colorName: 'Desert Sand',
+    hexCode: '#FFF3E0',
+    backgroundColor: '#A1887F',
+    gradientColors: ['#8D6E63', '#795548'],
   },
-
 };
 
-const ThemeScreen = () => {
-  const [selectedTheme, setSelectedTheme] = useState(null);
-  const [visible, setVisible] = useState(false);
-  const { setThemeColor, setTextColor, themeColor, textColor } = useContext(ThemeContext);
+const ThemeItem = React.memo(({ item, index, scrollX, onSelect }) => {
+  const inputRange = [
+    (index - 1) * ITEM_WIDTH,
+    index * ITEM_WIDTH,
+    (index + 1) * ITEM_WIDTH,
+  ];
 
-  const handleThemeSelect = (theme) => {
-    setSelectedTheme(theme);
-  };
-  const handleApplyTheme = async () =>{
-    setThemeColor(selectedTheme.backgroundColor);
-    setTextColor(selectedTheme.hexCode);
-    await AsyncStorage.setItem('themeColor', selectedTheme.backgroundColor);
-    await AsyncStorage.setItem('textColor', selectedTheme.hexCode);
-    setVisible(true);
-  }
+  const scale = scrollX.interpolate({
+    inputRange,
+    outputRange: [0.8, 1, 0.8],
+  });
 
-  const renderItem = ({ item }) => {
-    const isSelected = selectedTheme && selectedTheme.backgroundColor === item.backgroundColor;
+  const opacity = scrollX.interpolate({
+    inputRange,
+    outputRange: [0.5, 1, 0.5],
+  });
 
-    return (
-      <TouchableOpacity
-        style={[
-          styles.themeOption,
-          { backgroundColor: item.backgroundColor },
-          isSelected && styles.selectedThemeOption
-        ]}
-        onPress={() => handleThemeSelect(item)}
+  return (
+    <Animated.View
+      style={[
+        styles.themeOption,
+        { transform: [{ scale }], opacity },
+      ]}
+    >
+      <LinearGradient
+        colors={item.gradientColors}
+        style={styles.gradientBackground}
       >
-        <View style={styles.themeContent}>
+        <TouchableOpacity
+          style={styles.themeContent}
+          onPress={() => onSelect(item)}
+        >
           <View style={styles.colorPreview}>
             <View style={[styles.colorCircle, { backgroundColor: item.hexCode }]} />
             <Text style={[styles.colorName, { color: item.hexCode }]}>{item.colorName}</Text>
           </View>
           <View style={styles.demoTextContainer}>
-            <Text style={[styles.demoText, { color: item.hexCode }]}> This is an example of a paragraph where we want to check the text color. 
-            You can see how the text appears across multiple lines.</Text>
+            <Text style={[styles.demoText, { color: item.hexCode }]}>
+              This is an example of how your text will look with this theme applied.
+            </Text>
           </View>
-        </View>
-        {isSelected && (
-          <View style={[styles.checkmarkContainer, { backgroundColor: item.hexCode }]}>
-            <Feather name="check" size={24} color={item.backgroundColor} />
-          </View>
-        )}
-      </TouchableOpacity>
-    );
-  };
+        </TouchableOpacity>
+      </LinearGradient>
+    </Animated.View>
+  );
+});
+
+const ThemeScreen = () => {
+  const [selectedTheme, setSelectedTheme] = useState(null);
+  const [visible, setVisible] = useState(false);
+  const { setThemeColor, setTextColor, themeColor, textColor } = useContext(ThemeContext);
+  const scrollX = useRef(new Animated.Value(0)).current;
+  const animatedValue = useRef(new Animated.Value(0)).current;
+
+  const handleThemeSelect = useCallback((theme) => {
+    setSelectedTheme(theme);
+    Animated.timing(animatedValue, {
+      toValue: 1,
+      duration: 300,
+      easing: Easing.bounce,
+      useNativeDriver: true,
+    }).start();
+  }, []);
+
+  const handleApplyTheme = useCallback(async () => {
+    if (selectedTheme) {
+      setThemeColor(selectedTheme.backgroundColor);
+      setTextColor(selectedTheme.hexCode);
+      await AsyncStorage.setItem('themeColor', selectedTheme.backgroundColor);
+      await AsyncStorage.setItem('textColor', selectedTheme.hexCode);
+      setVisible(true);
+    }
+  }, [selectedTheme, setThemeColor, setTextColor]);
+
+  const renderItem = useCallback(({ item, index }) => (
+    <ThemeItem
+      item={item}
+      index={index}
+      scrollX={scrollX}
+      onSelect={handleThemeSelect}
+    />
+  ), [scrollX, handleThemeSelect]);
+
+  const keyExtractor = useCallback((item) => item.backgroundColor, []);
+
+  const applyButtonScale = animatedValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 1],
+  });
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: themeColor }]}>
@@ -96,32 +154,47 @@ const ThemeScreen = () => {
       <View style={styles.header}>
         <Text style={[styles.title, { color: textColor }]}>Choose Your Theme</Text>
       </View>
-      <FlatList
+      <Animated.FlatList
         data={Object.values(colorThemes)}
         renderItem={renderItem}
-        keyExtractor={item => item.backgroundColor}
+        keyExtractor={keyExtractor}
+        horizontal
+        pagingEnabled
+        showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.listContainer}
-        showsVerticalScrollIndicator={false}
+        snapToAlignment="center"  // Center alignment fix
+        decelerationRate="fast"
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { x: scrollX } } }],
+          { useNativeDriver: true }
+        )}
+        scrollEventThrottle={16}
+        bounces={false} // Ensures smooth snapping behavior
       />
       {selectedTheme && (
-        <View style={styles.footer}>
+        <Animated.View style={[styles.footer, { transform: [{ scale: applyButtonScale }] }]}>
           <TouchableOpacity
             style={[styles.applyButton, { backgroundColor: selectedTheme.hexCode }]}
             onPress={handleApplyTheme}
           >
-            <Text style={[styles.applyButtonText, { color: selectedTheme.backgroundColor }]}>Apply Theme</Text>
+            <Text style={[styles.applyButtonText, { color: selectedTheme.backgroundColor }]}>
+              Apply Theme
+            </Text>
           </TouchableOpacity>
-        </View>
+        </Animated.View>
       )}
-     {selectedTheme && <CustomAlert
-      visible={visible} 
-      onClose={() => setVisible(false)}
-      background={selectedTheme.backgroundColor}
-      textColor={selectedTheme.hexCode}
-      />}
+      {selectedTheme && (
+        <CustomAlert
+          visible={visible}
+          onClose={() => setVisible(false)}
+          background={selectedTheme.backgroundColor}
+          textColor={selectedTheme.hexCode}
+        />
+      )}
     </SafeAreaView>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
@@ -141,66 +214,61 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     paddingVertical: 20,
-    paddingHorizontal: 15,
-    alignItems: 'center',
   },
   themeOption: {
     width: ITEM_WIDTH,
-    marginBottom: 20,
+    height: ITEM_HEIGHT,
+    marginHorizontal: 10, // Simplified margin for consistent behavior
     borderRadius: 20,
     overflow: 'hidden',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 5,
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.3,
+    shadowRadius: 20,
+    elevation: 10,
   },
-  selectedThemeOption: {
-    shadowOpacity: 0.2,
-    shadowRadius: 12,
-    elevation: 8,
+  gradientBackground: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   themeContent: {
     padding: 20,
+    alignItems: 'center',
   },
   colorPreview: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 15,
+    marginBottom: 30,
   },
   colorCircle: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
     marginRight: 15,
     borderWidth: 2,
     borderColor: 'rgba(255, 255, 255, 0.3)',
   },
   colorName: {
-    fontSize: 22,
-    fontFamily: 'Outfit',
+    fontSize: 28,
+    fontFamily: 'Outfit-bold',
   },
   demoTextContainer: {
     alignItems: 'center',
+    paddingHorizontal: 20,
   },
   demoText: {
     fontSize: 18,
-    fontFamily: 'Outfit-bold',
-  },
-  checkmarkContainer: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    justifyContent: 'center',
-    alignItems: 'center',
+    fontFamily: 'Outfit',
+    textAlign: 'center',
+    lineHeight: 24,
   },
   footer: {
     padding: 20,
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(255, 255, 255, 0.1)',
+    position: 'absolute',
+    bottom: 30,
+    left: 0,
+    right: 0,
   },
   applyButton: {
     padding: 18,
@@ -219,4 +287,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ThemeScreen;
+export default React.memo(ThemeScreen);

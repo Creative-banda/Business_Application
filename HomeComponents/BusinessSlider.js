@@ -1,6 +1,5 @@
-import React, { useContext } from 'react';
-import { StyleSheet, View, Text, FlatList, Dimensions } from 'react-native';
-import FastImage from 'react-native-fast-image';
+import React, {useContext} from 'react';
+import { StyleSheet, View, Text, FlatList, Image, Dimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import { ThemeContext } from '../Globals/ThemeContext';
 
@@ -80,21 +79,19 @@ const DATA = [
 // Get screen width to adjust image size dynamically
 const screenWidth = Dimensions.get('window').width;
 
+
 const BusinessSlider = () => {
-    const { themeColor, textColor } = useContext(ThemeContext);
+    const {themeColor, textColor} = useContext(ThemeContext)
+
 
     const renderItem = ({ item }) => {
         return (
-            <View style={[styles.sliderItem, { backgroundColor: textColor }]}>
-                <FastImage
-                    source={{ uri: item.image }}
-                    style={styles.image}
-                    resizeMode={FastImage.resizeMode.cover} // Change this to suit your design
-                />
+            <View style={[styles.sliderItem, {backgroundColor : textColor}]}>
+                <Image source={{ uri: item.image }} style={styles.image} />
                 <Text style={styles.BusinessName}>
                     {item.name}
                 </Text>
-                <Text style={{ fontFamily: 'Outfit', fontSize: 16, paddingLeft: 10 }}>{item.address}</Text>
+                <Text style={{ fontFamily: 'Outfit', fontSize: 16, paddingLeft:10 }}>{item.address}</Text>
                 <View style={styles.businessInfo}>
                     <Text style={{ fontFamily: 'Outfit-bold', fontSize: 16 }}>{item.rating}</Text>
                     <Icon name="star" color='#FFD700' size={24} />
@@ -105,7 +102,7 @@ const BusinessSlider = () => {
 
     return (
         <View style={styles.container}>
-            <Text style={[styles.specialText, { color: themeColor }]}>Popular Business</Text>
+            <Text style={[styles.specialText, {color : themeColor}]}> Popular Business</Text>
             <FlatList
                 data={DATA}
                 horizontal
@@ -139,6 +136,8 @@ const styles = StyleSheet.create({
         shadowColor: 'black',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.5,
+
+        
     },
     image: {
         width: '100%',
@@ -149,7 +148,8 @@ const styles = StyleSheet.create({
         fontFamily: 'Outfit-bold',
         fontSize: 20,
         marginTop: 10,
-        paddingLeft: 10,
+         paddingLeft:10
+        
     },
     businessInfo: {
         flexDirection: 'row',
@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginTop: 10,
         gap: 5,
-        paddingLeft: 10,
+        paddingLeft:10,
         paddingBottom: 10,
     }
 });
