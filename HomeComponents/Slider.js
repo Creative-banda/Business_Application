@@ -1,32 +1,43 @@
-import React, {useContext} from 'react';
+import React, {useEffect, useState} from 'react';
 import { StyleSheet, View, Text, FlatList, Image, Dimensions } from 'react-native';
-import { ThemeContext } from '../Globals/ThemeContext';
-
-const DATA = [
-    {
-        id: '1',
-        image: 'https://www.team-bhp.com/forum/attachments/indian-car-scene/2111195d1611154066-best-car-advertisement-taglines-used-india-ads-f-type.jpg', // Replace with your image URL or local image
-    },
-    {
-        id: '2',
-        image: 'https://img.freepik.com/free-vector/hand-drawn-flat-black-friday-social-media-promo-template_23-2149097999.jpg',
-    },
-    {
-        id: '3',
-        image: 'https://www.searchengineprojects.com/wp-content/uploads/2019/10/plumber-marketing-agency-2-1170-700.jpg',
-    },
-];
+import { database } from '../firebaseConfig';
+import { ref, get } from 'firebase/database';
 
 // Get screen width to adjust image size dynamically
 const screenWidth = Dimensions.get('window').width;
 
 const Slider = () => {
-    const {themeColor} = useContext(ThemeContext)
+
+    const [data, setData] = useState([]);
+
+    useEffect(() => {
+        initializingUsers()
+    }, [])
+
+    const initializingUsers = async () => {
+        try {
+            let SearchScreenData = ref(database, 'Slider');
+            const snapshot = await get(SearchScreenData);
+            if (snapshot.exists()) {
+                const userData = snapshot.val();
+                const formattedData = Object.values(userData);  
+                setData(formattedData);
+
+            } else {
+                console.log('No data available');
+            }
+        } catch (err) {
+            console.log('Error:', err);
+        }
+    };
+
+
+
     return (
         <View style={styles.container}>
-            <Text style={[styles.specialText, {color : themeColor}]}> #Special for you</Text>
+            <Text style={[styles.specialText, {color : '#000'}]}> #Special for you</Text>
             <FlatList
-                data={DATA}
+                data={data}
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 keyExtractor={(item) => item.id}

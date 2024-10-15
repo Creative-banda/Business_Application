@@ -1,16 +1,6 @@
-<<<<<<< HEAD
-
-
 import { FIREBASE_API_KEY, FIREBASE_AUTH_DOMAIN, FIREBASE_PROJECT_ID, FIREBASE_STORAGE_BUCKET, FIREBASE_MESSAGING_SENDER_ID, FIREBASE_APP_ID, FIREBASE_MEASUREMENT_ID } from '@env';
-=======
-import {
-    FIREBASE_API_KEY, FIREBASE_AUTH_DOMAIN,
-    FIREBASE_PROJECT_ID, FIREBASE_STORAGE_BUCKET,
-    FIREBASE_MESSAGING_SENDER_ID, FIREBASE_APP_ID,
-    FIREBASE_MEASUREMENT_ID
-} from '@env';
->>>>>>> e780207 (Added Business Info Page by selecting Business)
-
+import { getDatabase } from 'firebase/database';
+import { initializeApp } from "firebase/app";
 
 const firebaseConfig = {
     apiKey: FIREBASE_API_KEY,
@@ -23,8 +13,10 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-}
+const app = initializeApp(firebaseConfig);
 
-export { firebase };
+// Get database instance
+const database = getDatabase(app);
+
+// Export the database directly
+export { database };

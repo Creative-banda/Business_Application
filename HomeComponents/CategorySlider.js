@@ -9,9 +9,9 @@ const CategorySlider = () => {
     return (
         <View style={styles.container}>
             <View style={styles.categoryHolder}>
-                <Text style={[styles.topText, {color : themeColor}]}>Category</Text>
+                <Text style={[styles.topText, {color : '#000'}]}>Category</Text>
                 <TouchableOpacity>
-                    <Text style={{ color: themeColor, fontFamily: 'Outfit-bold' }}>See all</Text>
+                    <Text style={{ color: '#000', fontFamily: 'Outfit-bold' }}>See all</Text>
                 </TouchableOpacity>
 
             </View>
