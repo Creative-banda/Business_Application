@@ -3,7 +3,7 @@ import { StyleSheet, View, Text, Image } from 'react-native';
 import ProfileButton from '../ProfileComponents/ProfileButton';
 
 
-const ProfileScreen = () => {
+const ProfileScreen = ({navigation}) => {
     
     return (
         <View style={styles.container}>
@@ -16,7 +16,7 @@ const ProfileScreen = () => {
                 <Text style={styles.userEmail}>gameplayapp007@gmail.com</Text>
             </View>
             <View style={styles.iconHolder}>
-                <ProfileButton title="Add Business" Icon="MaterialIcons" IconName="add-business" bgColor="#FFD8C5" />
+                <ProfileButton title="Add Business" Icon="MaterialIcons" IconName="add-business" bgColor="#FFD8C5" handleProfileButton={()=>navigation.navigate("AddBusiness")}/>
                 <ProfileButton title="My Business" Icon="Ionicons" IconName="business" bgColor="#E4C7FF" />
                 <ProfileButton title="Share App" Icon="MaterialIcons" IconName="share" bgColor="#FFD8C5" />
                 <ProfileButton title="Logout" Icon="MaterialIcons" IconName="logout" bgColor="#E4C7FF" />

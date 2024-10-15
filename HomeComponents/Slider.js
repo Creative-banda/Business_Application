@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import { StyleSheet, View, Text, FlatList, Image, Dimensions } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, View, Text, FlatList, Image, Dimensions, TouchableWithoutFeedback } from 'react-native';
 import { database } from '../firebaseConfig';
 import { ref, get } from 'firebase/database';
 
@@ -20,7 +20,7 @@ const Slider = () => {
             const snapshot = await get(SearchScreenData);
             if (snapshot.exists()) {
                 const userData = snapshot.val();
-                const formattedData = Object.values(userData);  
+                const formattedData = Object.values(userData);
                 setData(formattedData);
 
             } else {
@@ -31,22 +31,27 @@ const Slider = () => {
         }
     };
 
+    const renderItem = ({item}) => {
+        
+        return (
+            <View style={styles.sliderItem}>
+                <Image source={{ uri: item.image }} style={styles.image} />
+            </View>
+        )
+    }
+
 
 
     return (
         <View style={styles.container}>
-            <Text style={[styles.specialText, {color : '#000'}]}> #Special for you</Text>
+            <Text style={[styles.specialText, { color: '#000' }]}> #Special for you</Text>
             <FlatList
                 data={data}
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 keyExtractor={(item) => item.id}
-                renderItem={({ item }) => (
-                    <View style={styles.sliderItem}>
-                        <Image source={{ uri: item.image }} style={styles.image} />
-                    </View>
-                )}
-                pagingEnabled 
+                renderItem={renderItem}
+                pagingEnabled
             />
         </View>
     );
@@ -73,15 +78,15 @@ const styles = StyleSheet.create({
         shadowColor: 'black',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.5,
-        marginVertical:10
+        marginVertical: 10
 
     },
     image: {
         width: '100%',
         height: 200,
         borderRadius: 10,
-        resizeMode:'stretch'
-        },
+        resizeMode: 'stretch'
+    },
 });
 
 export default Slider

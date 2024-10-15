@@ -4,7 +4,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { ThemeContext } from '../Globals/ThemeContext';
 
-const ProfileButton = ({ title, Icon, IconName, bgColor }) => {
+const ProfileButton = ({ title, Icon, IconName, bgColor, handleProfileButton }) => {
     const { themeColor } = useContext(ThemeContext);
     const renderIcon = () => {
         switch (Icon) {
@@ -18,7 +18,7 @@ const ProfileButton = ({ title, Icon, IconName, bgColor }) => {
     };
 
     return (
-        <TouchableOpacity style={styles.container}>
+        <TouchableOpacity style={styles.container} onPress={handleProfileButton}>
             <View style={[styles.iconContainer,{ backgroundColor: bgColor }]}>{renderIcon()}</View>
             <Text style={styles.title}>{title}</Text>
         </TouchableOpacity>
