@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, TextInput, ScrollView, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, Image, TextInput, ScrollView, TouchableOpacity, Linking, Alert } from 'react-native'
 import React, { useState, useContext } from 'react'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { ThemeContext } from '../Globals/ThemeContext'
@@ -6,55 +6,97 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 
 const Business_Info = ({ route }) => {
   const [Input, setInput] = useState('');
-  const { image } = route.params;
-  const {themeColor, textColor} = useContext(ThemeContext)
+  const { item } = route.params;
+  const { themeColor, textColor } = useContext(ThemeContext)
+
+  const makePhoneCall = (phoneNumber) => {
+    let phoneUrl = `tel:${phoneNumber}`;
+    Linking.openURL(phoneUrl)
+      .then((supported) => {
+        if (!supported) {
+          console.log('Phone number is not available');
+        } else {
+          return Linking.openURL(phoneUrl);
+        }
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const openMapWithAddress = (address) => {
+    const encodedAddress = encodeURIComponent(address);
+    const url = `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
+
+    Linking.openURL(url)
+      .then((supported) => {
+        if (!supported) {
+          console.log('Maps app is not available');
+        }
+      })
+      .catch((err) => console.error('An error occurred', err));
+  };
+  const openWebsite = (websiteUrl) => {
+    if (websiteUrl) {
+
+      Linking.openURL(websiteUrl).catch((err) =>
+        console.error('Failed to open URL:', err)
+      );
+    }
+    else{
+      alert("Website Error", "No Website Found")
+    }
+  };
 
   return (
-    <ScrollView style={[styles.container, {backgroundColor : textColor}]}>
-      <Image source={{ uri: image }} style={styles.image} />
-      <View style={[styles.holder, {backgroundColor : textColor}]}>
+    <ScrollView style={[styles.container, { backgroundColor: textColor }]}>
+      <Image source={{ uri: item.image }} style={styles.image} />
+      <View style={[styles.holder, { backgroundColor: textColor }]}>
 
         <View style={styles.businessInfoContainer}>
           <View>
-            <Text style={{ fontFamily: 'Outfit-bold', fontSize: 24, color : 'rgba(0,0,0,0.9)' }}>Champion Shop</Text>
-            <Text style={{fontFamily : 'Outfit'}}> Address Of Shop</Text>
+            <Text style={{ fontFamily: 'Outfit-bold', fontSize: 24, color: 'rgba(0,0,0,0.9)' }}>{item.name}</Text>
+            <Text style={{ fontFamily: 'Outfit' }}> {item.address}</Text>
           </View>
 
           <MaterialIcons name='delete' size={30} color={'red'} />
         </View>
         <View style={styles.iconContainer}>
-          <View style={[styles.iconBackground, { backgroundColor: '#51D47B' }]}>
+
+          <TouchableOpacity style={[styles.iconBackground, { backgroundColor: '#51D47B' }]} onPress={() => makePhoneCall(item.contact)}>
             <MaterialIcons name='call' size={30} color={'#fff'} />
-          </View>
-          <View style={[styles.iconBackground, { backgroundColor: '#5787BF' }]}>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={[styles.iconBackground, { backgroundColor: '#5787BF' }]} onPress={() => openMapWithAddress(item.address)}>
             <MaterialIcons name='location-pin' size={30} color={'#fff'} />
-          </View>
-          <View style={[styles.iconBackground, { backgroundColor: '#D46957' }]}>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={[styles.iconBackground, { backgroundColor: '#D46957' }]} onPress={()=>openWebsite(item.website)}>
             <MaterialCommunityIcons name='web' size={30} color={'#fff'} />
-          </View>
+          </TouchableOpacity>
+
           <View style={[styles.iconBackground, { backgroundColor: '#AFC73A' }]}>
             <MaterialIcons name='share' size={30} color={'#fff'} />
           </View>
+
         </View>
 
         <View style={styles.about}>
-          <Text style={{ fontFamily: 'Outfit-bold', fontSize: 26,color : 'rgba(0,0,0,0.9)' }}> About</Text>
-          <Text style={{ fontFamily: 'Outfit', fontSize: 16 }}> This the about of a Shop</Text>
+          <Text style={{ fontFamily: 'Outfit-bold', fontSize: 26, color: 'rgba(0,0,0,0.9)' }}> About</Text>
+          <Text style={{ fontFamily: 'Outfit', fontSize: 15, color: "rgba(0,0,0,0.8)" }}>{item.about}</Text>
         </View>
 
         <View>
-          <Text style={{fontFamily : 'Outfit-bold', fontSize :24, paddingVertical : 8}}> Reviews </Text>
+          <Text style={{ fontFamily: 'Outfit-bold', fontSize: 24, paddingVertical: 8 }}> Reviews </Text>
           <TextInput
             numberOfLines={5}
-            placeholder="Enter Your Comment"
+            placeholder="Enter Your Review"
             style={styles.InputText}
             value={Input}
             onChangeText={setInput}
-            multiline={true} 
-            textAlignVertical="top" 
+            multiline={true}
+            textAlignVertical="top"
           />
-          <TouchableOpacity style={[styles.button, {backgroundColor : themeColor}]}>
-            <Text style={{fontFamily : 'Outfit-bold', color : textColor}}> Submit </Text>
+          <TouchableOpacity style={[styles.button, { backgroundColor: themeColor }]}>
+            <Text style={{ fontFamily: 'Outfit-bold', color: textColor }}> Submit </Text>
           </TouchableOpacity>
         </View>
 
@@ -112,16 +154,16 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 10,
     paddingHorizontal: 10,
-    paddingVertical: 10, 
+    paddingVertical: 10,
   },
-  button : {
-    width : '100%',
-    paddingVertical : 10,
-    justifyContent : 'center',
-    alignItems : 'center',
-    borderRadius : 20,
-    marginTop : 15,
-    marginBottom : 30
+  button: {
+    width: '100%',
+    paddingVertical: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 20,
+    marginTop: 15,
+    marginBottom: 30
   },
 
 })

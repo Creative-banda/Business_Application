@@ -20,11 +20,9 @@ const SearchScreen = () => {
             const snapshot = await get(userDataRef);
             if (snapshot.exists()) {
                 const userData = snapshot.val();
-                const formattedData = Object.values(userData);  // Convert object to array for FlatList
+                const formattedData = Object.values(userData);
                 setData(formattedData);
                 setFilteredData(formattedData)
-                
-                
             } else {
                 console.log('No data available');
             }
@@ -41,7 +39,6 @@ const SearchScreen = () => {
             const filteredData = data.filter(store => store.category === selectedCategory);
             setFilteredData(filteredData);
         } else {
-            // Reset to all data when no category is selected
             setFilteredData(data);
         }
     }, [selectedCategory]);

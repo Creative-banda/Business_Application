@@ -1,5 +1,5 @@
 import React, { useState, useContext} from 'react';
-import { StyleSheet, View, ScrollView, RefreshControl } from 'react-native';
+import { StyleSheet, View, ScrollView } from 'react-native';
 import HeaderContainer from '../HomeComponents/HeaderContainer';
 import Slider from '../HomeComponents/Slider';
 import CategorySlider from '../HomeComponents/CategorySlider';
@@ -9,19 +9,12 @@ import { ThemeContext } from '../Globals/ThemeContext';
 const HomeScreen = ({navigation}) => {
     const [Search, Setsearch] = useState('');
     const {textColor} = useContext(ThemeContext)
-    const [refreshing, setRefreshing] = useState(false);
 
-    const onRefresh = React.useCallback(() => {
-        setRefreshing(true);
-        setTimeout(() => {
-          setRefreshing(false);
-        }, 2000);
-      }, []);
+
+      
 
     return (
-        <ScrollView style={[styles.container, {backgroundColor : textColor}]}refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }>
+        <ScrollView style={[styles.container, {backgroundColor : textColor}]}>
             <HeaderContainer
             Search={Search}
             onChangeText={Setsearch}
@@ -30,7 +23,7 @@ const HomeScreen = ({navigation}) => {
             <View style={styles.sliderHolder}>
             <Slider />
             <CategorySlider />
-            <BusinessSlider />
+            <BusinessSlider navigation={navigation}/>
             </View>
         </ScrollView>
     );

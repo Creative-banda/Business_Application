@@ -7,6 +7,7 @@ import Tab_Navigation from './Globals/Tab_Navigation';
 import ThemeScreen from './Screens/ThemeScreen';
 import { ThemeProvider } from './Globals/ThemeContext';
 import AddBusiness from './Screens/AddBusiness';
+import Business_Info from './Screens/Business_Info'
 
 const Stack = createStackNavigator()
 
@@ -29,7 +30,7 @@ const App = () => {
 
 
   if (!fontsLoaded) {
-    return null; // Render nothing while waiting for fonts to load
+    return null; 
   }
 
 
@@ -42,6 +43,7 @@ const App = () => {
           <Stack.Screen name='InitPage' component={InitalizePage} options={{ headerShown: false }} />
           <Stack.Screen name='HomeScreen' component={Tab_Navigation} options={{ headerShown: false }} />
           <Stack.Screen name='ThemeScreen' component={ThemeScreen} options={{ headerShown: false }} />
+          <Stack.Screen name='Business_Info' component={Business_Info} options={{ headerShown: false }} />
           <Stack.Screen name='AddBusiness' component={AddBusiness} />
         </Stack.Navigator>
       </NavigationContainer>

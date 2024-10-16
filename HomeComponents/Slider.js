@@ -44,7 +44,7 @@ const Slider = () => {
 
     return (
         <View style={styles.container}>
-            <Text style={[styles.specialText, { color: '#000' }]}> #Special for you</Text>
+            <Text style={[styles.specialText, { color: '#000' }]}>Shops at Your Fingertips</Text>
             <FlatList
                 data={data}
                 horizontal

@@ -1,6 +1,6 @@
 
 import React, { useContext, useEffect, useState } from 'react';
-import { StyleSheet, View, Text, FlatList, Image, Dimensions } from 'react-native';
+import { StyleSheet, View, Text, FlatList, Image, Dimensions, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import { ThemeContext } from '../Globals/ThemeContext';
 import { database } from '../firebaseConfig';
@@ -10,7 +10,7 @@ import { ref, get } from 'firebase/database';
 const screenWidth = Dimensions.get('window').width;
 
 
-const BusinessSlider = () => {
+const BusinessSlider = ({navigation}) => {
     const { textColor } = useContext(ThemeContext)
     const [businessData, setBusinessData] = useState([])
 
@@ -25,7 +25,7 @@ const BusinessSlider = () => {
             const snapshot = await get(SearchScreenData);
             if (snapshot.exists()) {
                 const userData = snapshot.val();
-                const formattedData = Object.values(userData);  // Convert object to array for FlatList
+                const formattedData = Object.values(userData); 
                 setBusinessData(formattedData);
 
             } else {
@@ -38,7 +38,7 @@ const BusinessSlider = () => {
 
     const renderItem = ({ item }) => {
         return (
-            <View style={[styles.sliderItem, { backgroundColor: textColor }]}>
+            <TouchableOpacity style={[styles.sliderItem, { backgroundColor: textColor }]} onPress={()=>navigation.navigate("Business_Info", {item : item})}>
                 <Image source={{ uri: item.image }} style={styles.image} />
                 <Text style={styles.BusinessName}>
                     {item.name}
@@ -48,7 +48,7 @@ const BusinessSlider = () => {
                     <Text style={{ fontFamily: 'Outfit-bold', fontSize: 16 }}>{item.rating}</Text>
                     <Icon name="star" color='#FFD700' size={24} />
                 </View>
-            </View>
+            </TouchableOpacity>
         );
     };
 
