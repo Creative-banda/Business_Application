@@ -1,25 +1,35 @@
-import { StyleSheet, Text, View, FlatList, Image } from 'react-native'
 import React from 'react'
+import { StyleSheet, Text, View, FlatList, Image, TouchableWithoutFeedback } from 'react-native'
 
-const ItemCard = ({STORES_DATA}) => {
+const truncateText = (text, wordLimit) => {
+  const words = text.split(' ');
+  if (words.length > wordLimit) {
+    return words.slice(0, wordLimit).join(' ') + '...';
+  }
+  return text;
+};
+
+const ItemCard = ({ STORES_DATA, navigation }) => {
     const renderItem = ({ item }) => {
         return (
-
-            <View style={styles.sliderItem}>
-                <Image source={{ uri: item.image }} style={styles.image} />
-
-                <View style={styles.businessInfo}>
-                    <Text style={styles.BusinessName}>
-                        {item.name}
-                    </Text>
-                    <Text style={{ fontFamily: 'Outfit', fontSize: 16 }}>{item.address}</Text>
+            <TouchableWithoutFeedback onPress={()=>navigation.navigate("Business_Info", { item: item })}>
+                <View style={styles.sliderItem}>
+                    <Image source={{ uri: item.image }} style={styles.image} />
+                    <View style={styles.businessInfo}>
+                        <Text style={styles.BusinessName}>
+                            {item.name}
+                        </Text>
+                        <Text style={styles.addressText} numberOfLines={1} ellipsizeMode="tail">
+                            {truncateText(item.address, 8)}
+                        </Text>
+                    </View>
                 </View>
-            </View> 
+            </TouchableWithoutFeedback>
         )
     }
 
     return (
-        <View style={{height:'70%'}}>
+        <View style={{ height: '70%' }}>
             <FlatList
                 data={STORES_DATA}
                 showsHorizontalScrollIndicator={false}
@@ -45,7 +55,6 @@ const styles = StyleSheet.create({
         shadowColor: 'black',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.26,
-        
     },
     image: {
         width: '100%',
@@ -63,6 +72,9 @@ const styles = StyleSheet.create({
         bottom: 0,
         width: '100%',
         padding: 10,
-
+    },
+    addressText: {
+        fontFamily: 'Outfit',
+        fontSize: 16,
     }
 })

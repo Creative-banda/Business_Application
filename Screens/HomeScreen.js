@@ -21,7 +21,7 @@ const HomeScreen = ({navigation}) => {
             navigation={navigation}
             />
             <View style={styles.sliderHolder}>
-            <Slider />
+            <Slider navigation={navigation}/>
             <CategorySlider />
             <BusinessSlider navigation={navigation}/>
             </View>

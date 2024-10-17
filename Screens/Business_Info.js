@@ -1,10 +1,10 @@
-import { StyleSheet, Text, View, Image, TextInput, ScrollView, TouchableOpacity, Linking, Alert } from 'react-native'
 import React, { useState, useContext } from 'react'
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { ThemeContext } from '../Globals/ThemeContext'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import { StyleSheet, Text, View, Image, TextInput, ScrollView, TouchableOpacity, Linking } from 'react-native'
 
-const Business_Info = ({ route }) => {
+const Business_Info = ({ route, Owner }) => {
   const [Input, setInput] = useState('');
   const { item } = route.params;
   const { themeColor, textColor } = useContext(ThemeContext)
@@ -41,7 +41,7 @@ const Business_Info = ({ route }) => {
         console.error('Failed to open URL:', err)
       );
     }
-    else{
+    else {
       alert("Website Error", "No Website Found")
     }
   };
@@ -56,8 +56,9 @@ const Business_Info = ({ route }) => {
             <Text style={{ fontFamily: 'Outfit-bold', fontSize: 24, color: 'rgba(0,0,0,0.9)' }}>{item.name}</Text>
             <Text style={{ fontFamily: 'Outfit' }}> {item.address}</Text>
           </View>
-
-          <MaterialIcons name='delete' size={30} color={'red'} />
+          {Owner && <TouchableOpacity>
+            <MaterialIcons name='delete' size={30} color={'red'} />
+          </TouchableOpacity>}
         </View>
         <View style={styles.iconContainer}>
 
@@ -69,7 +70,7 @@ const Business_Info = ({ route }) => {
             <MaterialIcons name='location-pin' size={30} color={'#fff'} />
           </TouchableOpacity>
 
-          <TouchableOpacity style={[styles.iconBackground, { backgroundColor: '#D46957' }]} onPress={()=>openWebsite(item.website)}>
+          <TouchableOpacity style={[styles.iconBackground, { backgroundColor: '#D46957' }]} onPress={() => openWebsite(item.website)}>
             <MaterialCommunityIcons name='web' size={30} color={'#fff'} />
           </TouchableOpacity>
 
@@ -84,7 +85,7 @@ const Business_Info = ({ route }) => {
           <Text style={{ fontFamily: 'Outfit', fontSize: 15, color: "rgba(0,0,0,0.8)" }}>{item.about}</Text>
         </View>
 
-        <View>
+        {!Owner && <View>
           <Text style={{ fontFamily: 'Outfit-bold', fontSize: 24, paddingVertical: 8 }}> Reviews </Text>
           <TextInput
             numberOfLines={5}
@@ -98,7 +99,7 @@ const Business_Info = ({ route }) => {
           <TouchableOpacity style={[styles.button, { backgroundColor: themeColor }]}>
             <Text style={{ fontFamily: 'Outfit-bold', color: textColor }}> Submit </Text>
           </TouchableOpacity>
-        </View>
+        </View>}
 
       </View>
     </ScrollView>

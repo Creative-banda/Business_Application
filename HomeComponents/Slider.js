@@ -6,7 +6,7 @@ import { ref, get } from 'firebase/database';
 // Get screen width to adjust image size dynamically
 const screenWidth = Dimensions.get('window').width;
 
-const Slider = () => {
+const Slider = ({navigation}) => {
 
     const [data, setData] = useState([]);
 
@@ -16,7 +16,7 @@ const Slider = () => {
 
     const initializingUsers = async () => {
         try {
-            let SearchScreenData = ref(database, 'Slider');
+            let SearchScreenData = ref(database, 'All_Business');
             const snapshot = await get(SearchScreenData);
             if (snapshot.exists()) {
                 const userData = snapshot.val();
@@ -31,17 +31,17 @@ const Slider = () => {
         }
     };
 
-    const renderItem = ({item}) => {
-        
+    const renderItem = ({ item }) => {
+
         return (
-            <View style={styles.sliderItem}>
-                <Image source={{ uri: item.image }} style={styles.image} />
-            </View>
+            <TouchableWithoutFeedback onPress={()=>navigation.navigate("Business_Info", { item: item })}>
+                <View style={styles.sliderItem}>
+                    <Image source={{ uri: item.image }} style={styles.image} />
+                </View>
+            </TouchableWithoutFeedback>
         )
     }
-
-
-
+    
     return (
         <View style={styles.container}>
             <Text style={[styles.specialText, { color: '#000' }]}>Shops at Your Fingertips</Text>

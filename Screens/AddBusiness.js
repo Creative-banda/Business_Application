@@ -1,9 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView, Keyboard, Platform, Alert } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
-import { Entypo, MaterialIcons } from '@expo/vector-icons';
 import * as Location from 'expo-location';
+import * as ImagePicker from 'expo-image-picker';
+import React, { useState, useEffect } from 'react';
+import { Picker } from '@react-native-picker/picker';
+import { ref, set, getDatabase } from 'firebase/database';
+import { Entypo, MaterialIcons } from '@expo/vector-icons';
 import CustomAlert from '../GlobalComponents/Alert_AddBusiness';
+import { ref as storageRef, uploadBytes, getDownloadURL, getStorage } from 'firebase/storage';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView, Keyboard, Image, Alert } from 'react-native';
 
 const AddBusiness = () => {
   const [name, setName] = useState('');
@@ -11,6 +14,7 @@ const AddBusiness = () => {
   const [website, setWebsite] = useState('');
   const [address, setAddress] = useState('');
   const [contact, setContact] = useState('');
+  const [image, setImage] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [useCurrentLocation, setUseCurrentLocation] = useState(false);
   const [alertVisible, setAlertVisible] = useState(false);
@@ -18,16 +22,14 @@ const AddBusiness = () => {
   const [alertType, setAlertType] = useState('success');
   const [keyboardOffset, setKeyboardOffset] = useState(0);
 
-  // Listen to keyboard events to adjust the view
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', (e) => {
-      setKeyboardOffset(e.endCoordinates.height); // Set keyboard height as offset
+      setKeyboardOffset(e.endCoordinates.height);
     });
     const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
-      setKeyboardOffset(0); // Reset offset when keyboard is hidden
+      setKeyboardOffset(0);
     });
 
-    // Cleanup listeners when component unmounts
     return () => {
       keyboardDidHideListener.remove();
       keyboardDidShowListener.remove();
@@ -55,15 +57,85 @@ const AddBusiness = () => {
     setAddress(`${street}, ${city}, ${region}, ${country}`);
   };
 
-  const handleSubmit = () => {
-    if (!name || !contact || !website || !address || !selectedCategory) {
+  const generateUniqueId = () => `${Date.now()}-${Math.floor(Math.random() * 10000)}`;
+
+  const handleSubmit = async () => {
+    if (!name || !contact || !address || !selectedCategory || !image) {
       setAlertMessage('Please fill in all required fields');
       setAlertType('error');
       setAlertVisible(true);
     } else {
-      setAlertMessage('Business added successfully!'); setAlertType('success'); setAlertVisible(true); setName(''); setContact(''); setWebsite(''); setAbout(''); setAddress(''); setSelectedCategory('');
+      const id = generateUniqueId();
+      const newBusinessData = { name, contact, website, address, category: selectedCategory, image, about, id };
+
+      try {
+        const db = getDatabase();
+        const newBusinessRef = ref(db, 'All_Business/' + id.replace(/\s+/g, '_'));
+        await set(newBusinessRef, newBusinessData);
+        setAlertMessage('Business added successfully!');
+        setAlertType('success');
+        setAlertVisible(true);
+        setName('');
+        setContact('');
+        setWebsite('');
+        setAbout('');
+        setAddress('');
+        setSelectedCategory('');
+      } catch (error) {
+        console.error('Error adding business:', error);
+        setAlertMessage('Error adding business. Please try again.');
+        setAlertType('error');
+        setAlertVisible(true);
+      }
     }
   };
+
+  const handleSendImage = async (url) => {
+    storage = getStorage()
+    try {
+        if (!url) {
+            console.error("No image URI found");
+            return;
+        }
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error("Failed to fetch image");
+        }
+
+        const blob = await response.blob();
+        const filename = url.substring(url.lastIndexOf('/') + 1);
+        const storageReference = storageRef(storage, `/${filename}`);
+
+        await uploadBytes(storageReference, blob);
+        const downloadUrl = await getDownloadURL(storageReference);
+        setImage(downloadUrl)
+
+    } catch (error) {
+        console.error("Error sending image: ", error);
+    }
+};
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 0.6,
+    });
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+      handleSendImage(result.assets[0].uri)
+    }
+  };
+
+  const handleImagePicker = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      alert('Sorry, we need media permissions to make this work!');
+      return false;
+    }
+    pickImage();
+  }
 
   return (
     <View style={styles.container}>
@@ -75,9 +147,17 @@ const AddBusiness = () => {
         <Text style={styles.heading}>Add New Business</Text>
         <Text style={styles.subheading}>Fill all details to add a new business</Text>
 
-        <TouchableOpacity style={styles.cameraIconContainer}>
-          <Entypo name="camera" size={32} color="#6200EE" />
+        <TouchableOpacity style={styles.cameraIconContainer} onPress={handleImagePicker}>
+          {image ? (
+            <Image
+              source={{ uri: image }}
+              style={{ width: 70, height: 70, borderRadius: 16 }}
+            />
+          ) : (
+            <Entypo name="camera" size={32} color="#6200EE" style={{ margin: 15 }} />
+          )}
         </TouchableOpacity>
+
 
         <TextInput style={styles.input} placeholder="Name" placeholderTextColor="#999" value={name} onChangeText={setName} />
         <TextInput style={styles.input} placeholder="Contact" keyboardType="phone-pad" placeholderTextColor="#999" value={contact} onChangeText={setContact} />
@@ -173,7 +253,6 @@ const styles = StyleSheet.create({
   },
   cameraIconContainer: {
     backgroundColor: '#f0e6ff',
-    padding: 20,
     borderRadius: 16,
     alignSelf: 'center',
     marginBottom: 24,
@@ -182,6 +261,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
+    padding: 5,
   },
   input: {
     backgroundColor: '#fff',

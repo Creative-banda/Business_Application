@@ -7,7 +7,7 @@ import ItemCard from '../SearchComponents/ItemCard';
 import { database } from '../firebaseConfig';
 import { ref, get } from 'firebase/database';
 
-const SearchScreen = () => {
+const SearchScreen = ({navigation}) => {
 
     const [filterData, setFilteredData] = useState(data);
     const [selectedCategory, setSelectedCategory] = useState('');
@@ -16,7 +16,7 @@ const SearchScreen = () => {
 
     const initializingUsers = async () => {
         try {
-            let userDataRef = ref(database, 'Search');
+            let userDataRef = ref(database, 'All_Business');
             const snapshot = await get(userDataRef);
             if (snapshot.exists()) {
                 const userData = snapshot.val();
@@ -47,6 +47,15 @@ const SearchScreen = () => {
     const [Search, setSearch] = useState('');
     const { themeColor, textColor } = useContext(ThemeContext);
 
+    const handleSearch = (value)=>{
+        setSearch(value)
+        const SearchData = data.filter(item =>
+            item.name.toLowerCase().includes(value.toLowerCase()) ||
+            item.category.toLowerCase().includes(value.toLowerCase())
+        );
+        setFilteredData(SearchData)
+    }
+
     return (
         <View style={[styles.container, {backgroundColor : textColor}]}>
             <Text style={[styles.header, {color : '#000'}]}>
@@ -57,14 +66,14 @@ const SearchScreen = () => {
             <InputText
                 placeholder='Search for services..'
                 value={Search}
-                onChangeText={setSearch}
+                onChangeText={(value)=>{handleSearch(value)}}
             />
 
             {/* Category selector */}
             <Category color={themeColor} handleCategory={setSelectedCategory} />
 
             {/* Filtered Item List */}
-            <ItemCard STORES_DATA={filterData} />
+            <ItemCard STORES_DATA={filterData} navigation={navigation}/>
 
         </View>
     );
