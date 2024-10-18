@@ -1,25 +1,25 @@
 import React, { useState } from 'react';
 import { auth } from '../firebaseConfig';
 import { Ionicons } from '@expo/vector-icons';
-import CustomAlert from '../GlobalComponents/Alert_AddBusiness';
-import Alert from '../Globals/customalert';
-import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView,ActivityIndicator } from 'react-native';
+import CustomAlert from '../GlobalComponents/Customalert';
+import { createUserWithEmailAndPassword, sendEmailVerification, updateProfile } from 'firebase/auth';
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView, ActivityIndicator, Alert } from 'react-native';
 
 const SignUpScreen = ({ navigation }) => {
+    const [name, setName] = useState('');  // New state for storing the user's name
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [alertMessage, setAlertMessage] = useState('');
     const [alertType, setAlertType] = useState('success');
     const [alertVisible, setAlertVisible] = useState(false);
-    const [confirmPassword, setConfirmPassword] = useState('');
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
 
     const handleSignUp = async () => {
-        if (password !== confirmPassword || !email) {
-            setAlertMessage('Please fill login credentials!');
+        if (password !== confirmPassword || !email || !name) {
+            setAlertMessage('Please fill in all required fields!');
             setAlertType('error');
             setAlertVisible(true);
             return;
@@ -29,6 +29,9 @@ const SignUpScreen = ({ navigation }) => {
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
+
+            // Update the user's profile with the name
+            await updateProfile(user, { displayName: name });
 
             await sendEmailVerification(user);
 
@@ -67,6 +70,18 @@ const SignUpScreen = ({ navigation }) => {
                     <Text style={styles.subHeader}>Sign up to get started!</Text>
                 </View>
                 <View style={styles.formContainer}>
+
+                    <View style={styles.inputContainer}>
+                        <Ionicons name="person-outline" size={24} color="#6200EE" style={styles.inputIcon} />
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Name"
+                            placeholderTextColor="#999"
+                            value={name}
+                            onChangeText={setName}
+                        />
+                    </View>
+
                     <View style={styles.inputContainer}>
                         <Ionicons name="mail-outline" size={24} color="#6200EE" style={styles.inputIcon} />
                         <TextInput
@@ -113,7 +128,7 @@ const SignUpScreen = ({ navigation }) => {
                     </View>
 
                     <TouchableOpacity style={styles.button} onPress={handleSignUp}>
-                        {loading ? <ActivityIndicator size='small'/> :<Text style={styles.buttonText}>Sign Up</Text>}
+                        {loading ? <ActivityIndicator size='small' /> : <Text style={styles.buttonText}>Sign Up</Text>}
                     </TouchableOpacity>
 
                     <View style={styles.loginContainer}>
@@ -124,7 +139,7 @@ const SignUpScreen = ({ navigation }) => {
                     </View>
                 </View>
             </ScrollView>
-                <View style={{position: 'absolute',width : '95%', bottom : 10,paddingLeft : 10}}>
+            <View style={{ position: 'absolute', width: '95%', bottom: 10, paddingLeft: 10 }}>
                 <CustomAlert
                     visible={alertVisible}
                     message={alertMessage}
@@ -145,7 +160,7 @@ const styles = StyleSheet.create({
         flexGrow: 1,
         justifyContent: 'center',
         padding: 20,
-        width : '100%',
+        width: '100%',
     },
     headerContainer: {
         marginBottom: 40,
@@ -227,14 +242,6 @@ const styles = StyleSheet.create({
         fontFamily: 'Outfit-bold',
         color: '#6200EE',
     },
-    alertContainer: {
-        position: 'absolute',
-        bottom: 100, 
-        width: '100%',
-        alignItems: 'center',
-        backgroundColor : 'blue',
-        justifyContent : 'center'
-    }
 });
 
 export default SignUpScreen;

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { auth } from '../firebaseConfig';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import CustomAlert from '../GlobalComponents/Alert_AddBusiness'
+import CustomAlert from '../GlobalComponents/Customalert';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, Animated, ActivityIndicator } from 'react-native';
 
 const LoginScreen = ({ navigation }) => {
@@ -31,19 +31,29 @@ const LoginScreen = ({ navigation }) => {
         } else {
             setLoading(true);
             try {
-                await signInWithEmailAndPassword(auth, email, password);
-                navigation.navigate("Home");
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+    
+                if (user.emailVerified) {
+                    navigation.navigate("HomeScreen", {User : user});
+                } else {
+                    setAlertMessage('Please verify your email before logging in.');
+                    setAlertType('error');
+                    setAlertVisible(true);
+                }
             } catch (error) {
                 console.log(error);
-
-            }
-            finally {
+                setAlertMessage('Login failed. Please try again.');
+                setAlertType('error');
+                setAlertVisible(true);
+            } finally {
                 setLoading(false);
                 setEmail('');
-                setPassword('')
+                setPassword('');
             }
         }
-    };;
+    };
+    
 
     return (
         <KeyboardAvoidingView

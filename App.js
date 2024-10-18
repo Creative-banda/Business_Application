@@ -1,28 +1,32 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import * as Font from 'expo-font';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { auth } from './firebaseConfig';
+import { onAuthStateChanged } from 'firebase/auth';
+
 import InitalizePage from './Screens/InitalizePage';
 import Tab_Navigation from './Globals/Tab_Navigation';
 import ThemeScreen from './Screens/ThemeScreen';
 import { ThemeProvider } from './Globals/ThemeContext';
 import AddBusiness from './Screens/AddBusiness';
-import Business_Info from './Screens/Business_Info'
+import Business_Info from './Screens/Business_Info';
 import LoginScreen from './Screens/LoginPage';
 import SignUpScreen from './Screens/SignUpPage';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-const Stack = createStackNavigator()
+import MyBusiness from './Screens/MyBusiness';
+
+const Stack = createStackNavigator();
 
 const App = () => {
-
   const [fontsLoaded, setFontsLoaded] = useState(false);
-  const [initialRoute, setInitialRoute] = useState('InitPage');
-  useEffect(() => {
-    // Load fonts and check AsyncStorage
-    loadFonts();
-    checkAsyncStorage();
-  }, []);
+  const [initialRoute, setInitialRoute] = useState(null);
+  const [userDetails, setUserDetails] = useState(null);
 
+  useEffect(() => {
+    loadFonts();
+    checkInitialLaunch();
+  }, []);
 
   const loadFonts = async () => {
     await Font.loadAsync({
@@ -30,47 +34,73 @@ const App = () => {
       'Outfit': require('./assets/Fonts/Outfit.ttf'),
     });
     setFontsLoaded(true);
+  };
 
-  }; const checkAsyncStorage = async () => {
+  const checkInitialLaunch = async () => {
     try {
       const hasOpenedBefore = await AsyncStorage.getItem('hasOpenedBefore');
 
-      if (hasOpenedBefore) {
-        setInitialRoute('Login');
+      if (!hasOpenedBefore) {
+        await AsyncStorage.setItem('hasOpenedBefore', 'true');
+        setInitialRoute('InitPage');
+      } else {
+        checkUserAuthentication();
       }
     } catch (error) {
-      console.log('Failed to load from AsyncStorage', error);
+      console.log('Error reading from AsyncStorage:', error);
+      setInitialRoute('Login'); // Default to Login if there's an error
     }
   };
 
+  const checkUserAuthentication = () => {
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            // User is signed in
+            if (user.emailVerified) {
+              
+                setUserDetails(user);
+                setInitialRoute('HomeScreen');
+            } else {
+                // If the email is not verified, redirect to Login
+                setInitialRoute('Login');
+            }
+        } else {
+            // No user is signed in
+            setInitialRoute('Login');
+        }
+    });
+};
 
 
-
-  if (!fontsLoaded) {
-    return null;
+  if (!fontsLoaded || !initialRoute) {
+    return null; // Or a loading screen component
   }
 
-
   return (
-
     <ThemeProvider>
       <NavigationContainer>
         <Stack.Navigator initialRouteName={initialRoute}>
-          <Stack.Screen name='InitPage' component={InitalizePage} options={{ headerShown: false }} />
-          <Stack.Screen name='HomeScreen' component={Tab_Navigation} options={{ headerShown: false }} />
-          <Stack.Screen name='ThemeScreen' component={ThemeScreen} options={{ headerShown: false }} />
-          <Stack.Screen name='Business_Info' component={Business_Info} options={{ headerShown: false }} />
-          <Stack.Screen name='Login' component={LoginScreen} options={{ headerShown: false }} />
-          <Stack.Screen name='SignUp' component={SignUpScreen} options={{ headerShown: false }} />
-          <Stack.Screen name='AddBusiness' component={AddBusiness} />
+          <Stack.Screen name="InitPage" component={InitalizePage} options={{ headerShown: false }} />
+          <Stack.Screen 
+            name="HomeScreen" 
+            component={Tab_Navigation} 
+            options={{ headerShown: false }}
+            initialParams={{ userDetails: { 
+              uid: userDetails?.uid, 
+              email: userDetails?.email, 
+              name: userDetails?.displayName 
+          } }}
+          />
+          <Stack.Screen name="ThemeScreen" component={ThemeScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="Business_Info" component={Business_Info} options={{ headerShown: false }} />
+          <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="SignUp" component={SignUpScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="AddBusiness" component={AddBusiness} />
+          <Stack.Screen name="MyBusiness" component={MyBusiness} />
         </Stack.Navigator>
       </NavigationContainer>
     </ThemeProvider>
-
-
-  )
-
-
-}
+  );
+};
 
 export default App;

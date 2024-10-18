@@ -2,9 +2,10 @@ import * as Location from 'expo-location';
 import * as ImagePicker from 'expo-image-picker';
 import React, { useState, useEffect } from 'react';
 import { Picker } from '@react-native-picker/picker';
-import { ref, set, getDatabase } from 'firebase/database';
+import { getDatabase, ref, set,  } from 'firebase/database';
+import { getAuth } from 'firebase/auth';  // Import Firebase Auth
 import { Entypo, MaterialIcons } from '@expo/vector-icons';
-import CustomAlert from '../GlobalComponents/Alert_AddBusiness';
+import CustomAlert from '../GlobalComponents/Customalert';
 import { ref as storageRef, uploadBytes, getDownloadURL, getStorage } from 'firebase/storage';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView, Keyboard, Image, Alert } from 'react-native';
 
@@ -60,21 +61,51 @@ const AddBusiness = () => {
   const generateUniqueId = () => `${Date.now()}-${Math.floor(Math.random() * 10000)}`;
 
   const handleSubmit = async () => {
+    const auth = getAuth(); // Initialize Firebase Auth
+    const user = auth.currentUser; // Get the currently signed-in user
+  
+    if (!user) {
+      setAlertMessage('You must be signed in to add a business');
+      setAlertType('error');
+      setAlertVisible(true);
+      return;
+    }
+  
     if (!name || !contact || !address || !selectedCategory || !image) {
       setAlertMessage('Please fill in all required fields');
       setAlertType('error');
       setAlertVisible(true);
     } else {
       const id = generateUniqueId();
-      const newBusinessData = { name, contact, website, address, category: selectedCategory, image, about, id };
-
+      const newBusinessData = {
+        name,
+        contact,
+        website,
+        address,
+        category: selectedCategory,
+        image,
+        about,
+        id,
+      };
+  
       try {
         const db = getDatabase();
-        const newBusinessRef = ref(db, 'All_Business/' + id.replace(/\s+/g, '_'));
-        await set(newBusinessRef, newBusinessData);
+        const userEmail = user.email.replace(/\./g, '_'); // Sanitize email by replacing periods
+        const allBusinessRef = ref(db, `All_Business/${id.replace(/\s+/g, '_')}`); // Global reference for all businesses
+  
+        // Add the business to the user's specific node (email-based node)
+        const userSpecificBusinessRef = ref(db, `Users/${userEmail}/${id.replace(/\s+/g, '_')}`);
+        await set(userSpecificBusinessRef, newBusinessData);
+  
+        // Add the business to the global "All_Business" node
+        await set(allBusinessRef, newBusinessData);
+  
+        // Success feedback
         setAlertMessage('Business added successfully!');
         setAlertType('success');
         setAlertVisible(true);
+  
+        // Clear form fields
         setName('');
         setContact('');
         setWebsite('');
@@ -93,27 +124,27 @@ const AddBusiness = () => {
   const handleSendImage = async (url) => {
     storage = getStorage()
     try {
-        if (!url) {
-            console.error("No image URI found");
-            return;
-        }
-        const response = await fetch(url);
-        if (!response.ok) {
-            throw new Error("Failed to fetch image");
-        }
+      if (!url) {
+        console.error("No image URI found");
+        return;
+      }
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error("Failed to fetch image");
+      }
 
-        const blob = await response.blob();
-        const filename = url.substring(url.lastIndexOf('/') + 1);
-        const storageReference = storageRef(storage, `/${filename}`);
+      const blob = await response.blob();
+      const filename = url.substring(url.lastIndexOf('/') + 1);
+      const storageReference = storageRef(storage, `/${filename}`);
 
-        await uploadBytes(storageReference, blob);
-        const downloadUrl = await getDownloadURL(storageReference);
-        setImage(downloadUrl)
+      await uploadBytes(storageReference, blob);
+      const downloadUrl = await getDownloadURL(storageReference);
+      setImage(downloadUrl)
 
     } catch (error) {
-        console.error("Error sending image: ", error);
+      console.error("Error sending image: ", error);
     }
-};
+  };
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({

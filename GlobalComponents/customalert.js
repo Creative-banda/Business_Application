@@ -6,11 +6,17 @@ const CustomAlert = ({ visible, message, type = 'success', onClose }) => {
   const [slideAnim] = useState(new Animated.Value(100));
 
   useEffect(() => {
+    let closeTimeout;
     if (visible) {
       Animated.spring(slideAnim, {
         toValue: 0,
         useNativeDriver: true,
       }).start();
+
+      // Set up auto-close after 1.5 seconds
+      closeTimeout = setTimeout(() => {
+        onClose();
+      }, 1500);
     } else {
       Animated.timing(slideAnim, {
         toValue: 100,
@@ -18,6 +24,11 @@ const CustomAlert = ({ visible, message, type = 'success', onClose }) => {
         useNativeDriver: true,
       }).start();
     }
+
+    // Clean up the timeout when the component unmounts or visibility changes
+    return () => {
+      if (closeTimeout) clearTimeout(closeTimeout);
+    };
   }, [visible]);
 
   if (!visible) return null;
@@ -38,9 +49,6 @@ const CustomAlert = ({ visible, message, type = 'success', onClose }) => {
         </View>
         <Text style={styles.message}>{message}</Text>
       </View>
-      <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-        <MaterialIcons name="close" size={20} color="#fff" />
-      </TouchableOpacity>
     </Animated.View>
   );
 };
@@ -83,9 +91,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Outfit',
     fontSize: 16,
   },
-  closeButton: {
-    padding: 4,
-  },
+  
 });
 
 export default CustomAlert;

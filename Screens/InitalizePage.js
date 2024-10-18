@@ -12,11 +12,9 @@ const InitalizePage = ({ navigation }) => {
             navigation.navigate("Login");
         } catch (error) {
             console.log('Failed to save to AsyncStorage', error);
+            
         }
     };
-
-
-
     return (
         <View style={styles.container}>
             <Image source={require('../assets/Images/Home.png')} style={styles.TopImage} />
@@ -35,6 +33,7 @@ const InitalizePage = ({ navigation }) => {
                         Let's Get Started
                     </Text>
                 </TouchableOpacity>
+
             </View>
         </View>
     );

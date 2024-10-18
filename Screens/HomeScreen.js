@@ -6,12 +6,11 @@ import CategorySlider from '../HomeComponents/CategorySlider';
 import BusinessSlider from '../HomeComponents/BusinessSlider';
 import { ThemeContext } from '../Globals/ThemeContext';
 
-const HomeScreen = ({navigation}) => {
+const HomeScreen = ({navigation, route}) => {
     const [Search, Setsearch] = useState('');
     const {textColor} = useContext(ThemeContext)
-
-
-      
+    const { userDetails } = route.params;
+    console.log(userDetails.name);      
 
     return (
         <ScrollView style={[styles.container, {backgroundColor : textColor}]}>
@@ -19,6 +18,7 @@ const HomeScreen = ({navigation}) => {
             Search={Search}
             onChangeText={Setsearch}
             navigation={navigation}
+            Username = {userDetails.name}
             />
             <View style={styles.sliderHolder}>
             <Slider navigation={navigation}/>

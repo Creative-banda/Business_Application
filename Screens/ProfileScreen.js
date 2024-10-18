@@ -1,10 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View, Text, Image } from 'react-native';
 import ProfileButton from '../ProfileComponents/ProfileButton';
+import { auth } from '../firebaseConfig';
+import { signOut } from 'firebase/auth'; 
+import CustomNotification from '../GlobalComponents/Customalert';
+
+const ProfileScreen = ({ navigation ,route }) => {
+    const [alertVisible, setAlertVisible] = useState(false);
+    const { userDetails } = route.params;
+
+    const handleLogout = async () => {
+        try {
+            await signOut(auth);
+            navigation.navigate("Login");
+            console.log("Sign out");
+            setAlertVisible(false);
 
 
-const ProfileScreen = ({navigation}) => {
-    
+        } catch (error) {
+            console.log("Error logging out: ", error);
+        }
+    };
+
     return (
         <View style={styles.container}>
             <View style={styles.headerContainer}>
@@ -12,18 +29,22 @@ const ProfileScreen = ({navigation}) => {
             </View>
             <View style={styles.userInfoContainer}>
                 <Image source={require('../assets/Images/icon.png')} style={styles.image} />
-                <Text style={styles.userName}>Game Play</Text>
-                <Text style={styles.userEmail}>gameplayapp007@gmail.com</Text>
+                <Text style={styles.userName}>{userDetails.name}</Text>
+                <Text style={styles.userEmail}>{userDetails.email}</Text>
             </View>
             <View style={styles.iconHolder}>
-                <ProfileButton title="Add Business" Icon="MaterialIcons" IconName="add-business" bgColor="#FFD8C5" handleProfileButton={()=>navigation.navigate("AddBusiness")}/>
-                <ProfileButton title="My Business" Icon="Ionicons" IconName="business" bgColor="#E4C7FF" />
+                <ProfileButton title="Add Business" Icon="MaterialIcons" IconName="add-business" bgColor="#FFD8C5" handleProfileButton={() => navigation.navigate("AddBusiness")} />
+                <ProfileButton title="My Business" Icon="Ionicons" IconName="business" bgColor="#E4C7FF" handleProfileButton={()=>navigation.navigate("MyBusiness", {email : userDetails.email})}/>
                 <ProfileButton title="Share App" Icon="MaterialIcons" IconName="share" bgColor="#FFD8C5" />
-                <ProfileButton title="Logout" Icon="MaterialIcons" IconName="logout" bgColor="#E4C7FF" />
+                <ProfileButton title="Logout" Icon="MaterialIcons" IconName="logout" bgColor="#E4C7FF" handleProfileButton={() => setAlertVisible(true)}/>
             </View>
             <View style={styles.footer}>
                 <Text>Developed by Mohd Ahtesham © 2024</Text>
             </View>
+            <CustomNotification
+                visible={alertVisible}
+                message={"Signing out"}
+                onClose={handleLogout} />
         </View>
     );
 };
@@ -74,6 +95,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 30,
         textAlign: 'center',
+        fontFamily : 'Outfit-bold',
     },
 });
 

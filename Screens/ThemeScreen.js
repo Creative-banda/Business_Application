@@ -3,7 +3,7 @@ import {StyleSheet,Text,View,TouchableOpacity,StatusBar,Dimensions,Animated,Easi
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemeContext } from '../Globals/ThemeContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import CustomAlert from '../Globals/customalert';
+import CustomAlert from '../GlobalComponents/Customalert';
 import { LinearGradient } from 'expo-linear-gradient';
 
 const { width, height } = Dimensions.get('window');
@@ -180,6 +180,9 @@ const ThemeScreen = () => {
           onClose={() => setVisible(false)}
           background={selectedTheme.backgroundColor}
           textColor={selectedTheme.hexCode}
+          type='sucess'
+          title='Theme Applied!'
+          message='Your theme has been applied successfully.'
         />
       )}
     </SafeAreaView>

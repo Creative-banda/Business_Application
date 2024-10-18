@@ -8,9 +8,10 @@ import { ThemeContext } from './ThemeContext';
 
 const Tab = createBottomTabNavigator();
 
-export default function Tab_Navigation() {
+export default function Tab_Navigation({ route }) {
   const { themeColor, textColor } = useContext(ThemeContext);
-  
+  const { userDetails } = route.params || {}; // Get userDetails from route params
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -28,17 +29,29 @@ export default function Tab_Navigation() {
 
           return <Icon name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: themeColor,  // Use textColor for active tab icon color
-        tabBarInactiveTintColor: 'gray',  // Inactive tab icon color
+        tabBarActiveTintColor: themeColor,
+        tabBarInactiveTintColor: 'gray',
         tabBarStyle: {
-          backgroundColor: textColor,  // Change this to your desired color
-          borderTopWidth: 0, // Optional: Remove border at the top
+          backgroundColor: textColor,
+          borderTopWidth: 0,
         },
       })}
     >
-      <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Search" component={SearchScreen} />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
+      <Tab.Screen 
+        name="Home" 
+        component={HomeScreen} 
+        initialParams={{ userDetails }}
+      />
+      <Tab.Screen 
+        name="Search" 
+        component={SearchScreen} 
+        initialParams={{ userDetails }}
+      />
+      <Tab.Screen 
+        name="Profile" 
+        component={ProfileScreen} 
+        initialParams={{ userDetails }}
+      />
     </Tab.Navigator>
   );
 }
