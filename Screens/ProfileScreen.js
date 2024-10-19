@@ -1,13 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { StyleSheet, View, Text, Image } from 'react-native';
 import ProfileButton from '../ProfileComponents/ProfileButton';
 import { auth } from '../firebaseConfig';
 import { signOut } from 'firebase/auth'; 
 import CustomNotification from '../GlobalComponents/Customalert';
+import { ThemeContext } from '../Globals/ThemeContext';
 
 const ProfileScreen = ({ navigation ,route }) => {
-    const [alertVisible, setAlertVisible] = useState(false);
     const { userDetails } = route.params;
+    const [alertVisible, setAlertVisible] = useState(false);
+    const {textColor} = useContext(ThemeContext);
+
 
     const handleLogout = async () => {
         try {
@@ -23,7 +26,7 @@ const ProfileScreen = ({ navigation ,route }) => {
     };
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, {backgroundColor : textColor}]}>
             <View style={styles.headerContainer}>
                 <Text style={styles.header}>Profile</Text>
             </View>
@@ -53,7 +56,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
-        backgroundColor: '#F7F7F7',
     },
     headerContainer: {
         width: '100%',

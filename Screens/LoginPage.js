@@ -33,9 +33,15 @@ const LoginScreen = ({ navigation }) => {
             try {
                 const userCredential = await signInWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
-    
+
                 if (user.emailVerified) {
-                    navigation.navigate("HomeScreen", {User : user});
+                    navigation.navigate("HomeScreen", {
+                        userDetails: {
+                            uid: user?.uid,
+                            email: user?.email,
+                            name: user?.displayName
+                        }
+                    });
                 } else {
                     setAlertMessage('Please verify your email before logging in.');
                     setAlertType('error');
@@ -53,7 +59,7 @@ const LoginScreen = ({ navigation }) => {
             }
         }
     };
-    
+
 
     return (
         <KeyboardAvoidingView
@@ -95,7 +101,7 @@ const LoginScreen = ({ navigation }) => {
                     </TouchableOpacity>
                 </View>
 
-                <TouchableOpacity style={styles.forgotPassword}>
+                <TouchableOpacity style={styles.forgotPassword} onPress={()=>navigation.navigate("ForgetPassword")}>
                     <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
                 </TouchableOpacity>
 
@@ -112,7 +118,7 @@ const LoginScreen = ({ navigation }) => {
                 </View>
 
             </Animated.View>
-            <View style={{position: 'absolute',width : '95%', bottom : 10}}>
+            <View style={{ position: 'absolute', width: '95%', bottom: 10 }}>
 
                 <CustomAlert
                     visible={alertVisible}

@@ -2,12 +2,14 @@ import React, { useState, useContext } from 'react'
 import { ThemeContext } from '../Globals/ThemeContext'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import { StyleSheet, Text, View, Image, TextInput, ScrollView, TouchableOpacity, Linking } from 'react-native'
+import { StyleSheet, Text, View, Image, TextInput, ScrollView, TouchableOpacity, Linking, Animated } from 'react-native'
 
 const Business_Info = ({ route, Owner }) => {
   const [Input, setInput] = useState('');
   const { item } = route.params;
   const { themeColor, textColor } = useContext(ThemeContext)
+  const [rating, setRating] = useState(0);
+  const [animation] = useState(new Animated.Value(0))
 
   const makePhoneCall = (phoneNumber) => {
     let phoneUrl = `tel:${phoneNumber}`;
@@ -45,6 +47,44 @@ const Business_Info = ({ route, Owner }) => {
       alert("Website Error", "No Website Found")
     }
   };
+
+  const handleRating = (newRating) => {
+    setRating(newRating);
+    Animated.spring(animation, {
+      toValue: 1,
+      friction: 3,
+      useNativeDriver: true,
+    }).start();
+  };
+  const renderStars = () => {
+    const stars = [];
+    for (let i = 1; i <= 5; i++) {
+      stars.push(
+        <TouchableOpacity key={i} onPress={() => handleRating(i)}>
+          <Animated.Text
+            style={[
+              i <= rating ? styles.selectedStar : styles.star,
+              { transform: [{ scale: i <= rating ? animation : 1 }] }
+            ]}
+          >
+            ★
+          </Animated.Text>
+        </TouchableOpacity>
+      );
+    }
+    return stars;
+  };
+
+  const handleSubmit = ()=> {
+    console.log(rating);
+    const feedback = {
+      rating: rating,
+      comment: Input
+    }
+
+    alert("Form Submitted", "Thank you for your feedback!")
+    setInput('');
+  }
 
   return (
     <ScrollView style={[styles.container, { backgroundColor: textColor }]}>
@@ -86,7 +126,9 @@ const Business_Info = ({ route, Owner }) => {
         </View>
 
         {!Owner && <View>
+          
           <Text style={{ fontFamily: 'Outfit-bold', fontSize: 24, paddingVertical: 8 }}> Reviews </Text>
+          <View style={styles.starContainer}>{renderStars()}</View>
           <TextInput
             numberOfLines={5}
             placeholder="Enter Your Review"
@@ -96,7 +138,7 @@ const Business_Info = ({ route, Owner }) => {
             multiline={true}
             textAlignVertical="top"
           />
-          <TouchableOpacity style={[styles.button, { backgroundColor: themeColor }]}>
+          <TouchableOpacity style={[styles.button, { backgroundColor: themeColor }]} onPress={handleSubmit}>
             <Text style={{ fontFamily: 'Outfit-bold', color: textColor }}> Submit </Text>
           </TouchableOpacity>
         </View>}
@@ -166,5 +208,19 @@ const styles = StyleSheet.create({
     marginTop: 15,
     marginBottom: 30
   },
+  starContainer: {
+    flexDirection: 'row',
+    marginBottom: 30,
+  },
+  star: {
+    fontSize: 30,
+    color: '#D1D1D1',
+    marginHorizontal: 8,
+  },
+  selectedStar: {
+    fontSize: 32,
+    color: '#FFD700',
+    marginHorizontal: 8,
+  }
 
 })

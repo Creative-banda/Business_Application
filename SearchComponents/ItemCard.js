@@ -72,6 +72,8 @@ const styles = StyleSheet.create({
         bottom: 0,
         width: '100%',
         padding: 10,
+        borderBottomEndRadius : 10,
+        borderBottomStartRadius : 10,
     },
     addressText: {
         fontFamily: 'Outfit',

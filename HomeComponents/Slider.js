@@ -21,8 +21,13 @@ const Slider = ({navigation}) => {
             if (snapshot.exists()) {
                 const userData = snapshot.val();
                 const formattedData = Object.values(userData);
-                setData(formattedData);
-
+    
+                const shuffledData = formattedData.sort(() => Math.random() - 0.5);
+    
+                const randomData = shuffledData.slice(0, 4);
+    
+                setData(randomData);
+    
             } else {
                 console.log('No data available');
             }
@@ -30,6 +35,7 @@ const Slider = ({navigation}) => {
             console.log('Error:', err);
         }
     };
+    
 
     const renderItem = ({ item }) => {
 

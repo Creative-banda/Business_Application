@@ -15,6 +15,8 @@ import Business_Info from './Screens/Business_Info';
 import LoginScreen from './Screens/LoginPage';
 import SignUpScreen from './Screens/SignUpPage';
 import MyBusiness from './Screens/MyBusiness';
+import ForgetPassword from './Screens/ForgetPassword';
+import OpenMail from './Screens/OpenMail';
 
 const Stack = createStackNavigator();
 
@@ -97,6 +99,8 @@ const App = () => {
           <Stack.Screen name="SignUp" component={SignUpScreen} options={{ headerShown: false }} />
           <Stack.Screen name="AddBusiness" component={AddBusiness} />
           <Stack.Screen name="MyBusiness" component={MyBusiness} />
+          <Stack.Screen name="ForgetPassword" component={ForgetPassword} options={{headerShown:false}}/>
+          <Stack.Screen name="OpenMail" component={OpenMail} options={{headerShown:false}}/>
         </Stack.Navigator>
       </NavigationContainer>
     </ThemeProvider>
