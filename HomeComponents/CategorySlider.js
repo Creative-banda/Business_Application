@@ -3,8 +3,14 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import { ThemeContext } from '../Globals/ThemeContext.js'
 import Category from '../GlobalComponents/Category.js'
 
-const CategorySlider = () => {
+const CategorySlider = ({ navigation }) => {
     const { themeColor } = useContext(ThemeContext);
+
+    const CategorySelected = (category) => {
+        console.log(category);
+        
+        navigation.navigate('CateGorySelection',{Category :  category});
+    }
 
     return (
         <View style={styles.container}>
@@ -15,7 +21,7 @@ const CategorySlider = () => {
                 </TouchableOpacity>
 
             </View>
-                <Category color={themeColor}/>
+                <Category color={themeColor} handleCategory={CategorySelected}/>
             
         </View>
     )

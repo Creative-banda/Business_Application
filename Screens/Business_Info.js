@@ -154,73 +154,28 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  image: {
-    position: 'absolute',
-    width: '100%',
-    height: '50%',
+  image: { position: 'absolute', width: '100%', height: '50%',
   },
   holder: {
-    flex: 1, marginTop: '65%',
-    backgroundColor: '#fff',
-    borderTopLeftRadius: 40,
-    borderTopRightRadius: 40,
-    paddingHorizontal: 10
+    flex: 1, marginTop: '65%', backgroundColor: '#fff', borderTopLeftRadius: 40, borderTopRightRadius: 40, paddingHorizontal: 10
 
   },
-  businessInfoContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 30,
-    borderRadius: 20,
-    paddingVertical: 15,
-    alignItems: 'center'
+  businessInfoContainer: { flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 30, borderRadius: 20, paddingVertical: 15, alignItems: 'center'},
+  
+  iconContainer: { width: '100%', flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 10, paddingHorizontal: 10},
 
-  },
-  iconContainer: {
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 10,
-    paddingHorizontal: 10
-  },
-  iconBackground: {
-    padding: 10,
-    borderRadius: 25
-  },
-  about: {
-    paddingVertical: 30,
-    gap: 10,
+  iconBackground: {padding: 10,borderRadius: 25},
 
+  about: {paddingVertical: 30,gap: 10,},
+
+  InputText: {borderColor: '#000',borderWidth: 1,borderRadius: 10,paddingHorizontal: 10,paddingVertical: 10, },
+
+  button: { width: '100%', paddingVertical: 10, justifyContent: 'center', alignItems: 'center', borderRadius: 20, marginTop: 15, marginBottom: 30
   },
-  InputText: {
-    borderColor: '#000',
-    borderWidth: 1,
-    borderRadius: 10,
-    paddingHorizontal: 10,
-    paddingVertical: 10,
-  },
-  button: {
-    width: '100%',
-    paddingVertical: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 20,
-    marginTop: 15,
-    marginBottom: 30
-  },
-  starContainer: {
-    flexDirection: 'row',
-    marginBottom: 30,
-  },
-  star: {
-    fontSize: 30,
-    color: '#D1D1D1',
-    marginHorizontal: 8,
-  },
-  selectedStar: {
-    fontSize: 32,
-    color: '#FFD700',
-    marginHorizontal: 8,
-  }
+  starContainer: {flexDirection: 'row',marginBottom: 30, },
+
+  star: { fontSize: 30, color: '#D1D1D1', marginHorizontal: 8,},
+
+  selectedStar: { fontSize: 32, color: '#FFD700', marginHorizontal: 8, }
 
 })

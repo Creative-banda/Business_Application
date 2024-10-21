@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "BusinessApp",
-    "slug": "BusinessApp",
+    "name": "ShopSphere",
+    "slug": "ShopSphere",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/AppIcon.png",

@@ -2,7 +2,7 @@ import { StyleSheet, TouchableOpacity, View, Text } from 'react-native'
 import React from 'react'
 import Entypo from 'react-native-vector-icons/Entypo'
 
-const ThreeDot = ({handleTheme, isVisible, handlePress, handleLogout}) => {
+const ThreeDot = ({handleTheme, isVisible, handlePress, handleLogout, handlefeedback}) => {
 
     return (
         <View style={styles.container} >
@@ -12,7 +12,7 @@ const ThreeDot = ({handleTheme, isVisible, handlePress, handleLogout}) => {
 
             {isVisible && (
                 <View style={styles.list}>
-                    <TouchableOpacity style={styles.listItem}>
+                    <TouchableOpacity style={styles.listItem} onPress={handlefeedback}>
                         <Text style={styles.listItemText}>Feedback</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.listItem} onPress={handleTheme}>

@@ -1,64 +1,26 @@
 import React from 'react';
-import { StyleSheet, View, FlatList, Text, Image, TouchableOpacity } from 'react-native';
+import { ref, get } from 'firebase/database';
+import { database } from '../firebaseConfig';
+import { StyleSheet, View, FlatList, Text, Image, TouchableOpacity, Linking } from 'react-native';
 
-DATA = [
-    {
-        "about": "Your neighborhood source for fresh, locally-sourced produce and organic groceries.",
-        "address": "123 Produce Lane, Greenville, CA 95366",
-        "category": "Grocery",
-        "contact": "+1 209 555 7890",
-        "id": "1",
-        "image": "https://img.freepik.com/free-psd/fresh-supermarket-template-design_23-2149623225.jpg",
-        "name": "Fresh Harvest Market",
-        "website": "https://www.freshharvestmarket.com",
-        "rating": "4.3"
-    },
-    {
-        "about": "Transform your look with our expert stylists and premium beauty treatments.",
-        "address": "456 Beauty Blvd, Styletown, NY 10001",
-        "category": "Salon",
-        "contact": "+1 212 555 1234",
-        "id": "2",
-        "image": "https://d1csarkz8obe9u.cloudfront.net/posterpreviews/hair-salon-ad-design-template-e09078229ac083907344e058c6b3c573_screen.jpg?ts=1652130974",
-        "name": "Glamour Glow Salon",
-        "website": "",
-        "rating": "4.9"
-    },
-    {
-        "about": "Experience culinary excellence with our innovative menu and cozy atmosphere.",
-        "address": "789 Flavor Street, Tastyville, IL 60601",
-        "category": "Restaurant",
-        "contact": "+1 312 555 9876",
-        "id": "3",
-        "image": "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe",
-        "name": "Gourmet Delights Restaurant",
-        "website": "https://www.gourmetdelightschi.com",
-        "rating": "3.3"
-    },
-    {
-        "about": "Fast, reliable plumbing services for all your home and business needs.",
-        "address": "101 Pipe Drive, Flushington, TX 75001",
-        "category": "Plumber",
-        "contact": "+1 214 555 4321",
-        "id": "4",
-        "image": "https://images.unsplash.com/photo-1518600506278-4e8ef466b810",
-        "name": "Rapid Repairs Plumbing",
-        "website": "",
-        "rating": "4.1"
-    }
-]
+const MyBusiness = ({ route }) => {
+    const [data, setData] = React.useState([]);
+    const { email } = route.params;
 
-const MyBusiness = ({ email }) => {
+    React.useEffect(() => {
+        initData();
+    }, []);
 
     const initData = async () => {
+        const userEmail = email.replace(/\./g, '_');
+        
         try {
-            let SearchScreenData = ref(database, `Users/${email}`);
+            let SearchScreenData = ref(database, `Users/${userEmail}`);
             const snapshot = await get(SearchScreenData);
             if (snapshot.exists()) {
                 const userData = snapshot.val();
                 const formattedData = Object.values(userData);
                 setData(formattedData);
-
             } else {
                 console.log('No data available');
             }
@@ -66,6 +28,19 @@ const MyBusiness = ({ email }) => {
             console.log('Error:', err);
         }
     };
+
+    const openWebsite = (websiteUrl) => {
+        if (websiteUrl) {
+    
+          Linking.openURL(websiteUrl).catch((err) =>
+            console.error('Failed to open URL:', err)
+          );
+        }
+        else {
+          alert("Website Error", "No Website Found")
+        }
+      };
+
 
     const renderItem = ({ item }) => {
         return (
@@ -80,23 +55,31 @@ const MyBusiness = ({ email }) => {
                     <Text style={styles.about}>{item.about}</Text>
                     <Text style={styles.address}>{item.address}</Text>
                     <Text style={styles.contact}>Contact: {item.contact}</Text>
-                    <Text style={styles.rating}>Rating: {item.rating}</Text>
+                    <Text style={styles.rating}>Rating: {item.rating ? item.rating : "Not Rating"}</Text>
                 </View>
 
                 {/* Website Button */}
-                <TouchableOpacity style={styles.websiteButton}>
+                <TouchableOpacity style={styles.websiteButton} onPress={()=>openWebsite(item.website)}>
                     <Text style={styles.websiteButtonText}>Visit Website</Text>
                 </TouchableOpacity>
             </View>
         );
     };
 
+    const emptyListComponent = () => (
+        <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>No businesses found 😕</Text>
+        </View>
+    );
+
     return (
         <View style={styles.container}>
             <FlatList
-                data={DATA}
+                data={data}
                 keyExtractor={(item) => item.id}
                 renderItem={renderItem}
+                ListEmptyComponent={emptyListComponent}
+                contentContainerStyle={data.length === 0 ? styles.flatListEmpty : null}
             />
         </View>
     );
@@ -168,6 +151,21 @@ const styles = StyleSheet.create({
     websiteButtonText: {
         color: '#fff',
         fontWeight: 'bold',
+    },
+    // Styles for the empty state
+    emptyContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    emptyText: {
+        fontSize: 20,
+        fontFamily : 'Outfit-bold',
+        color: '#333',
+    },
+    flatListEmpty: {
+        flexGrow: 1, 
+        justifyContent: 'center',
     },
 });
 

@@ -47,7 +47,7 @@ const Category = ({ color, handleCategory }) => {
                 showsHorizontalScrollIndicator={false}
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (
-                    <TouchableOpacity onPress={()=>{handleCategory && handleCategory(item.title)}}>
+                    <TouchableOpacity onPress={()=>{handleCategory(item.title)}}>
 
                         <View style={styles.listContainer}>
                             <View style={styles.IconButton} >

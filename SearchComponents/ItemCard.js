@@ -1,5 +1,5 @@
-import React from 'react'
-import { StyleSheet, Text, View, FlatList, Image, TouchableWithoutFeedback } from 'react-native'
+import React from 'react';
+import { StyleSheet, Text, View, FlatList, Image, TouchableWithoutFeedback } from 'react-native';
 
 const truncateText = (text, wordLimit) => {
   const words = text.split(' ');
@@ -12,42 +12,44 @@ const truncateText = (text, wordLimit) => {
 const ItemCard = ({ STORES_DATA, navigation }) => {
     const renderItem = ({ item }) => {
         return (
-            <TouchableWithoutFeedback onPress={()=>navigation.navigate("Business_Info", { item: item })}>
+            <TouchableWithoutFeedback onPress={() => navigation.navigate("Business_Info", { item: item })}>
                 <View style={styles.sliderItem}>
                     <Image source={{ uri: item.image }} style={styles.image} />
                     <View style={styles.businessInfo}>
-                        <Text style={styles.BusinessName}>
-                            {item.name}
-                        </Text>
+                        <Text style={styles.BusinessName}>{item.name}</Text>
                         <Text style={styles.addressText} numberOfLines={1} ellipsizeMode="tail">
                             {truncateText(item.address, 8)}
                         </Text>
                     </View>
                 </View>
             </TouchableWithoutFeedback>
-        )
-    }
+        );
+    };
 
     return (
-        <View style={{ height: '70%' }}>
+        <View style={styles.listContainer}>
             <FlatList
                 data={STORES_DATA}
-                showsHorizontalScrollIndicator={false}
-                keyExtractor={(item) => item.id}
+                showsVerticalScrollIndicator={false}
+                keyExtractor={(item) => item.id.toString()}
                 renderItem={renderItem}
+                contentContainerStyle={styles.flatListContent}
             />
         </View>
-    )
-}
+    );
+};
 
-export default ItemCard
+export default ItemCard;
 
 const styles = StyleSheet.create({
+    listContainer: {
+        flex: 1, // Flex to make it take full height
+    },
+    flatListContent: {
+        paddingBottom: 20, // Add padding for the last item visibility
+    },
     sliderItem: {
-        width: '95%',
-        marginHorizontal: 10,
-        justifyContent: 'center',
-        alignItems: 'center',
+        width: '100%',
         marginBottom: 20,
         elevation: 5,
         borderRadius: 10,
@@ -59,24 +61,23 @@ const styles = StyleSheet.create({
     image: {
         width: '100%',
         height: 220,
-        borderRadius: 10,
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 10,
+    },
+    businessInfo: {
+        backgroundColor: 'rgba(255, 255, 255, 0.9)', // More opacity for readability
+        padding: 10,
+        borderBottomLeftRadius: 10,
+        borderBottomRightRadius: 10,
     },
     BusinessName: {
         fontFamily: 'Outfit-bold',
         fontSize: 20,
-    },
-    businessInfo: {
-        position: 'absolute',
-        marginTop: 5,
-        backgroundColor: 'rgba(255, 255, 255, 0.7)',
-        bottom: 0,
-        width: '100%',
-        padding: 10,
-        borderBottomEndRadius : 10,
-        borderBottomStartRadius : 10,
+        marginBottom: 5,
     },
     addressText: {
         fontFamily: 'Outfit',
         fontSize: 16,
-    }
-})
+        color: '#333',
+    },
+});

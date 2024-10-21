@@ -17,6 +17,8 @@ import SignUpScreen from './Screens/SignUpPage';
 import MyBusiness from './Screens/MyBusiness';
 import ForgetPassword from './Screens/ForgetPassword';
 import OpenMail from './Screens/OpenMail';
+import Feedback from './Screens/Feedback';
+import CategoryScreen from './Screens/CategoryScreen';
 
 const Stack = createStackNavigator();
 
@@ -50,7 +52,7 @@ const App = () => {
       }
     } catch (error) {
       console.log('Error reading from AsyncStorage:', error);
-      setInitialRoute('Login'); // Default to Login if there's an error
+      setInitialRoute('Login'); 
     }
   };
 
@@ -101,6 +103,8 @@ const App = () => {
           <Stack.Screen name="MyBusiness" component={MyBusiness} />
           <Stack.Screen name="ForgetPassword" component={ForgetPassword} options={{headerShown:false}}/>
           <Stack.Screen name="OpenMail" component={OpenMail} options={{headerShown:false}}/>
+          <Stack.Screen name="Feedback" component={Feedback} options={{headerShown:false}}/>
+          <Stack.Screen name="CateGorySelection" component={CategoryScreen} options={{headerShown:false}}/>
         </Stack.Navigator>
       </NavigationContainer>
     </ThemeProvider>

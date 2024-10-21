@@ -7,7 +7,7 @@ import { ThemeContext } from '../Globals/ThemeContext';
 import CustomNotification from '../GlobalComponents/Customalert';
 import { StyleSheet, View, Text, Image, TouchableWithoutFeedback } from 'react-native';
 
-const HeaderContainer = ({ Search, onChangeText, navigation, Username }) => {
+const HeaderContainer = ({ Search, onChangeText, navigation, Username, mail }) => {
     const { themeColor, textColor } = useContext(ThemeContext);
     const [isVisible, setIsVisible] = useState(false);
     const [alertVisible, setAlertVisible] = useState(false);
@@ -31,6 +31,7 @@ const HeaderContainer = ({ Search, onChangeText, navigation, Username }) => {
             console.log("Error logging out: ", error);
         }
     };
+    
 
     return (
         <TouchableWithoutFeedback onPress={() => { if (isVisible) { setIsVisible(!isVisible) } }}>
@@ -41,7 +42,7 @@ const HeaderContainer = ({ Search, onChangeText, navigation, Username }) => {
                         <Text style={[styles.welcomeText, { color: textColor }]}>Welcome,</Text>
                         <Text style={[styles.userName, { color: textColor }]}>{Username}</Text>
                     </View>
-                    <ThreeDot handleTheme={handleTheme} isVisible={isVisible} handlePress={() => setIsVisible(!isVisible)} handleLogout={handleLogout} />
+                    <ThreeDot handleTheme={handleTheme} isVisible={isVisible} handlePress={() => setIsVisible(!isVisible)} handleLogout={handleLogout} handlefeedback={()=>{navigation.navigate('Feedback', {mail : mail}); setIsVisible(false)}}/>
                 </View>
                 <InputText
                     placeholder="Search ..."
