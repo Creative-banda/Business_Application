@@ -13,7 +13,6 @@ const CustomAlert = ({ visible, message, type = 'success', onClose }) => {
         useNativeDriver: true,
       }).start();
 
-      // Set up auto-close after 1.5 seconds
       closeTimeout = setTimeout(() => {
         onClose();
       }, 1500);
@@ -25,7 +24,6 @@ const CustomAlert = ({ visible, message, type = 'success', onClose }) => {
       }).start();
     }
 
-    // Clean up the timeout when the component unmounts or visibility changes
     return () => {
       if (closeTimeout) clearTimeout(closeTimeout);
     };
@@ -54,43 +52,17 @@ const CustomAlert = ({ visible, message, type = 'success', onClose }) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    position: 'absolute',
-    bottom: 20,
-    left: 20,
-    right: 20,
-    backgroundColor: '#6200EE',
-    borderRadius: 12,
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  contentContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  successContainer: {
-    backgroundColor: '#4CAF50',
-  },
-  errorContainer: {
-    backgroundColor: '#F44336',
-  },
-  iconContainer: {
-    marginRight: 12,
-  },
-  message: {
-    flex: 1,
-    color: '#fff',
-    fontFamily: 'Outfit',
-    fontSize: 16,
-  },
+  container: {position: 'absolute',bottom: 20,left: 20,right: 20,backgroundColor: '#6200EE',borderRadius: 12,flexDirection: 'row',alignItems: 'center',paddingVertical: 12,paddingHorizontal: 16,shadowColor: '#000',shadowOffset: { width: 0, height: 2 },shadowOpacity: 0.25,shadowRadius: 3.84,elevation: 5,},
+
+  contentContainer: { flex: 1, flexDirection: 'row', alignItems: 'center',},
+
+  successContainer: {backgroundColor: '#4CAF50',},
+
+  errorContainer: { backgroundColor: '#F44336'},
+
+  iconContainer: {marginRight: 12,},
+
+  message: { flex: 1, color: '#fff', fontFamily: 'Outfit', fontSize: 16, },
   
 });
 

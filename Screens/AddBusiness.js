@@ -96,8 +96,7 @@ const AddBusiness = () => {
         // Add the business to the user's specific node (email-based node)
         const userSpecificBusinessRef = ref(db, `Users/${userEmail}/${id.replace(/\s+/g, '_')}`);
         await set(userSpecificBusinessRef, newBusinessData);
-  
-        // Add the business to the global "All_Business" node
+
         await set(allBusinessRef, newBusinessData);
   
         // Success feedback

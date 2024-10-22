@@ -25,7 +25,7 @@ const LoginScreen = ({ navigation }) => {
 
     const handleLogin = async () => {
         if (email === "" || password === "") {
-            setAlertMessage('Please fill login credentials!');
+            setAlertMessage('Please fill in login credentials!');
             setAlertType('error');
             setAlertVisible(true);
         } else {
@@ -33,7 +33,7 @@ const LoginScreen = ({ navigation }) => {
             try {
                 const userCredential = await signInWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
-
+    
                 if (user.emailVerified) {
                     navigation.navigate("HomeScreen", {
                         userDetails: {
@@ -48,19 +48,43 @@ const LoginScreen = ({ navigation }) => {
                     setAlertVisible(true);
                 }
             } catch (error) {
-                console.log(error);
-                setAlertMessage('Login failed. Please try again.');
-                setAlertType('error');
-                setAlertVisible(true);
+                handleLoginError(error);
             } finally {
                 setLoading(false);
-                setEmail('');
-                setPassword('');
             }
         }
     };
-
-
+    
+    const handleLoginError = (error) => {
+        const errorCode = error.code;
+        
+        switch (errorCode) {
+            case 'auth/invalid-email':
+                setAlertMessage('Invalid email address format.');
+                break;
+            case 'auth/user-disabled':
+                setAlertMessage('This user account has been disabled.');
+                break;
+            case 'auth/user-not-found':
+                setAlertMessage('No user found with this email.');
+                break;
+            case 'auth/wrong-password':
+                setAlertMessage('Incorrect password. Please try again.');
+                break;
+            case 'auth/invalid-credential': // Handling this specifically since it's appearing in the log
+                setAlertMessage('Invalid login credentials. Please try again.');
+                break;
+            case 'auth/too-many-requests':
+                setAlertMessage('Too many login attempts. Please try again after some time.');
+                break;
+            default:
+                setAlertMessage('Login failed. Please try again.');
+        }
+    
+        setAlertType('error');
+        setAlertVisible(true);
+    };
+    
     return (
         <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : "height"}

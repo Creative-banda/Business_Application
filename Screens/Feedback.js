@@ -133,92 +133,33 @@ const Feedback = ({ navigation, route }) => {
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
-    scrollContainer: {
-        padding: 10
-    },
-    headerContainer: {
-        width: '100%',
-        justifyContent: 'space-between',
-        paddingTop: 40,
-        padding: 10,
-        gap: 10,
-        marginBottom: 40,
-        paddingLeft: 20
-    },
-    header: {
-        fontSize: 28,
-        fontFamily: 'Outfit-bold'
-    },
-    Input: {
-        borderWidth: 1,
-        borderColor: '#ccc',
-        padding: 10,
-        marginBottom: 20,
-        borderRadius: 10,
-        width: '95%',
-        marginTop: 5,
-        marginLeft: 10
-    },
-    inputHeader: {
-        fontSize: 16,
-        marginBottom: 10,
-        fontFamily: 'Outfit',
-        marginLeft: 10
-    },
-    emojiItem: {
-        marginHorizontal: 2,
-        alignItems: 'center',
-        paddingLeft: 10,
-        height: 80
-    },
-    emoji: {
-        fontSize: 36,
-        marginHorizontal: 5
-    },
-    emojiText: {
-        fontSize: 14,
-        fontFamily: 'Outfit',
-        textAlign: 'center'
-    },
-    input: {
-        borderWidth: 1,
-        borderColor: '#ccc',
-        padding: 10,
-        marginBottom: 10,
-        borderRadius: 10,
-        width: '95%',
-        marginTop: 5,
-        marginLeft: 10,
-        height: 130,
-        textAlignVertical: 'top'
-    },
-    submitButton: {
-        padding: 10,
-        borderRadius: 7,
-        marginTop: 20,
-        width: '95%',
-        alignSelf: 'center'
-    },
-    submitButtonText: {
-        color: '#fff',
-        fontSize: 18,
-        fontFamily: 'Outfit-bold',
-        textAlign: 'center'
-    },
-    selectedEmoji: {
-        color: '#4A81AB',
-        fontSize: 40,
-        backgroundColor: 'rgba(42,72,76,0.3)',
-        borderRadius : 30   ,
-        justifyContent: 'center',
-        alignContent: 'center'  
-    },
-    selectedEmojiText: {
-        color: '#4A81AB',
-    },
+    container: { flex: 1,},
+    
+    scrollContainer: {padding: 10},
+
+    headerContainer: { width: '100%', justifyContent: 'space-between', paddingTop: 40, padding: 10, gap: 10, marginBottom: 40, paddingLeft: 20},
+
+    header: {fontSize: 28,fontFamily: 'Outfit-bold'},
+
+    Input: { borderWidth: 1, borderColor: '#ccc', padding: 10, marginBottom: 20, borderRadius: 10, width: '95%', marginTop: 5, marginLeft: 10},
+
+    inputHeader: { fontSize: 16, marginBottom: 10, fontFamily: 'Outfit', marginLeft: 10},
+
+    emojiItem: { marginHorizontal: 2, alignItems: 'center', paddingLeft: 10, height: 80,},
+
+    emoji: { fontSize: 36, marginHorizontal: 5},
+
+    emojiText: { fontSize: 14, fontFamily: 'Outfit', textAlign: 'center' },
+    
+    input: { borderWidth: 1, borderColor: '#ccc', padding: 10, marginBottom: 10, borderRadius: 10, width: '95%', marginTop: 5, marginLeft: 10, height: 130, textAlignVertical: 'top'},
+
+    submitButton: {padding: 10,borderRadius: 7,marginTop: 20,width: '95%',alignSelf: 'center'},
+
+    submitButtonText: { color: '#fff', fontSize: 18, fontFamily: 'Outfit-bold', textAlign: 'center'},
+
+    selectedEmoji: { color: '#4A81AB', fontSize: 36, backgroundColor: 'rgba(0,0,0,0.2)', borderRadius : 100   , justifyContent: 'center', alignContent: 'center'   },
+
+    selectedEmojiText: { color: 'rgba(0,0,0,0.5)', fontSize : 12 },
 });
 
 export default Feedback;

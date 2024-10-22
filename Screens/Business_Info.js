@@ -1,15 +1,19 @@
 import React, { useState, useContext } from 'react'
 import { ThemeContext } from '../Globals/ThemeContext'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import CustomAlert from '../GlobalComponents/Customalert'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { StyleSheet, Text, View, Image, TextInput, ScrollView, TouchableOpacity, Linking, Animated } from 'react-native'
 
 const Business_Info = ({ route, Owner }) => {
-  const [Input, setInput] = useState('');
   const { item } = route.params;
-  const { themeColor, textColor } = useContext(ThemeContext)
+  const [Input, setInput] = useState('');
   const [rating, setRating] = useState(0);
+  const [type, setType] = useState("error");
+  const [showAlert, setShowAlert] = useState(false);
   const [animation] = useState(new Animated.Value(0))
+  const [alertMessage, setAlertMessage] = useState('');
+  const { themeColor, textColor } = useContext(ThemeContext)
 
   const makePhoneCall = (phoneNumber) => {
     let phoneUrl = `tel:${phoneNumber}`;
@@ -75,15 +79,24 @@ const Business_Info = ({ route, Owner }) => {
     return stars;
   };
 
-  const handleSubmit = ()=> {
-    console.log(rating);
-    const feedback = {
-      rating: rating,
-      comment: Input
-    }
+  const handleSubmit = () => {
+    if (rating & Input) {
 
-    alert("Form Submitted", "Thank you for your feedback!")
-    setInput('');
+      const feedback = {
+        rating: rating,
+        comment: Input
+      }
+
+      setAlertMessage("Thank you for your feedback!")
+      setType('success');
+      setShowAlert(true);
+      setInput('');
+    }
+    else {
+      setAlertMessage("Please fill the required fields.")
+      setType('error');
+      setShowAlert(true);
+    }
   }
 
   return (
@@ -126,7 +139,7 @@ const Business_Info = ({ route, Owner }) => {
         </View>
 
         {!Owner && <View>
-          
+
           <Text style={{ fontFamily: 'Outfit-bold', fontSize: 24, paddingVertical: 8 }}> Reviews </Text>
           <View style={styles.starContainer}>{renderStars()}</View>
           <TextInput
@@ -144,6 +157,7 @@ const Business_Info = ({ route, Owner }) => {
         </View>}
 
       </View>
+      <CustomAlert message={alertMessage} onClose={() => setShowAlert(false)} visible={showAlert} type={type} />
     </ScrollView>
   )
 }
@@ -154,27 +168,26 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  image: { position: 'absolute', width: '100%', height: '50%',
+  image: {
+    position: 'absolute', width: '100%', height: '50%',
   },
-  holder: {
-    flex: 1, marginTop: '65%', backgroundColor: '#fff', borderTopLeftRadius: 40, borderTopRightRadius: 40, paddingHorizontal: 10
+  holder: {flex: 1, marginTop: '65%', backgroundColor: '#fff', borderTopLeftRadius: 40, borderTopRightRadius: 40, paddingHorizontal: 10},
 
-  },
-  businessInfoContainer: { flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 30, borderRadius: 20, paddingVertical: 15, alignItems: 'center'},
-  
-  iconContainer: { width: '100%', flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 10, paddingHorizontal: 10},
+  businessInfoContainer: { flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 30, borderRadius: 20, paddingVertical: 15, alignItems: 'center' },
 
-  iconBackground: {padding: 10,borderRadius: 25},
+  iconContainer: { width: '100%', flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 10, paddingHorizontal: 10 },
 
-  about: {paddingVertical: 30,gap: 10,},
+  iconBackground: { padding: 10, borderRadius: 25 },
 
-  InputText: {borderColor: '#000',borderWidth: 1,borderRadius: 10,paddingHorizontal: 10,paddingVertical: 10, },
+  about: { paddingVertical: 30, gap: 10, },
 
-  button: { width: '100%', paddingVertical: 10, justifyContent: 'center', alignItems: 'center', borderRadius: 20, marginTop: 15, marginBottom: 30
-  },
-  starContainer: {flexDirection: 'row',marginBottom: 30, },
+  InputText: { borderColor: '#000', borderWidth: 1, borderRadius: 10, paddingHorizontal: 10, paddingVertical: 10, },
 
-  star: { fontSize: 30, color: '#D1D1D1', marginHorizontal: 8,},
+  button: { width: '100%', paddingVertical: 10, justifyContent: 'center', alignItems: 'center', borderRadius: 20, marginTop: 15, marginBottom: 30 },
+
+  starContainer: { flexDirection: 'row', marginBottom: 30, },
+
+  star: { fontSize: 30, color: '#D1D1D1', marginHorizontal: 8, },
 
   selectedStar: { fontSize: 32, color: '#FFD700', marginHorizontal: 8, }
 
