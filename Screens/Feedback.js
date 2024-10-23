@@ -10,7 +10,7 @@ import { StyleSheet, View, Text, TextInput, TouchableOpacity, FlatList, Keyboard
 const Feedback = ({ navigation, route }) => {
     const { mail } = route.params;
     const [emoji, setEmoji] = React.useState('');
-    const {themeColor} = React.useContext(ThemeContext)
+    const {themeColor, textColor} = React.useContext(ThemeContext)
     const [message, setMessage] = React.useState('');
     const [loading, setLoading] = React.useState(false);
     const [feedback, setFeedback] = React.useState('');
@@ -85,13 +85,13 @@ const Feedback = ({ navigation, route }) => {
 
     return (
         <KeyboardAvoidingView
-            style={styles.container}
+            style={[styles.container, {backgroundColor : textColor}]}
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
             <ScrollView contentContainerStyle={styles.scrollContainer}>
                 <View style={styles.headerContainer}>
                     <TouchableOpacity style={{ paddingVertical: 18 }} onPress={() => navigation.goBack()}>
-                        <Ionicons name='arrow-back' size={30} color={'blue'} />
+                        <Ionicons name='arrow-back' size={30} color={themeColor} />
                     </TouchableOpacity>
                     <Text style={styles.header}>Give Feedback</Text>
                 </View>
@@ -123,7 +123,7 @@ const Feedback = ({ navigation, route }) => {
                     multiline={true}
                 />
                 <TouchableOpacity style={[styles.submitButton, {backgroundColor : themeColor}]} onPress={handleSubmit}>
-                    {loading ? <ActivityIndicator size="small" /> : <Text style={styles.submitButtonText}>Publish Feedback</Text>}
+                    {loading ? <ActivityIndicator size="small" color={textColor}/> : <Text style={[styles.submitButtonText, {color : textColor}]}>Publish Feedback</Text>}
                 </TouchableOpacity>
             </ScrollView>
             <ThankYouMessage visible={visible} handleClose={() => setVisible(false)} handleGoHome={() => { setVisible(false); navigation.navigate("HomeScreen") }} />

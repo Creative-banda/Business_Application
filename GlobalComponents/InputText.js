@@ -5,9 +5,9 @@ import { ThemeContext } from '../Globals/ThemeContext';
 
 
 const InputText = ({ placeholder, value, onChangeText }) => {
-    const { themeColor } = useContext(ThemeContext);
+    const { themeColor, textColor } = useContext(ThemeContext);
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, { borderColor : textColor}]}>
             <Icon name='search' size={24} color={themeColor} />
             <TextInput
                 placeholder={placeholder}
@@ -29,7 +29,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         gap: 8,
         borderWidth: 1.3,
-        borderColor : '#673fd2'
     },
     input: {
         flex: 1,
