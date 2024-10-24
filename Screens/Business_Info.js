@@ -1,18 +1,20 @@
 import React, { useState, useContext } from 'react'
 import { ThemeContext } from '../Globals/ThemeContext'
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import AreYouSure from '../GlobalComponents/AreYouSure'
 import CustomAlert from '../GlobalComponents/Customalert'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { StyleSheet, Text, View, Image, TextInput, ScrollView, TouchableOpacity, Linking, Animated } from 'react-native'
 
-const Business_Info = ({ route, Owner }) => {
-  const { item } = route.params;
+const Business_Info = ({ route }) => {
+  const { item, Owner } = route.params;
   const [Input, setInput] = useState('');
   const [rating, setRating] = useState(0);
   const [type, setType] = useState("error");
   const [showAlert, setShowAlert] = useState(false);
   const [animation] = useState(new Animated.Value(0))
   const [alertMessage, setAlertMessage] = useState('');
+  const [IsdeleteVisible, setIsDeleteVisible] = useState(false);
   const { themeColor, textColor } = useContext(ThemeContext)
 
   const makePhoneCall = (phoneNumber) => {
@@ -109,7 +111,7 @@ const Business_Info = ({ route, Owner }) => {
             <Text style={{ fontFamily: 'Outfit-bold', fontSize: 24, color: 'rgba(0,0,0,0.9)' }}>{item.name}</Text>
             <Text style={{ fontFamily: 'Outfit' }}> {item.address}</Text>
           </View>
-          {Owner && <TouchableOpacity>
+          {Owner && <TouchableOpacity onPress={()=>setIsDeleteVisible(true)}>
             <MaterialIcons name='delete' size={30} color={'red'} />
           </TouchableOpacity>}
         </View>
@@ -158,6 +160,7 @@ const Business_Info = ({ route, Owner }) => {
 
       </View>
       <CustomAlert message={alertMessage} onClose={() => setShowAlert(false)} visible={showAlert} type={type} />
+      <AreYouSure visible={IsdeleteVisible} handleCancel={()=>setIsDeleteVisible(false)}/>
     </ScrollView>
   )
 }

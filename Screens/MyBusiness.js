@@ -1,9 +1,10 @@
 import React from 'react';
 import { ref, get } from 'firebase/database';
 import { database } from '../firebaseConfig';
-import { StyleSheet, View, FlatList, Text, Image, TouchableOpacity, Linking } from 'react-native';
+import { StyleSheet, View, FlatList, Text, Image, TouchableOpacity, Linking, TouchableWithoutFeedback } from 'react-native';
 
-const MyBusiness = ({ route }) => {
+
+const MyBusiness = ({ route, navigation }) => {
     const [data, setData] = React.useState([]);
     const { email } = route.params;
 
@@ -13,7 +14,7 @@ const MyBusiness = ({ route }) => {
 
     const initData = async () => {
         const userEmail = email.replace(/\./g, '_');
-        
+
         try {
             let SearchScreenData = ref(database, `Users/${userEmail}`);
             const snapshot = await get(SearchScreenData);
@@ -31,38 +32,40 @@ const MyBusiness = ({ route }) => {
 
     const openWebsite = (websiteUrl) => {
         if (websiteUrl) {
-    
-          Linking.openURL(websiteUrl).catch((err) =>
-            console.error('Failed to open URL:', err)
-          );
+
+            Linking.openURL(websiteUrl).catch((err) =>
+                console.error('Failed to open URL:', err)
+            );
         }
         else {
-          alert("Website Error", "No Website Found")
+            alert("Website Error", "No Website Found")
         }
-      };
+    };
 
 
     const renderItem = ({ item }) => {
         return (
-            <View style={styles.card}>
-                {/* Image */}
-                <Image source={{ uri: item.image }} style={styles.image} />
+            <TouchableWithoutFeedback onPress={()=> navigation.navigate("Business_Info", {item : item, Owner : "Mine"})}>
+                <View style={styles.card}>
+                    {/* Image */}
+                    <Image source={{ uri: item.image }} style={styles.image} />
 
-                {/* Business Info */}
-                <View style={styles.infoContainer}>
-                    <Text style={styles.name}>{item.name}</Text>
-                    <Text style={styles.category}>{item.category}</Text>
-                    <Text style={styles.about}>{item.about}</Text>
-                    <Text style={styles.address}>{item.address}</Text>
-                    <Text style={styles.contact}>Contact: {item.contact}</Text>
-                    <Text style={styles.rating}>Rating: {item.rating ? item.rating : "Not Rating"}</Text>
+                    {/* Business Info */}
+                    <View style={styles.infoContainer}>
+                        <Text style={styles.name}>{item.name}</Text>
+                        <Text style={styles.category}>{item.category}</Text>
+                        <Text style={styles.about}>{item.about}</Text>
+                        <Text style={styles.address}>{item.address}</Text>
+                        <Text style={styles.contact}>Contact: {item.contact}</Text>
+                        <Text style={styles.rating}>Rating: {item.rating ? item.rating : "Not Rating"}</Text>
+                    </View>
+
+                    {/* Website Button */}
+                    <TouchableOpacity style={styles.websiteButton} onPress={() => openWebsite(item.website)}>
+                        <Text style={styles.websiteButtonText}>Visit Website</Text>
+                    </TouchableOpacity>
                 </View>
-
-                {/* Website Button */}
-                <TouchableOpacity style={styles.websiteButton} onPress={()=>openWebsite(item.website)}>
-                    <Text style={styles.websiteButtonText}>Visit Website</Text>
-                </TouchableOpacity>
-            </View>
+            </TouchableWithoutFeedback>
         );
     };
 
@@ -160,11 +163,11 @@ const styles = StyleSheet.create({
     },
     emptyText: {
         fontSize: 20,
-        fontFamily : 'Outfit-bold',
+        fontFamily: 'Outfit-bold',
         color: '#333',
     },
     flatListEmpty: {
-        flexGrow: 1, 
+        flexGrow: 1,
         justifyContent: 'center',
     },
 });

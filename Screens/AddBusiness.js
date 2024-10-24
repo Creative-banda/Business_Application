@@ -61,9 +61,9 @@ const AddBusiness = () => {
   const generateUniqueId = () => `${Date.now()}-${Math.floor(Math.random() * 10000)}`;
 
   const handleSubmit = async () => {
-    const auth = getAuth(); // Initialize Firebase Auth
-    const user = auth.currentUser; // Get the currently signed-in user
-  
+    const auth = getAuth(); 
+    const user = auth.currentUser; 
+
     if (!user) {
       setAlertMessage('You must be signed in to add a business');
       setAlertType('error');
@@ -90,8 +90,8 @@ const AddBusiness = () => {
   
       try {
         const db = getDatabase();
-        const userEmail = user.email.replace(/\./g, '_'); // Sanitize email by replacing periods
-        const allBusinessRef = ref(db, `All_Business/${id.replace(/\s+/g, '_')}`); // Global reference for all businesses
+        const userEmail = user.email.replace(/\./g, '_'); 
+        const allBusinessRef = ref(db, `All_Business/${id.replace(/\s+/g, '_')}`); 
   
         // Add the business to the user's specific node (email-based node)
         const userSpecificBusinessRef = ref(db, `Users/${userEmail}/${id.replace(/\s+/g, '_')}`);
@@ -170,7 +170,7 @@ const AddBusiness = () => {
   return (
     <View style={styles.container}>
       <ScrollView
-        contentContainerStyle={[styles.scrollContent, { paddingBottom: keyboardOffset / 10 }]} // For Some Reason KeyboardAvoider Not Working as Expected
+        contentContainerStyle={[styles.scrollContent]} // For Some Reason KeyboardAvoider Not Working as Expected
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
@@ -266,7 +266,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
-    padding: 24,
+    padding: 20,
   },
   heading: {
     fontFamily: 'Outfit-bold',
