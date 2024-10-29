@@ -4,18 +4,21 @@ import AreYouSure from '../GlobalComponents/AreYouSure'
 import CustomAlert from '../GlobalComponents/Customalert'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import { ref, remove } from "firebase/database";
+import { database } from '../firebaseConfig'
 import { StyleSheet, Text, View, Image, TextInput, ScrollView, TouchableOpacity, Linking, Animated } from 'react-native'
 
-const Business_Info = ({ route }) => {
-  const { item, Owner } = route.params;
+const Business_Info = ({ route, navigation }) => {
+  const { item, Owner, email } = route.params;
   const [Input, setInput] = useState('');
   const [rating, setRating] = useState(0);
   const [type, setType] = useState("error");
   const [showAlert, setShowAlert] = useState(false);
   const [animation] = useState(new Animated.Value(0))
   const [alertMessage, setAlertMessage] = useState('');
-  const [IsdeleteVisible, setIsDeleteVisible] = useState(false);
   const { themeColor, textColor } = useContext(ThemeContext)
+  const [IsdeleteVisible, setIsDeleteVisible] = useState(false);
+  
 
   const makePhoneCall = (phoneNumber) => {
     let phoneUrl = `tel:${phoneNumber}`;
@@ -42,16 +45,42 @@ const Business_Info = ({ route }) => {
       })
       .catch((err) => console.error('An error occurred', err));
   };
+  
   const openWebsite = (websiteUrl) => {
     if (websiteUrl) {
+      try {
 
-      Linking.openURL(websiteUrl).catch((err) =>
-        console.error('Failed to open URL:', err)
-      );
+        Linking.openURL(websiteUrl).catch((err) =>
+          console.error('Failed to open URL:', err)
+        );
+      }
+      catch (err) {
+        console.log(err);
+        setAlertMessage("Sorry, there was an error while opening the shop's website.")
+        setType('error');
+        setShowAlert(true);
+      }
     }
     else {
-      alert("Website Error", "No Website Found")
+      setAlertMessage("Sorry, the shop's website is currently unavailable.")
+      setType('error');
+      setShowAlert(true);
+
     }
+  };
+
+  const handleDelete = () => {
+    const userEmail = email.replace(/\./g, '_');
+    const nodeRef = ref(database,  `Users/${userEmail}/${item.id}`);
+
+    remove(nodeRef)
+      .then(() => {
+        console.log("Node deleted successfully.");
+        navigation.navigate("MyBusiness", {email : email})
+      })
+      .catch((error) => {
+        console.error("Error deleting node:", error);
+      });
   };
 
   const handleRating = (newRating) => {
@@ -111,7 +140,7 @@ const Business_Info = ({ route }) => {
             <Text style={{ fontFamily: 'Outfit-bold', fontSize: 24, color: 'rgba(0,0,0,0.9)' }}>{item.name}</Text>
             <Text style={{ fontFamily: 'Outfit' }}> {item.address}</Text>
           </View>
-          {Owner && <TouchableOpacity onPress={()=>setIsDeleteVisible(true)}>
+          {Owner && <TouchableOpacity onPress={() => setIsDeleteVisible(true)}>
             <MaterialIcons name='delete' size={30} color={'red'} />
           </TouchableOpacity>}
         </View>
@@ -160,7 +189,7 @@ const Business_Info = ({ route }) => {
 
       </View>
       <CustomAlert message={alertMessage} onClose={() => setShowAlert(false)} visible={showAlert} type={type} />
-      <AreYouSure visible={IsdeleteVisible} handleCancel={()=>setIsDeleteVisible(false)}/>
+      <AreYouSure visible={IsdeleteVisible} handleCancel={() => setIsDeleteVisible(false)} handleDelete={handleDelete} />
     </ScrollView>
   )
 }
@@ -174,7 +203,7 @@ const styles = StyleSheet.create({
   image: {
     position: 'absolute', width: '100%', height: '50%',
   },
-  holder: {flex: 1, marginTop: '65%', backgroundColor: '#fff', borderTopLeftRadius: 40, borderTopRightRadius: 40, paddingHorizontal: 10},
+  holder: { flex: 1, marginTop: '65%', backgroundColor: '#fff', borderTopLeftRadius: 40, borderTopRightRadius: 40, paddingHorizontal: 10 },
 
   businessInfoContainer: { flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 30, borderRadius: 20, paddingVertical: 15, alignItems: 'center' },
 

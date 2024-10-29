@@ -5,35 +5,38 @@ import Category from '../GlobalComponents/Category';
 import { ThemeContext } from '../Globals/ThemeContext';
 import ItemCard from '../SearchComponents/ItemCard';
 import { database } from '../firebaseConfig';
-import { ref, get } from 'firebase/database';
+import { ref, onValue } from 'firebase/database';
 
-const SearchScreen = ({navigation}) => {
+const SearchScreen = ({ navigation }) => {
 
-    const [filterData, setFilteredData] = useState(data);
+    const [filterData, setFilteredData] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState('');
     const [data, setData] = useState([]);
+    const [search, setSearch] = useState('');
+    const { themeColor, textColor } = useContext(ThemeContext);
 
-
-    const initializingUsers = async () => {
-        try {
-            let userDataRef = ref(database, 'All_Business');
-            const snapshot = await get(userDataRef);
+    // Listener for real-time updates
+    useEffect(() => {
+        const userDataRef = ref(database, 'All_Business');
+        
+        const unsubscribe = onValue(userDataRef, (snapshot) => {
             if (snapshot.exists()) {
                 const userData = snapshot.val();
                 const formattedData = Object.values(userData);
                 setData(formattedData);
-                setFilteredData(formattedData)
+                setFilteredData(formattedData); // Initially set the filtered data to all data
             } else {
                 console.log('No data available');
             }
-        } catch (err) {
-            console.log('Error:', err); 
-        }
-    };
-    useEffect(()=>{
-        initializingUsers()
-    },[])
+        }, (error) => {
+            console.log('Error:', error);
+        });
 
+        // Cleanup the listener when component unmounts
+        return () => unsubscribe();
+    }, []);
+
+    // Filter data by selected category
     useEffect(() => {
         if (selectedCategory) {
             const filteredData = data.filter(store => store.category === selectedCategory);
@@ -41,40 +44,32 @@ const SearchScreen = ({navigation}) => {
         } else {
             setFilteredData(data);
         }
-    }, [selectedCategory]);
-    
+    }, [selectedCategory, data]);
 
-    const [Search, setSearch] = useState('');
-    const { themeColor, textColor } = useContext(ThemeContext);
-
-    const handleSearch = (value)=>{
-        setSearch(value)
-        const SearchData = data.filter(item =>
+    const handleSearch = (value) => {
+        setSearch(value);
+        const searchData = data.filter(item =>
             item.name.toLowerCase().includes(value.toLowerCase()) ||
             item.category.toLowerCase().includes(value.toLowerCase())
         );
-        setFilteredData(SearchData)
-    }
+        setFilteredData(searchData);
+    };
 
     return (
-        <View style={[styles.container, {backgroundColor : textColor}]}>
-            <Text style={[styles.header, {color : '#000'}]}>
+        <View style={[styles.container, { backgroundColor: textColor }]}>
+            <Text style={[styles.header, { color: '#000' }]}>
                 Explore More
             </Text>
 
-            {/* Input for searching services */}
             <InputText
                 placeholder='Search for services..'
-                value={Search}
-                onChangeText={(value)=>{handleSearch(value)}}
+                value={search}
+                onChangeText={(value) => handleSearch(value)}
             />
 
-            {/* Category selector */}
             <Category color={themeColor} handleCategory={setSelectedCategory} />
 
-            {/* Filtered Item List */}
-            <ItemCard STORES_DATA={filterData} navigation={navigation}/>
-
+            <ItemCard STORES_DATA={filterData} navigation={navigation} />
         </View>
     );
 };
@@ -89,8 +84,8 @@ const styles = StyleSheet.create({
     header: {
         fontSize: 26,
         fontFamily: 'Outfit-bold',
-        marginTop: 20
-    }
+        marginTop: 20,
+    },
 });
 
 export default SearchScreen;

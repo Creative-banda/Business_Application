@@ -1,38 +1,39 @@
 import React from 'react';
-import { ref, get } from 'firebase/database';
+import { ref, onValue, off } from 'firebase/database';
 import { database } from '../firebaseConfig';
 import { StyleSheet, View, FlatList, Text, Image, TouchableOpacity, Linking, TouchableWithoutFeedback } from 'react-native';
-
 
 const MyBusiness = ({ route, navigation }) => {
     const [data, setData] = React.useState([]);
     const { email } = route.params;
-
+    
     React.useEffect(() => {
-        initData();
-    }, []);
-
-    const initData = async () => {
+        // Create a reference to the database node
         const userEmail = email.replace(/\./g, '_');
-
-        try {
-            let SearchScreenData = ref(database, `Users/${userEmail}`);
-            const snapshot = await get(SearchScreenData);
+        const dbRef = ref(database, `Users/${userEmail}`);
+        
+        // Set up the real-time listener
+        onValue(dbRef, (snapshot) => {
             if (snapshot.exists()) {
                 const userData = snapshot.val();
                 const formattedData = Object.values(userData);
                 setData(formattedData);
             } else {
                 console.log('No data available');
+                setData([]);
             }
-        } catch (err) {
-            console.log('Error:', err);
-        }
-    };
+        }, (error) => {
+            console.error('Error setting up listener:', error);
+        });
+
+        // Cleanup function to remove the listener when component unmounts
+        return () => {
+            off(dbRef);
+        };
+    }, []);
 
     const openWebsite = (websiteUrl) => {
         if (websiteUrl) {
-
             Linking.openURL(websiteUrl).catch((err) =>
                 console.error('Failed to open URL:', err)
             );
@@ -42,10 +43,9 @@ const MyBusiness = ({ route, navigation }) => {
         }
     };
 
-
     const renderItem = ({ item }) => {
         return (
-            <TouchableWithoutFeedback onPress={()=> navigation.navigate("Business_Info", {item : item, Owner : "Mine"})}>
+            <TouchableWithoutFeedback onPress={() => navigation.navigate("Business_Info", { item: item, Owner: "Mine", email: email })}>
                 <View style={styles.card}>
                     {/* Image */}
                     <Image source={{ uri: item.image }} style={styles.image} />
@@ -87,7 +87,6 @@ const MyBusiness = ({ route, navigation }) => {
         </View>
     );
 };
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
