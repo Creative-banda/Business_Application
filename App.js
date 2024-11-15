@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
 import * as Font from 'expo-font';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { auth } from './firebaseConfig';
+import React, { useState, useEffect } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
+import { createStackNavigator } from '@react-navigation/stack';
+import { NavigationContainer } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import InitalizePage from './Screens/InitalizePage';
 import Tab_Navigation from './Globals/Tab_Navigation';
@@ -110,5 +110,4 @@ const App = () => {
     </ThemeProvider>
   );
 };
-
 export default App;
