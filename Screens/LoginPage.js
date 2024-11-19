@@ -25,15 +25,12 @@ const LoginScreen = ({ navigation }) => {
             mail: email,
             password: password
         };
-        
-
         try {
             const response = await axios.post( `${BASE_URL}/auth/login`, payload, {
                 headers: {
                     'Content-Type': 'application/json'
                 }
             });
-            
             if (response.data.success) {
                 setAlertMessage('Login Successful');
                 setAlertType('success');

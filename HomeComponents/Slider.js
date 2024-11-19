@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { StyleSheet, View, Text, FlatList, Image, Dimensions, TouchableWithoutFeedback } from 'react-native';
 import { BASE_URL } from '@env';
-import * as SecureStore from 'expo-secure-store';
-
+import { ThemeContext } from '../Globals/ThemeContext';
+import axios from 'axios';
 
 // Get screen width to adjust image size dynamically
 const screenWidth = Dimensions.get('window').width;
@@ -10,37 +10,34 @@ const screenWidth = Dimensions.get('window').width;
 const Slider = ({navigation}) => {
 
     const [data, setData] = useState([]);
+    const {token} = useContext(ThemeContext);
 
     useEffect(() => {
         initializingShops()
     }, [])
 
     const initializingShops = async () => {
-        
-        const token = await SecureStore.getItemAsync('token');
         try {
-            const response = await fetch(`${BASE_URL}/business`,{
+            const response = await axios.get(`${BASE_URL}/business`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 },
             });
-    
+
             // Check if the response status is OK (status 200-299)
             if (!response.ok) {
-                console.error(`Error: ${response.status} ${response.statusText}`);
+                console.error(`Error from Slider: ${response.status} ${response.statusText}`);
                 return;
             }
-    
-            const data = await response.json(); 
-            
+            const data = response.data;
+
             if (data.data) {
-                setData(data.data); // Set the relevant data
+                setData(data.data); 
             }
         } catch (err) {
             console.error('Error:', err);
         }
     };
-    
 
     const renderItem = ({ item }) => {      
         return (
