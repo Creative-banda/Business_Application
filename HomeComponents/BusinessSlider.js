@@ -3,8 +3,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet, View, Text, FlatList, Image, Dimensions, TouchableWithoutFeedback } from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import { ThemeContext } from '../Globals/ThemeContext';
-import { database } from '../firebaseConfig';
-import { ref, get } from 'firebase/database';
 
 // Get screen width to adjust image size dynamically
 const screenWidth = Dimensions.get('window').width;

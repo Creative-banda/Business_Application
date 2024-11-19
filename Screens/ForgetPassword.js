@@ -1,6 +1,5 @@
 import React from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, Image, Platform, ActivityIndicator } from 'react-native';
 import CustomAlert from '../GlobalComponents/Customalert';
 

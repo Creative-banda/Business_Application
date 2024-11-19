@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
-import { auth } from '../firebaseConfig';
 import { Ionicons } from '@expo/vector-icons';
 import CustomAlert from '../GlobalComponents/Customalert';
-import { createUserWithEmailAndPassword, sendEmailVerification, updateProfile } from 'firebase/auth';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView, ActivityIndicator, Alert } from 'react-native';
 
 const SignUpScreen = ({ navigation }) => {

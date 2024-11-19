@@ -1,8 +1,17 @@
 import React, { useState, useContext, useRef, useCallback } from 'react';
-import {StyleSheet,Text,View,TouchableOpacity,StatusBar,Dimensions,Animated,Easing } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  StatusBar,
+  Dimensions,
+  Animated,
+  Easing,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemeContext } from '../Globals/ThemeContext';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SecureStore from 'expo-secure-store';
 import CustomAlert from '../GlobalComponents/Customalert';
 import { LinearGradient } from 'expo-linear-gradient';
 
@@ -68,10 +77,7 @@ const ThemeItem = React.memo(({ item, index, scrollX, onSelect }) => {
 
   return (
     <Animated.View
-      style={[
-        styles.themeOption,
-        { transform: [{ scale }], opacity },
-      ]}
+      style={[styles.themeOption, { transform: [{ scale }], opacity }]}
     >
       <LinearGradient
         colors={item.gradientColors}
@@ -82,12 +88,24 @@ const ThemeItem = React.memo(({ item, index, scrollX, onSelect }) => {
           onPress={() => onSelect(item)}
         >
           <View style={styles.colorPreview}>
-            <View style={[styles.colorCircle, { backgroundColor: item.hexCode }]} />
-            <Text style={[styles.colorName, { color: item.hexCode }]}>{item.colorName}</Text>
+            <View
+              style={[
+                styles.colorCircle,
+                { backgroundColor: item.hexCode },
+              ]}
+            />
+            <Text
+              style={[styles.colorName, { color: item.hexCode }]}
+            >
+              {item.colorName}
+            </Text>
           </View>
           <View style={styles.demoTextContainer}>
-            <Text style={[styles.demoText, { color: item.hexCode }]}>
-              This is an example of how your text will look with this theme applied.
+            <Text
+              style={[styles.demoText, { color: item.hexCode }]}
+            >
+              This is an example of how your text will look with this
+              theme applied.
             </Text>
           </View>
         </TouchableOpacity>
@@ -99,7 +117,8 @@ const ThemeItem = React.memo(({ item, index, scrollX, onSelect }) => {
 const ThemeScreen = () => {
   const [selectedTheme, setSelectedTheme] = useState(null);
   const [visible, setVisible] = useState(false);
-  const { setThemeColor, setTextColor, themeColor, textColor } = useContext(ThemeContext);
+  const { setThemeColor, setTextColor, themeColor, textColor } =
+    useContext(ThemeContext);
   const scrollX = useRef(new Animated.Value(0)).current;
   const animatedValue = useRef(new Animated.Value(0)).current;
 
@@ -117,20 +136,26 @@ const ThemeScreen = () => {
     if (selectedTheme) {
       setThemeColor(selectedTheme.backgroundColor);
       setTextColor(selectedTheme.hexCode);
-      await AsyncStorage.setItem('themeColor', selectedTheme.backgroundColor);
-      await AsyncStorage.setItem('textColor', selectedTheme.hexCode);
+      await SecureStore.setItemAsync(
+        'themeColor',
+        selectedTheme.backgroundColor
+      );
+      await SecureStore.setItemAsync('textColor', selectedTheme.hexCode);
       setVisible(true);
     }
   }, [selectedTheme, setThemeColor, setTextColor]);
 
-  const renderItem = useCallback(({ item, index }) => (
-    <ThemeItem
-      item={item}
-      index={index}
-      scrollX={scrollX}
-      onSelect={handleThemeSelect}
-    />
-  ), [scrollX, handleThemeSelect]);
+  const renderItem = useCallback(
+    ({ item, index }) => (
+      <ThemeItem
+        item={item}
+        index={index}
+        scrollX={scrollX}
+        onSelect={handleThemeSelect}
+      />
+    ),
+    [scrollX, handleThemeSelect]
+  );
 
   const keyExtractor = useCallback((item) => item.backgroundColor, []);
 
@@ -140,10 +165,16 @@ const ThemeScreen = () => {
   });
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: themeColor }]}>
-      <StatusBar barStyle={textColor === '#fff' ? 'light-content' : 'dark-content'} />
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: themeColor }]}
+    >
+      <StatusBar
+        barStyle={textColor === '#fff' ? 'light-content' : 'dark-content'}
+      />
       <View style={styles.header}>
-        <Text style={[styles.title, { color: textColor }]}>Choose Your Theme</Text>
+        <Text style={[styles.title, { color: textColor }]}>
+          Choose Your Theme
+        </Text>
       </View>
       <Animated.FlatList
         data={Object.values(colorThemes)}
@@ -153,22 +184,35 @@ const ThemeScreen = () => {
         pagingEnabled
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.listContainer}
-        snapToAlignment="center"  // Center alignment fix
+        snapToAlignment="center"
         decelerationRate="fast"
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { x: scrollX } } }],
           { useNativeDriver: true }
         )}
         scrollEventThrottle={16}
-        bounces={false} // Ensures smooth snapping behavior
+        bounces={false}
       />
       {selectedTheme && (
-        <Animated.View style={[styles.footer, { transform: [{ scale: applyButtonScale }] }]}>
+        <Animated.View
+          style={[
+            styles.footer,
+            { transform: [{ scale: applyButtonScale }] },
+          ]}
+        >
           <TouchableOpacity
-            style={[styles.applyButton, { backgroundColor: selectedTheme.hexCode }]}
+            style={[
+              styles.applyButton,
+              { backgroundColor: selectedTheme.hexCode },
+            ]}
             onPress={handleApplyTheme}
           >
-            <Text style={[styles.applyButtonText, { color: selectedTheme.backgroundColor }]}>
+            <Text
+              style={[
+                styles.applyButtonText,
+                { color: selectedTheme.backgroundColor },
+              ]}
+            >
               Apply Theme
             </Text>
           </TouchableOpacity>
@@ -180,14 +224,15 @@ const ThemeScreen = () => {
           onClose={() => setVisible(false)}
           background={selectedTheme.backgroundColor}
           textColor={selectedTheme.hexCode}
-          type='sucess'
-          title='Theme Applied!'
-          message='Your theme has been applied successfully.'
+          type="success"
+          title="Theme Applied!"
+          message="Your theme has been applied successfully."
         />
       )}
     </SafeAreaView>
   );
 };
+
 
 
 const styles = StyleSheet.create({

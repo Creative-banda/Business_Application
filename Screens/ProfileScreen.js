@@ -1,8 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { StyleSheet, View, Text, Image } from 'react-native';
 import ProfileButton from '../ProfileComponents/ProfileButton';
-import { auth } from '../firebaseConfig';
-import { signOut } from 'firebase/auth'; 
 import CustomNotification from '../GlobalComponents/Customalert';
 import { ThemeContext } from '../Globals/ThemeContext';
 

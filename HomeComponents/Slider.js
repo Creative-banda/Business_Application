@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, FlatList, Image, Dimensions, TouchableWithoutFeedback } from 'react-native';
-import { database } from '../firebaseConfig';
-import { ref, get } from 'firebase/database';
+import {BASE_URL} from '@env';
 
 // Get screen width to adjust image size dynamically
 const screenWidth = Dimensions.get('window').width;
@@ -11,25 +10,17 @@ const Slider = ({navigation}) => {
     const [data, setData] = useState([]);
 
     useEffect(() => {
-        initializingUsers()
+        initializingShops()
     }, [])
 
-    const initializingUsers = async () => {
+    const initializingShops = async () => {
         try {
-            let SearchScreenData = ref(database, 'All_Business');
-            const snapshot = await get(SearchScreenData);
-            if (snapshot.exists()) {
-                const userData = snapshot.val();
-                const formattedData = Object.values(userData);
-    
-                const shuffledData = formattedData.sort(() => Math.random() - 0.5);
-    
-                const randomData = shuffledData.slice(0, 4);
-    
-                setData(randomData);
-    
-            } else {
-                console.log('No data available');
+            const response = await fetch(`${BASE_URL}/businesses`);
+            const json = await response.json();
+            console.log(json);
+            
+            if (json.success) {
+                setData(json.businesses);
             }
         } catch (err) {
             console.log('Error:', err);

@@ -1,10 +1,8 @@
 import * as Font from 'expo-font';
-import { auth } from './firebaseConfig';
 import React, { useState, useEffect } from 'react';
-import { onAuthStateChanged } from 'firebase/auth';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SecureStore from 'expo-secure-store';
 
 import InitalizePage from './Screens/InitalizePage';
 import Tab_Navigation from './Globals/Tab_Navigation';
@@ -19,13 +17,15 @@ import ForgetPassword from './Screens/ForgetPassword';
 import OpenMail from './Screens/OpenMail';
 import Feedback from './Screens/Feedback';
 import CategoryScreen from './Screens/CategoryScreen';
+import Toast from 'react-native-toast-message';
+import { toastConfig } from './GlobalComponents/Customalert';
+
 
 const Stack = createStackNavigator();
 
 const App = () => {
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [initialRoute, setInitialRoute] = useState(null);
-  const [userDetails, setUserDetails] = useState(null);
 
   useEffect(() => {
     loadFonts();
@@ -42,42 +42,33 @@ const App = () => {
 
   const checkInitialLaunch = async () => {
     try {
-      const hasOpenedBefore = await AsyncStorage.getItem('hasOpenedBefore');
+      const hasOpenedBefore = await SecureStore.getItemAsync('hasOpenedBefore');
 
       if (!hasOpenedBefore) {
-        await AsyncStorage.setItem('hasOpenedBefore', 'true');
+        await SecureStore.setItemAsync('hasOpenedBefore', 'true');
         setInitialRoute('InitPage');
       } else {
         checkUserAuthentication();
       }
     } catch (error) {
-      console.log('Error reading from AsyncStorage:', error);
-      setInitialRoute('Login'); 
+      console.log('Error reading from SecureStore:', error);
+      setInitialRoute('Login');
     }
   };
 
-  const checkUserAuthentication = () => {
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            // User is signed in
-            if (user.emailVerified) {
-              
-                setUserDetails(user);
-                setInitialRoute('HomeScreen');
-            } else {
-                // If the email is not verified, redirect to Login
-                setInitialRoute('Login');
-            }
-        } else {
-            // No user is signed in
-            setInitialRoute('Login');
-        }
-    });
-};
+  const checkUserAuthentication = async () => {
+    const token = await SecureStore.getItemAsync('token');
 
+
+    if (token) {
+      setInitialRoute('HomeScreen');
+    } else {
+      setInitialRoute('Login');
+    }
+  };
 
   if (!fontsLoaded || !initialRoute) {
-    return null; // Or a loading screen component
+    return null;
   }
 
   return (
@@ -85,28 +76,24 @@ const App = () => {
       <NavigationContainer>
         <Stack.Navigator initialRouteName={initialRoute}>
           <Stack.Screen name="InitPage" component={InitalizePage} options={{ headerShown: false }} />
-          <Stack.Screen 
-            name="HomeScreen" 
-            component={Tab_Navigation} 
-            options={{ headerShown: false }}
-            initialParams={{ userDetails: { 
-              uid: userDetails?.uid, 
-              email: userDetails?.email, 
-              name: userDetails?.displayName 
-          } }}
-          />
+          <Stack.Screen name="HomeScreen" component={Tab_Navigation} options={{ headerShown: false }} />
           <Stack.Screen name="ThemeScreen" component={ThemeScreen} options={{ headerShown: false }} />
           <Stack.Screen name="Business_Info" component={Business_Info} options={{ headerShown: false }} />
           <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
           <Stack.Screen name="SignUp" component={SignUpScreen} options={{ headerShown: false }} />
           <Stack.Screen name="AddBusiness" component={AddBusiness} />
           <Stack.Screen name="MyBusiness" component={MyBusiness} />
-          <Stack.Screen name="ForgetPassword" component={ForgetPassword} options={{headerShown:false}}/>
-          <Stack.Screen name="OpenMail" component={OpenMail} options={{headerShown:false}}/>
-          <Stack.Screen name="Feedback" component={Feedback} options={{headerShown:false}}/>
-          <Stack.Screen name="CateGorySelection" component={CategoryScreen} options={{headerShown:false}}/>
+          <Stack.Screen name="ForgetPassword" component={ForgetPassword} options={{ headerShown: false }} />
+          <Stack.Screen name="OpenMail" component={OpenMail} options={{ headerShown: false }} />
+          <Stack.Screen name="Feedback" component={Feedback} options={{ headerShown: false }} />
+          <Stack.Screen name="CateGorySelection" component={CategoryScreen} options={{ headerShown: false }} />
         </Stack.Navigator>
       </NavigationContainer>
+      <Toast
+        config={toastConfig} // Add this line
+        position='bottom'
+        bottomOffset={80}
+      />
     </ThemeProvider>
   );
 };

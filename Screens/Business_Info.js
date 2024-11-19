@@ -4,8 +4,6 @@ import AreYouSure from '../GlobalComponents/AreYouSure'
 import CustomAlert from '../GlobalComponents/Customalert'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import { ref, remove } from "firebase/database";
-import { database } from '../firebaseConfig'
 import { StyleSheet, Text, View, Image, TextInput, ScrollView, TouchableOpacity, Linking, Animated } from 'react-native'
 
 const Business_Info = ({ route, navigation }) => {

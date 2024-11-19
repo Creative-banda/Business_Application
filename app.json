@@ -1,11 +1,12 @@
 {
   "expo": {
-    "name": "ShopSphere",
-    "slug": "ShopSphere",
+    "name": "ShopShpere",
+    "slug": "ShopShpere",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/AppIcon.png",
     "userInterfaceStyle": "light",
+    "newArchEnabled": true,
     "splash": {
       "image": "./assets/SplashScreen.png",
       "resizeMode": "contain",

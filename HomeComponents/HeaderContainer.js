@@ -1,6 +1,4 @@
 import ThreeDot from './ThreeDot';
-import { signOut } from 'firebase/auth';
-import { auth } from '../firebaseConfig';
 import React, { useContext, useState } from 'react';
 import InputText from '../GlobalComponents/InputText';
 import { ThemeContext } from '../Globals/ThemeContext';

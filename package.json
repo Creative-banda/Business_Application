@@ -1,7 +1,7 @@
 {
-  "name": "businessapp",
+  "name": "shopshpere",
   "version": "1.0.0",
-  "main": "expo/AppEntry.js",
+  "main": "index.js",
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
@@ -9,35 +9,31 @@
     "web": "expo start --web"
   },
   "dependencies": {
-    "@expo/metro-runtime": "~3.2.3",
-    "@react-native-async-storage/async-storage": "1.23.1",
-    "@react-native-picker/picker": "2.7.5",
-    "@react-navigation/bottom-tabs": "^6.6.1",
-    "@react-navigation/native": "^6.1.18",
-    "@react-navigation/native-stack": "^6.11.0",
-    "@react-navigation/stack": "^6.4.1",
-    "expo": "^51.0.39",
-    "expo-constants": "^16.0.2",
-    "expo-font": "^12.0.10",
-    "expo-image-picker": "^15.0.7",
-    "expo-intent-launcher": "~11.0.1",
-    "expo-linear-gradient": "^13.0.2",
-    "expo-location": "~17.0.1",
-    "expo-secure-store": "~13.0.2",
-    "expo-status-bar": "~1.12.1",
-    "firebase": "^11.0.2",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "react-native": "0.74.5",
+    "@react-native-picker/picker": "^2.9.0",
+    "@react-navigation/bottom-tabs": "^7.0.3",
+    "@react-navigation/native": "^7.0.2",
+    "@react-navigation/stack": "^7.0.2",
+    "axios": "^1.7.7",
+    "expo": "^52.0.7",
+    "expo-font": "^13.0.1",
+    "expo-image-picker": "^16.0.2",
+    "expo-intent-launcher": "^12.0.1",
+    "expo-linear-gradient": "^14.0.1",
+    "expo-location": "^18.0.1",
+    "expo-secure-store": "~14.0.0",
+    "expo-status-bar": "~2.0.0",
+    "lodash.pick": "^4.4.0",
+    "lodash.template": "^4.5.0",
+    "react": "18.3.1",
+    "react-native": "0.76.2",
     "react-native-dotenv": "^3.4.11",
     "react-native-email-link": "^1.16.1",
-    "react-native-svg": "^15.2.0",
-    "react-native-vector-icons": "^10.2.0",
-    "react-native-web": "~0.19.10"
+    "react-native-svg": "15.8.0",
+    "react-native-toast-message": "^2.2.1",
+    "react-native-vector-icons": "^10.2.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.0",
-    "react-native-svg-transformer": "^1.5.0"
+    "@babel/core": "^7.20.0"
   },
   "private": true
 }

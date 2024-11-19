@@ -1,6 +1,4 @@
 import React from 'react';
-import { ref, get } from 'firebase/database';
-import { database } from '../firebaseConfig';
 import ItemCard from '../SearchComponents/ItemCard';
 import { StyleSheet, View, Text, FlatList } from 'react-native';
 

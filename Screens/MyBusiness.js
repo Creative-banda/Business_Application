@@ -1,6 +1,4 @@
 import React from 'react';
-import { ref, onValue, off } from 'firebase/database';
-import { database } from '../firebaseConfig';
 import { StyleSheet, View, FlatList, Text, Image, TouchableOpacity, Linking, TouchableWithoutFeedback } from 'react-native';
 
 const MyBusiness = ({ route, navigation }) => {

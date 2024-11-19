@@ -1,14 +1,14 @@
 import React, { useContext } from 'react';
 import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native';
 import { ThemeContext } from '../Globals/ThemeContext';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SecureStore from 'expo-secure-store';
 
 const InitalizePage = ({ navigation }) => {
     const { themeColor } = useContext(ThemeContext);
 
     const handleClick = async () => {
         try {
-            await AsyncStorage.setItem('hasOpenedBefore', 'true');
+            await SecureStore.setItemAsync('hasOpenedBefore', 'true');
             navigation.navigate("Login");
         } catch (error) {
             console.log('Failed to save to AsyncStorage', error);

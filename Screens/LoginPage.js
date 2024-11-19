@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Ionicons } from '@expo/vector-icons';
-import { auth } from '../firebaseConfig';
-import { signInWithEmailAndPassword } from 'firebase/auth';
 import CustomAlert from '../GlobalComponents/Customalert';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, Animated, ActivityIndicator } from 'react-native';
+import { BASE_URL } from '@env';
+import axios from 'axios';
+import * as SecureStore from 'expo-secure-store';
+import { ThemeContext } from '../Globals/ThemeContext';
 
 const LoginScreen = ({ navigation }) => {
     const [email, setEmail] = useState('');
@@ -13,85 +15,52 @@ const LoginScreen = ({ navigation }) => {
     const [alertType, setAlertType] = useState('success');
     const [loading, setLoading] = useState(false);
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-    const fadeAnim = new Animated.Value(0);
-
-    React.useEffect(() => {
-        Animated.timing(fadeAnim, {
-            toValue: 1,
-            duration: 1000,
-            useNativeDriver: true,
-        }).start();
-    }, []);
+    const {setUserDetails} = useContext(ThemeContext);
 
     const handleLogin = async () => {
-        if (email === "" || password === "") {
-            setAlertMessage('Please fill in login credentials!');
-            setAlertType('error');
-            setAlertVisible(true);
-        } else {
-            setLoading(true);
-            try {
-                const userCredential = await signInWithEmailAndPassword(auth, email, password);
-                const user = userCredential.user;
-    
-                if (user.emailVerified) {
-                    navigation.navigate("HomeScreen", {
-                        userDetails: {
-                            uid: user?.uid,
-                            email: user?.email,
-                            name: user?.displayName
-                        }
-                    });
-                } else {
-                    setAlertMessage('Please verify your email before logging in.');
-                    setAlertType('error');
-                    setAlertVisible(true);
-                }
-            } catch (error) {
-                handleLoginError(error);
-            } finally {
-                setLoading(false);
-            }
-        }
-    };
-    
-    const handleLoginError = (error) => {
-        const errorCode = error.code;
+        setLoading(true);
+        const payload = {
+            mail: email,
+            password: password
+        };
         
-        switch (errorCode) {
-            case 'auth/invalid-email':
-                setAlertMessage('Invalid email address format.');
-                break;
-            case 'auth/user-disabled':
-                setAlertMessage('This user account has been disabled.');
-                break;
-            case 'auth/user-not-found':
-                setAlertMessage('No user found with this email.');
-                break;
-            case 'auth/wrong-password':
-                setAlertMessage('Incorrect password. Please try again.');
-                break;
-            case 'auth/invalid-credential': // Handling this specifically since it's appearing in the log
-                setAlertMessage('Invalid login credentials. Please try again.');
-                break;
-            case 'auth/too-many-requests':
-                setAlertMessage('Too many login attempts. Please try again after some time.');
-                break;
-            default:
-                setAlertMessage('Login failed. Please try again.');
+
+        try {
+            const response = await axios.post( `${BASE_URL}/auth/login`, payload, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (response.data.success) {
+                setAlertMessage('Login Successful');
+                setAlertType('success');
+                setAlertVisible(true);
+                console.log(response.data.user.token);
+                
+                await SecureStore.setItemAsync('token', response.data.user.token);   
+                console.log("Token Set in AsyncStorage");
+                setUserDetails(response.data.user);
+                navigation.navigate('HomeScreen');
+            }
+        } catch (error) {
+                console.log('Error Response:', error.response.data);
+                setAlertMessage(error.response.data.message);
+                setAlertType('error');
+                setAlertVisible(true);
+        }finally{
+            setLoading(false);
         }
-    
-        setAlertType('error');
-        setAlertVisible(true);
     };
-    
+
+
     return (
         <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : "height"}
             style={styles.container}
         >
 
-            <Animated.View style={[styles.formContainer, { opacity: fadeAnim }]}>
+            <View style={[styles.formContainer]}>
                 <Text style={styles.header}>Welcome Back</Text>
                 <Text style={styles.subHeader}>Sign in to continue</Text>
 
@@ -102,7 +71,7 @@ const LoginScreen = ({ navigation }) => {
                         placeholder="Email"
                         placeholderTextColor="#999"
                         value={email}
-                        onChangeText={setEmail}
+                        onChangeText={(e) => setEmail(e)}
                         keyboardType="email-address"
                         autoCapitalize="none"
                     />
@@ -116,7 +85,7 @@ const LoginScreen = ({ navigation }) => {
                         placeholder="Password"
                         placeholderTextColor="#999"
                         value={password}
-                        onChangeText={setPassword}
+                        onChangeText={(e) => setPassword(e)}
                         secureTextEntry={!isPasswordVisible}
                         autoCapitalize="none"
                     />
@@ -125,7 +94,7 @@ const LoginScreen = ({ navigation }) => {
                     </TouchableOpacity>
                 </View>
 
-                <TouchableOpacity style={styles.forgotPassword} onPress={()=>navigation.navigate("ForgetPassword")}>
+                <TouchableOpacity style={styles.forgotPassword} onPress={() => navigation.navigate("ForgetPassword")}>
                     <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
                 </TouchableOpacity>
 
@@ -141,7 +110,7 @@ const LoginScreen = ({ navigation }) => {
                     </TouchableOpacity>
                 </View>
 
-            </Animated.View>
+            </View>
             <View style={{ position: 'absolute', width: '95%', bottom: 10 }}>
 
                 <CustomAlert

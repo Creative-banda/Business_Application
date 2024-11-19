@@ -2,11 +2,8 @@ import * as Location from 'expo-location';
 import * as ImagePicker from 'expo-image-picker';
 import React, { useState } from 'react';
 import { Picker } from '@react-native-picker/picker';
-import { getDatabase, ref, set,  } from 'firebase/database';
-import { getAuth } from 'firebase/auth'; 
 import { Entypo, MaterialIcons } from '@expo/vector-icons';
 import CustomAlert from '../GlobalComponents/Customalert';
-import { ref as storageRef, uploadBytes, getDownloadURL, getStorage } from 'firebase/storage';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView, Image, Alert } from 'react-native';
 
 const AddBusiness = () => {

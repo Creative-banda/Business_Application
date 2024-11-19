@@ -1,9 +1,7 @@
 import React from 'react';
-import { database } from '../firebaseConfig';
 import { ThemeContext } from '../Globals/ThemeContext';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import CustomAlert from '../GlobalComponents/Customalert';
-import { ref, set, get, update } from 'firebase/database';
 import ThankYouMessage from '../FeedbackComponents/ThankYouMessage';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, FlatList, KeyboardAvoidingView, Platform, ScrollView, ActivityIndicator } from 'react-native';
 

@@ -4,8 +4,6 @@ import InputText from '../GlobalComponents/InputText';
 import Category from '../GlobalComponents/Category';
 import { ThemeContext } from '../Globals/ThemeContext';
 import ItemCard from '../SearchComponents/ItemCard';
-import { database } from '../firebaseConfig';
-import { ref, onValue } from 'firebase/database';
 
 const SearchScreen = ({ navigation }) => {
 
