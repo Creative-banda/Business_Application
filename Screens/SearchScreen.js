@@ -15,24 +15,34 @@ const SearchScreen = ({ navigation }) => {
 
     // Listener for real-time updates
     useEffect(() => {
-        const userDataRef = ref(database, 'All_Business');
-        
-        const unsubscribe = onValue(userDataRef, (snapshot) => {
-            if (snapshot.exists()) {
-                const userData = snapshot.val();
-                const formattedData = Object.values(userData);
-                setData(formattedData);
-                setFilteredData(formattedData); // Initially set the filtered data to all data
-            } else {
-                console.log('No data available');
-            }
-        }, (error) => {
-            console.log('Error:', error);
-        });
-
-        // Cleanup the listener when component unmounts
-        return () => unsubscribe();
+        initializingShops();
     }, []);
+
+    const initializingShops = async () => {
+        console.log("Initializing Shops");
+        
+        const token = await SecureStore.getItemAsync('token');
+        try {
+            const response = await fetch(`${BASE_URL}/business`,{
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+            // Check if the response status is OK (status 200-299)
+            if (!response.ok) {
+                console.error(`Error: ${response.status} ${response.statusText}`);
+                return;
+            }
+    
+            const data = await response.json(); 
+            
+            if (data.data) {
+                setData(data.data); // Set the relevant data
+            }
+        } catch (err) {
+            console.error('Error:', err);
+        }
+    };
 
     // Filter data by selected category
     useEffect(() => {

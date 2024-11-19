@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, FlatList, Image, Dimensions, TouchableWithoutFeedback } from 'react-native';
-import {BASE_URL} from '@env';
+import { BASE_URL } from '@env';
+import * as SecureStore from 'expo-secure-store';
+
 
 // Get screen width to adjust image size dynamically
 const screenWidth = Dimensions.get('window').width;
@@ -14,22 +16,33 @@ const Slider = ({navigation}) => {
     }, [])
 
     const initializingShops = async () => {
+        
+        const token = await SecureStore.getItemAsync('token');
         try {
-            const response = await fetch(`${BASE_URL}/businesses`);
-            const json = await response.json();
-            console.log(json);
+            const response = await fetch(`${BASE_URL}/business`,{
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+    
+            // Check if the response status is OK (status 200-299)
+            if (!response.ok) {
+                console.error(`Error: ${response.status} ${response.statusText}`);
+                return;
+            }
+    
+            const data = await response.json(); 
             
-            if (json.success) {
-                setData(json.businesses);
+            if (data.data) {
+                setData(data.data); // Set the relevant data
             }
         } catch (err) {
-            console.log('Error:', err);
+            console.error('Error:', err);
         }
     };
     
 
-    const renderItem = ({ item }) => {
-
+    const renderItem = ({ item }) => {      
         return (
             <TouchableWithoutFeedback onPress={()=>navigation.navigate("Business_Info", { item: item })}>
                 <View style={styles.sliderItem}>
@@ -46,7 +59,7 @@ const Slider = ({navigation}) => {
                 data={data}
                 horizontal
                 showsHorizontalScrollIndicator={false}
-                keyExtractor={(item) => item.id}
+                keyExtractor={(item) => item._id}
                 renderItem={renderItem}
                 pagingEnabled
             />

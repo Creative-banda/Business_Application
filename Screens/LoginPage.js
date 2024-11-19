@@ -18,6 +18,8 @@ const LoginScreen = ({ navigation }) => {
     const {setUserDetails} = useContext(ThemeContext);
 
     const handleLogin = async () => {
+        console.log(BASE_URL);
+        
         setLoading(true);
         const payload = {
             mail: email,
