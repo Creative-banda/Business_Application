@@ -4,6 +4,7 @@ import { StyleSheet, View, Text, FlatList, Image, Dimensions, TouchableWithoutFe
 import Icon from 'react-native-vector-icons/AntDesign';
 import { ThemeContext } from '../Globals/ThemeContext';
 import { BASE_URL } from '@env';
+import { useIsFocused } from '@react-navigation/native';
 
 // Get screen width to adjust image size dynamically
 const screenWidth = Dimensions.get('window').width;
@@ -12,14 +13,17 @@ const screenWidth = Dimensions.get('window').width;
 const BusinessSlider = ({ navigation }) => {
     const { textColor, token } = useContext(ThemeContext)
     const [businessData, setBusinessData] = useState([])
+    const isFocused = useIsFocused();
 
 
     useEffect(() => {
-        initShop()
-    }, [token])
+        if (isFocused) {
+            initShop()
+        }
+    }, [token, isFocused])
 
-    const initShop = async () => {        
-        if (!token) {return}
+    const initShop = async () => {
+        if (!token) { return }        
         try {
             const response = await fetch(`${BASE_URL}/business`, {
                 headers: {
@@ -30,9 +34,9 @@ const BusinessSlider = ({ navigation }) => {
                 console.error(`Error from Business Slider: ${response.status} ${response.statusText}`);
                 return;
             }
-            const data = await response.json();            
+            const data = await response.json();
             if (data.data) {
-                setBusinessData(data.data); 
+                setBusinessData(data.data);
             }
         } catch (err) {
             console.error('Error From Busines Slider :', err);
@@ -45,11 +49,11 @@ const BusinessSlider = ({ navigation }) => {
                 <View style={[styles.sliderItem, { backgroundColor: textColor }]} >
                     <Image source={{ uri: item.image }} style={styles.image} />
                     <Text style={styles.BusinessName}>
-                        {item.name}
+                        {item.shopName}
                     </Text>
                     <Text style={{ fontFamily: 'Outfit', fontSize: 16, paddingLeft: 10 }}>{item.address}</Text>
                     <View style={styles.businessInfo}>
-                        <Text style={{ fontFamily: 'Outfit-bold', fontSize: 16 }}>{item.rating}</Text>
+                        <Text style={{ fontFamily: 'Outfit-bold', fontSize: 16 }}>{item.currentrating}</Text>
                         <Icon name="star" color='#FFD700' size={24} />
                     </View>
                 </View>

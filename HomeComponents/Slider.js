@@ -3,30 +3,29 @@ import { StyleSheet, View, Text, FlatList, Image, Dimensions, TouchableWithoutFe
 import { BASE_URL } from '@env';
 import { ThemeContext } from '../Globals/ThemeContext';
 import axios from 'axios';
+import { useIsFocused } from '@react-navigation/native';
 
-// Get screen width to adjust image size dynamically
 const screenWidth = Dimensions.get('window').width;
 
-const Slider = ({navigation}) => {
-
+const Slider = ({ navigation }) => {
     const [data, setData] = useState([]);
-    const {token} = useContext(ThemeContext);
-   
+    const { token } = useContext(ThemeContext);
+    const isFocused = useIsFocused();
 
     useEffect(() => {
-        initializingShops()
-    }, [token])
+        if (isFocused) {
+            initializingShops();
+        }
+    }, [isFocused, token]);
 
     const initializingShops = async () => {
-        if (!token) {return}
+        if (!token) { return }
         try {
             const response = await axios.get(`${BASE_URL}/business`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 },
             });
-            console.log("Slider Response: ");
-            
             if (!response) {
                 console.error(`Error from Slider: ${response.status} ${response.statusText}`);
                 return;
@@ -34,23 +33,23 @@ const Slider = ({navigation}) => {
             const data = response.data;
 
             if (data.data) {
-                setData(data.data); 
+                setData(data.data);
             }
         } catch (err) {
             console.error('Error:', err);
         }
     };
 
-    const renderItem = ({ item }) => {      
+    const renderItem = ({ item }) => {
         return (
-            <TouchableWithoutFeedback onPress={()=>navigation.navigate("Business_Info", { item: item })}>
+            <TouchableWithoutFeedback onPress={() => navigation.navigate("Business_Info", { item: item })}>
                 <View style={styles.sliderItem}>
                     <Image source={{ uri: item.image }} style={styles.image} />
                 </View>
             </TouchableWithoutFeedback>
         )
     }
-    
+
     return (
         <View style={styles.container}>
             <Text style={[styles.specialText, { color: '#000' }]}>Shops at Your Fingertips</Text>

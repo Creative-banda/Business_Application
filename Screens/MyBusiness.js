@@ -2,34 +2,9 @@ import React from 'react';
 import { StyleSheet, View, FlatList, Text, Image, TouchableOpacity, Linking, TouchableWithoutFeedback } from 'react-native';
 
 const MyBusiness = ({ route, navigation }) => {
-    const [data, setData] = React.useState([]);
-    const { email } = route.params;
+    const { data } = route.params;
     
-    React.useEffect(() => {
-        // Create a reference to the database node
-        const userEmail = email.replace(/\./g, '_');
-        const dbRef = ref(database, `Users/${userEmail}`);
-        
-        // Set up the real-time listener
-        onValue(dbRef, (snapshot) => {
-            if (snapshot.exists()) {
-                const userData = snapshot.val();
-                const formattedData = Object.values(userData);
-                setData(formattedData);
-            } else {
-                console.log('No data available');
-                setData([]);
-            }
-        }, (error) => {
-            console.error('Error setting up listener:', error);
-        });
-
-        // Cleanup function to remove the listener when component unmounts
-        return () => {
-            off(dbRef);
-        };
-    }, []);
-
+    
     const openWebsite = (websiteUrl) => {
         if (websiteUrl) {
             Linking.openURL(websiteUrl).catch((err) =>
@@ -43,7 +18,7 @@ const MyBusiness = ({ route, navigation }) => {
 
     const renderItem = ({ item }) => {
         return (
-            <TouchableWithoutFeedback onPress={() => navigation.navigate("Business_Info", { item: item, Owner: "Mine", email: email })}>
+            <TouchableWithoutFeedback onPress={() => navigation.navigate("Business_Info", { item: item, Owner: "Mine" })}>
                 <View style={styles.card}>
                     {/* Image */}
                     <Image source={{ uri: item.image }} style={styles.image} />
@@ -55,7 +30,7 @@ const MyBusiness = ({ route, navigation }) => {
                         <Text style={styles.about}>{item.about}</Text>
                         <Text style={styles.address}>{item.address}</Text>
                         <Text style={styles.contact}>Contact: {item.contact}</Text>
-                        <Text style={styles.rating}>Rating: {item.rating ? item.rating : "Not Rating"}</Text>
+                        <Text style={styles.rating}>Rating: {item.currentrating}</Text>
                     </View>
 
                     {/* Website Button */}
@@ -77,7 +52,7 @@ const MyBusiness = ({ route, navigation }) => {
         <View style={styles.container}>
             <FlatList
                 data={data}
-                keyExtractor={(item) => item.id}
+                keyExtractor={(item) => item._id}
                 renderItem={renderItem}
                 ListEmptyComponent={emptyListComponent}
                 contentContainerStyle={data.length === 0 ? styles.flatListEmpty : null}

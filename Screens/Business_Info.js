@@ -9,7 +9,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { StyleSheet, Text, View, Image, TextInput, ScrollView, TouchableOpacity, Linking, Animated, ActivityIndicator } from 'react-native'
 
 const Business_Info = ({ route, navigation }) => {
-  const { item, Owner, email } = route.params;
+  const { item, Owner } = route.params;
   const [Input, setInput] = useState('');
   const [rating, setRating] = useState(0);
   const [type, setType] = useState("error");
@@ -124,15 +124,8 @@ const Business_Info = ({ route, navigation }) => {
       user: userDetails._id,
       business: item._id
 
-    }
-    console.log(feedback);
-    console.log(`${BASE_URL}/review`);
-    
-    
-    try {
-      console.log(userDetails.token);
-      
-
+    }   
+    try { 
       const response = await axios.post(`${BASE_URL}/review`, feedback, {
         headers: {
           'Authorization' : `Bearer ${userDetails.token}`
@@ -238,7 +231,7 @@ const styles = StyleSheet.create({
 
   about: { paddingVertical: 30, gap: 10, },
 
-  InputText: { borderWidth: 1, borderRadius: 20, paddingHorizontal: 20, paddingVertical: 13, fontFamily: 'Outfit', fontSize: 16, },
+  InputText: { borderWidth: 1, borderRadius: 8, paddingHorizontal: 20, paddingVertical: 13, fontFamily: 'Outfit', fontSize: 16, },
 
   button: { width: '100%', paddingVertical: 10, justifyContent: 'center', alignItems: 'center', borderRadius: 20, marginTop: 15, marginBottom: 30 },
 

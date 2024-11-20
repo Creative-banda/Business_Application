@@ -3,41 +3,41 @@ import { StyleSheet, View, Text, Image } from 'react-native';
 import ProfileButton from '../ProfileComponents/ProfileButton';
 import CustomNotification from '../GlobalComponents/Customalert';
 import { ThemeContext } from '../Globals/ThemeContext';
+import * as SecureStore from 'expo-secure-store';
 
-const ProfileScreen = ({ navigation ,route }) => {
-    const { userDetails } = route.params;
+const ProfileScreen = ({ navigation }) => {
     const [alertVisible, setAlertVisible] = useState(false);
-    const {textColor} = useContext(ThemeContext);
-
+    const { textColor, userDetails } = useContext(ThemeContext);  
+    console.log(userDetails);
+     
 
     const handleLogout = async () => {
         try {
-            await signOut(auth);
+            await SecureStore.deleteItemAsync('token');
+            await SecureStore.deleteItemAsync('id');
             navigation.navigate("Login");
             console.log("Sign out");
             setAlertVisible(false);
-
-
         } catch (error) {
             console.log("Error logging out: ", error);
         }
     };
 
     return (
-        <View style={[styles.container, {backgroundColor : textColor}]}>
+        <View style={[styles.container, { backgroundColor: textColor }]}>
             <View style={styles.headerContainer}>
                 <Text style={styles.header}>Profile</Text>
             </View>
             <View style={styles.userInfoContainer}>
                 <Image source={require('../assets/Images/icon.png')} style={styles.image} />
-                <Text style={styles.userName}>{userDetails.name}</Text>
-                <Text style={styles.userEmail}>{userDetails.email}</Text>
+                <Text style={styles.userName}>{userDetails.userName}</Text>
+                <Text style={styles.userEmail}>{userDetails.mail}</Text>
             </View>
             <View style={styles.iconHolder}>
                 <ProfileButton title="Add Business" Icon="MaterialIcons" IconName="add-business" bgColor="#FFD8C5" handleProfileButton={() => navigation.navigate("AddBusiness")} />
-                <ProfileButton title="My Business" Icon="Ionicons" IconName="business" bgColor="#E4C7FF" handleProfileButton={()=>navigation.navigate("MyBusiness", {email : userDetails.email})}/>
+                <ProfileButton title="My Business" Icon="Ionicons" IconName="business" bgColor="#E4C7FF" handleProfileButton={() => navigation.navigate("MyBusiness", { data: userDetails.userShop })} />
                 <ProfileButton title="Share App" Icon="MaterialIcons" IconName="share" bgColor="#FFD8C5" />
-                <ProfileButton title="Logout" Icon="MaterialIcons" IconName="logout" bgColor="#E4C7FF" handleProfileButton={() => setAlertVisible(true)}/>
+                <ProfileButton title="Logout" Icon="MaterialIcons" IconName="logout" bgColor="#E4C7FF" handleProfileButton={() => setAlertVisible(true)} />
             </View>
             <View style={styles.footer}>
                 <Text>Developed by Mohd Ahtesham © 2024</Text>
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 30,
         textAlign: 'center',
-        fontFamily : 'Outfit-bold',
+        fontFamily: 'Outfit-bold',
     },
 });
 

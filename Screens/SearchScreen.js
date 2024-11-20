@@ -5,7 +5,8 @@ import Category from '../GlobalComponents/Category';
 import { ThemeContext } from '../Globals/ThemeContext';
 import ItemCard from '../SearchComponents/ItemCard';
 import { BASE_URL } from '@env';
-const axios = require('axios');
+import axios from 'axios';
+import { useIsFocused } from '@react-navigation/native';
 
 const SearchScreen = ({ navigation }) => {
 
@@ -14,35 +15,36 @@ const SearchScreen = ({ navigation }) => {
     const [data, setData] = useState([]);
     const [search, setSearch] = useState('');
     const { themeColor, textColor, token } = useContext(ThemeContext);
+    const isFocused = useIsFocused();
 
 
     // Listener for real-time updates
     useEffect(() => {
-        initializingShops();
-    }, [token]);
+        if (isFocused) {
+            initializingShops();
+        }
+    }, [token, isFocused]);
 
     const initializingShops = async () => {
-        if (!token) {return;}
+        if (!token) { return; }        
         try {
-            const response = await fetch(`${BASE_URL}/business`, {
+            const response = await axios.get(`${BASE_URL}/business`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 },
             });
-            if (!response.ok) {
+            if (response.status !== 200) {
                 console.error(`Error from Business Slider: ${response.status} ${response.statusText}`);
                 return;
             }
-            const data = await response.json();            
-            if (data.data) {              
-                setData(data.data); 
+            const data = response.data;
+            if (data.data) {
+                setData(data.data);
             }
         } catch (err) {
-            console.error('Error From Busines Slider :', err);
+            console.error('Error From Business Slider:', err);
         }
     };
-
-    // Filter data by selected category
     useEffect(() => {
         if (selectedCategory) {
             const filteredData = data.filter(store => store.category === selectedCategory);
