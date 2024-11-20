@@ -17,9 +17,7 @@ const LoginScreen = ({ navigation }) => {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     const {setUserDetails} = useContext(ThemeContext);
 
-    const handleLogin = async () => {
-        console.log(BASE_URL);
-        
+    const handleLogin = async () => { 
         setLoading(true);
         const payload = {
             mail: email,
@@ -35,12 +33,14 @@ const LoginScreen = ({ navigation }) => {
                 setAlertMessage('Login Successful');
                 setAlertType('success');
                 setAlertVisible(true);
-                console.log(response.data.user.token);
-                
+               
                 await SecureStore.setItemAsync('token', response.data.user.token);   
-                console.log("Token Set in AsyncStorage");
+                await SecureStore.setItemAsync('id', response.data.user._id);   
+              
                 setUserDetails(response.data.user);
+                console.log("Login Successful");
                 navigation.navigate('HomeScreen');
+                
             }
         } catch (error) {
                 console.log('Error Response:', error.response.data);

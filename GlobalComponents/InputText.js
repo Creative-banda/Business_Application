@@ -7,7 +7,7 @@ import { ThemeContext } from '../Globals/ThemeContext';
 const InputText = ({ placeholder, value, onChangeText }) => {
     const { themeColor, textColor } = useContext(ThemeContext);
     return (
-        <View style={[styles.container, { borderColor : textColor}]}>
+        <View style={[styles.container, { borderColor : themeColor}]}>
             <Icon name='search' size={24} color={themeColor} />
             <TextInput
                 placeholder={placeholder}
@@ -24,11 +24,12 @@ const styles = StyleSheet.create({
         width: '100%',
         borderRadius: 10,
         backgroundColor: '#fff',
-        paddingVertical: 10,
         paddingHorizontal: 10,
         flexDirection: 'row',
         gap: 8,
         borderWidth: 1.3,
+        alignItems: 'center',
+        borderWidth : 1,
     },
     input: {
         flex: 1,

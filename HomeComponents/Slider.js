@@ -11,21 +11,21 @@ const Slider = ({navigation}) => {
 
     const [data, setData] = useState([]);
     const {token} = useContext(ThemeContext);
+   
 
     useEffect(() => {
         initializingShops()
-    }, [])
+    }, [token])
 
     const initializingShops = async () => {
+        if (!token) {return}
         try {
             const response = await axios.get(`${BASE_URL}/business`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 },
             });
-
-            // Check if the response status is OK (status 200-299)
-            if (!response.ok) {
+            if (!response) {
                 console.error(`Error from Slider: ${response.status} ${response.statusText}`);
                 return;
             }

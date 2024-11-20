@@ -16,15 +16,10 @@ const BusinessSlider = ({ navigation }) => {
 
     useEffect(() => {
         initShop()
-    }, [])
+    }, [token])
 
     const initShop = async () => {        
-        console.log('Token:', token);
-        if (!token) {
-            console.log('Token not found');
-            
-            return;
-        }
+        if (!token) {return}
         try {
             const response = await fetch(`${BASE_URL}/business`, {
                 headers: {

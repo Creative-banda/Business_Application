@@ -14,6 +14,8 @@ export const ThemeProvider = ({ children }) => {
   useEffect(() => {
     // Retrieve the theme color from SecureStore
     const getThemeColor = async () => {
+      console.log('Getting Theme Color');
+      
       try {
         const themeColor = await SecureStore.getItemAsync('themeColor');
         const textColor = await SecureStore.getItemAsync('textColor');

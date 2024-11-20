@@ -16,7 +16,7 @@ const ItemCard = ({ STORES_DATA, navigation }) => {
                 <View style={styles.sliderItem}>
                     <Image source={{ uri: item.image }} style={styles.image} />
                     <View style={styles.businessInfo}>
-                        <Text style={styles.BusinessName}>{item.name}</Text>
+                        <Text style={styles.BusinessName}>{item.shopName}</Text>
                         <Text style={styles.addressText} numberOfLines={1} ellipsizeMode="tail">
                             {truncateText(item.address, 8)}
                         </Text>
@@ -31,7 +31,7 @@ const ItemCard = ({ STORES_DATA, navigation }) => {
             <FlatList
                 data={STORES_DATA}
                 showsVerticalScrollIndicator={false}
-                keyExtractor={(item) => item.id.toString()}
+                keyExtractor={(item) => item._id.toString()}
                 renderItem={renderItem}
                 contentContainerStyle={styles.flatListContent}
             />

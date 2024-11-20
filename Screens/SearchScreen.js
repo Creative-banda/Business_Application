@@ -4,6 +4,8 @@ import InputText from '../GlobalComponents/InputText';
 import Category from '../GlobalComponents/Category';
 import { ThemeContext } from '../Globals/ThemeContext';
 import ItemCard from '../SearchComponents/ItemCard';
+import { BASE_URL } from '@env';
+const axios = require('axios');
 
 const SearchScreen = ({ navigation }) => {
 
@@ -11,36 +13,32 @@ const SearchScreen = ({ navigation }) => {
     const [selectedCategory, setSelectedCategory] = useState('');
     const [data, setData] = useState([]);
     const [search, setSearch] = useState('');
-    const { themeColor, textColor } = useContext(ThemeContext);
+    const { themeColor, textColor, token } = useContext(ThemeContext);
+
 
     // Listener for real-time updates
     useEffect(() => {
         initializingShops();
-    }, []);
+    }, [token]);
 
     const initializingShops = async () => {
-        console.log("Initializing Shops");
-        
-        const token = await SecureStore.getItemAsync('token');
+        if (!token) {return;}
         try {
-            const response = await fetch(`${BASE_URL}/business`,{
+            const response = await fetch(`${BASE_URL}/business`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 },
             });
-            // Check if the response status is OK (status 200-299)
             if (!response.ok) {
-                console.error(`Error: ${response.status} ${response.statusText}`);
+                console.error(`Error from Business Slider: ${response.status} ${response.statusText}`);
                 return;
             }
-    
-            const data = await response.json(); 
-            
-            if (data.data) {
-                setData(data.data); // Set the relevant data
+            const data = await response.json();            
+            if (data.data) {              
+                setData(data.data); 
             }
         } catch (err) {
-            console.error('Error:', err);
+            console.error('Error From Busines Slider :', err);
         }
     };
 
@@ -57,7 +55,7 @@ const SearchScreen = ({ navigation }) => {
     const handleSearch = (value) => {
         setSearch(value);
         const searchData = data.filter(item =>
-            item.name.toLowerCase().includes(value.toLowerCase()) ||
+            item.shopName.toLowerCase().includes(value.toLowerCase()) ||
             item.category.toLowerCase().includes(value.toLowerCase())
         );
         setFilteredData(searchData);
