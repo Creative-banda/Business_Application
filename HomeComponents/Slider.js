@@ -25,6 +25,8 @@ const Slider = ({navigation}) => {
                     'Authorization': `Bearer ${token}`,
                 },
             });
+            console.log("Slider Response: ");
+            
             if (!response) {
                 console.error(`Error from Slider: ${response.status} ${response.statusText}`);
                 return;

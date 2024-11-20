@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
-import { Ionicons } from '@expo/vector-icons';
+import { StyleSheet, View, Text, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView, ActivityIndicator } from 'react-native';
 import CustomAlert from '../GlobalComponents/Customalert';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView, ActivityIndicator, Alert } from 'react-native';
+import CustomInput from '../GlobalComponents/SignUpInput';
+import axios from 'axios';
+import { BASE_URL } from '@env';
 
 const SignUpScreen = ({ navigation }) => {
-    const [name, setName] = useState('');  // New state for storing the user's name
+    const [name, setName] = useState('');
     const [email, setEmail] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [loading, setLoading] = useState(false);
@@ -25,33 +28,26 @@ const SignUpScreen = ({ navigation }) => {
 
         setLoading(true);
         try {
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            const user = userCredential.user;
-
-            // Update the user's profile with the name
-            await updateProfile(user, { displayName: name });
-
-            await sendEmailVerification(user);
-
-            Alert.alert(
-                "Success",
-                "Account created successfully! Please check your email for verification.",
-                [{ text: "OK", onPress: () => navigation.navigate('Login') }]
-            );
-        } catch (error) {
-            let errorMessage = "An error occurred during sign up.";
-            switch (error.code) {
-                case 'auth/email-already-in-use':
-                    errorMessage = "This email is already in use.";
-                    break;
-                case 'auth/invalid-email':
-                    errorMessage = "Please enter a valid email address.";
-                    break;
-                case 'auth/weak-password':
-                    errorMessage = "The password is too weak. Please use a stronger password.";
-                    break;
+            const payload = { mail: email, password, userName: name, phoneNumber };
+            const response = await axios.post(`${BASE_URL}/auth/signup`, payload, {
+                headers: { 'Content-Type': 'application/json' },
+            });
+            if (response.data.success) {
+                setAlertMessage('Account created successfully! Please check your email for verification.');
+                setAlertType('success');
+                setAlertVisible(true);
+                setName('');
+                setEmail('');
+                setPhoneNumber('');
+                setPassword('');
+                setConfirmPassword('');
+                navigation.navigate('Login');
             }
-            Alert.alert("Error", errorMessage);
+        } catch (error) {
+            console.log('Error Response:', error.response.data);
+            setAlertMessage(error.response?.data?.message || 'An error occurred');
+            setAlertType('error');
+            setAlertVisible(true);
         } finally {
             setLoading(false);
         }
@@ -68,67 +64,48 @@ const SignUpScreen = ({ navigation }) => {
                     <Text style={styles.subHeader}>Sign up to get started!</Text>
                 </View>
                 <View style={styles.formContainer}>
-
-                    <View style={styles.inputContainer}>
-                        <Ionicons name="person-outline" size={24} color="#6200EE" style={styles.inputIcon} />
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Name"
-                            placeholderTextColor="#999"
-                            value={name}
-                            onChangeText={setName}
-                        />
-                    </View>
-
-                    <View style={styles.inputContainer}>
-                        <Ionicons name="mail-outline" size={24} color="#6200EE" style={styles.inputIcon} />
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Email"
-                            placeholderTextColor="#999"
-                            value={email}
-                            onChangeText={setEmail}
-                            keyboardType="email-address"
-                            autoCapitalize="none"
-                        />
-                    </View>
-
-                    <View style={styles.inputContainer}>
-                        <Ionicons name="lock-closed-outline" size={24} color="#6200EE" style={styles.inputIcon} />
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Password"
-                            placeholderTextColor="#999"
-                            value={password}
-                            onChangeText={setPassword}
-                            secureTextEntry={!isPasswordVisible}
-                            autoCapitalize="none"
-                        />
-                        <TouchableOpacity onPress={() => setIsPasswordVisible(!isPasswordVisible)} style={styles.eyeIcon}>
-                            <Ionicons name={isPasswordVisible ? "eye-off-outline" : "eye-outline"} size={24} color="#6200EE" />
-                        </TouchableOpacity>
-                    </View>
-
-                    <View style={styles.inputContainer}>
-                        <Ionicons name="lock-closed-outline" size={24} color="#6200EE" style={styles.inputIcon} />
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Confirm Password"
-                            placeholderTextColor="#999"
-                            value={confirmPassword}
-                            onChangeText={setConfirmPassword}
-                            secureTextEntry={!isConfirmPasswordVisible}
-                            autoCapitalize="none"
-                        />
-                        <TouchableOpacity onPress={() => setIsConfirmPasswordVisible(!isConfirmPasswordVisible)} style={styles.eyeIcon}>
-                            <Ionicons name={isConfirmPasswordVisible ? "eye-off-outline" : "eye-outline"} size={24} color="#6200EE" />
-                        </TouchableOpacity>
-                    </View>
-
+                    <CustomInput
+                        iconName="person-outline"
+                        placeholder="Name"
+                        value={name}
+                        onChangeText={setName}
+                    />
+                    <CustomInput
+                        iconName="mail-outline"
+                        placeholder="Email"
+                        value={email}
+                        onChangeText={setEmail}
+                        keyboardType="email-address"
+                        autoCapitalize="none"
+                    />
+                    <CustomInput
+                        iconName="phone-portrait-outline"
+                        placeholder="Phone Number"
+                        value={phoneNumber}
+                        onChangeText={setPhoneNumber}
+                        keyboardType="phone-pad"
+                    />
+                    <CustomInput
+                        iconName="lock-closed-outline"
+                        placeholder="Password"
+                        value={password}
+                        onChangeText={setPassword}
+                        secureTextEntry
+                        isPasswordVisible={isPasswordVisible}
+                        togglePasswordVisibility={() => setIsPasswordVisible(!isPasswordVisible)}
+                    />
+                    <CustomInput
+                        iconName="lock-closed-outline"
+                        placeholder="Confirm Password"
+                        value={confirmPassword}
+                        onChangeText={setConfirmPassword}
+                        secureTextEntry
+                        isPasswordVisible={isConfirmPasswordVisible}
+                        togglePasswordVisibility={() => setIsConfirmPasswordVisible(!isConfirmPasswordVisible)}
+                    />
                     <TouchableOpacity style={styles.button} onPress={handleSignUp}>
-                        {loading ? <ActivityIndicator size='small' /> : <Text style={styles.buttonText}>Sign Up</Text>}
+                        {loading ? <ActivityIndicator size="small" /> : <Text style={styles.buttonText}>Sign Up</Text>}
                     </TouchableOpacity>
-
                     <View style={styles.loginContainer}>
                         <Text style={styles.loginText}>Already have an account? </Text>
                         <TouchableOpacity onPress={() => navigation.navigate('Login')}>
@@ -178,35 +155,6 @@ const styles = StyleSheet.create({
     formContainer: {
         width: '100%',
     },
-    inputContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: '#FFF',
-        borderRadius: 8,
-        marginBottom: 20,
-        paddingHorizontal: 15,
-        elevation: 2,
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.1,
-        shadowRadius: 3.84,
-    },
-    inputIcon: {
-        marginRight: 10,
-    },
-    input: {
-        flex: 1,
-        height: 50,
-        fontFamily: 'Outfit',
-        fontSize: 16,
-        color: '#333',
-    },
-    eyeIcon: {
-        padding: 10,
-    },
     button: {
         backgroundColor: '#6200EE',
         paddingVertical: 15,
@@ -215,10 +163,7 @@ const styles = StyleSheet.create({
         marginTop: 10,
         elevation: 3,
         shadowColor: "#6200EE",
-        shadowOffset: {
-            width: 0,
-            height: 3,
-        },
+        shadowOffset: { width: 0, height: 3 },
         shadowOpacity: 0.27,
         shadowRadius: 4.65,
     },

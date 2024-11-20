@@ -3,8 +3,10 @@ import { ThemeContext } from '../Globals/ThemeContext'
 import AreYouSure from '../GlobalComponents/AreYouSure'
 import CustomAlert from '../GlobalComponents/Customalert'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import { BASE_URL } from '@env'
+import axios from 'axios'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import { StyleSheet, Text, View, Image, TextInput, ScrollView, TouchableOpacity, Linking, Animated } from 'react-native'
+import { StyleSheet, Text, View, Image, TextInput, ScrollView, TouchableOpacity, Linking, Animated, ActivityIndicator } from 'react-native'
 
 const Business_Info = ({ route, navigation }) => {
   const { item, Owner, email } = route.params;
@@ -14,9 +16,9 @@ const Business_Info = ({ route, navigation }) => {
   const [showAlert, setShowAlert] = useState(false);
   const [animation] = useState(new Animated.Value(0))
   const [alertMessage, setAlertMessage] = useState('');
-  const { themeColor, textColor } = useContext(ThemeContext)
-  const [IsdeleteVisible, setIsDeleteVisible] = useState(false);
-  
+  const [loading, setLoading] = useState(false)
+  const { themeColor, textColor, userDetails } = useContext(ThemeContext)
+  const [IsdeleteVisible, setIsDeleteVisible] = useState(false);  
 
   const makePhoneCall = (phoneNumber) => {
     let phoneUrl = `tel:${phoneNumber}`;
@@ -43,7 +45,7 @@ const Business_Info = ({ route, navigation }) => {
       })
       .catch((err) => console.error('An error occurred', err));
   };
-  
+
   const openWebsite = (websiteUrl) => {
     if (websiteUrl) {
       try {
@@ -69,12 +71,12 @@ const Business_Info = ({ route, navigation }) => {
 
   const handleDelete = () => {
     const userEmail = email.replace(/\./g, '_');
-    const nodeRef = ref(database,  `Users/${userEmail}/${item.id}`);
+    const nodeRef = ref(database, `Users/${userEmail}/${item.id}`);
 
     remove(nodeRef)
       .then(() => {
         console.log("Node deleted successfully.");
-        navigation.navigate("MyBusiness", {email : email})
+        navigation.navigate("MyBusiness", { email: email })
       })
       .catch((error) => {
         console.error("Error deleting node:", error);
@@ -108,23 +110,48 @@ const Business_Info = ({ route, navigation }) => {
     return stars;
   };
 
-  const handleSubmit = () => {
-    if (rating & Input) {
+  const handleSubmit = async () => {
+    if (!rating & !Input) {
+      setAlertMessage("Please fill the required fields.")
+      setType('error');
+      setShowAlert(true)
+      return;
+    }
+    setLoading(true)
+    const feedback = {
+      rating: rating,
+      review: Input,
+      user: userDetails._id,
+      business: item._id
 
-      const feedback = {
-        rating: rating,
-        comment: Input
+    }
+    console.log(feedback);
+    console.log(`${BASE_URL}/review`);
+    
+    
+    try {
+      console.log(userDetails.token);
+      
+
+      const response = await axios.post(`${BASE_URL}/review`, feedback, {
+        headers: {
+          'Authorization' : `Bearer ${userDetails.token}`
+        }
+      })
+      if (!response) {
+        console.error(`Error from Business Info: ${response.status} ${response.statusText}`);
+        return;
       }
-
       setAlertMessage("Thank you for your feedback!")
       setType('success');
       setShowAlert(true);
       setInput('');
     }
-    else {
-      setAlertMessage("Please fill the required fields.")
-      setType('error');
-      setShowAlert(true);
+    catch (error) {
+      console.log(error);
+    }
+    finally {
+      setLoading(false)
     }
   }
 
@@ -174,14 +201,14 @@ const Business_Info = ({ route, navigation }) => {
           <TextInput
             numberOfLines={5}
             placeholder="Enter Your Review"
-            style={styles.InputText}
+            style={[styles.InputText, { borderColor: themeColor }]}
             value={Input}
             onChangeText={setInput}
             multiline={true}
             textAlignVertical="top"
           />
           <TouchableOpacity style={[styles.button, { backgroundColor: themeColor }]} onPress={handleSubmit}>
-            <Text style={{ fontFamily: 'Outfit-bold', color: textColor }}> Submit </Text>
+            {loading ? <ActivityIndicator size={"small"} color={textColor} /> : <Text style={{ fontFamily: 'Outfit-bold', color: textColor }}> Submit </Text>}
           </TouchableOpacity>
         </View>}
 
@@ -211,7 +238,7 @@ const styles = StyleSheet.create({
 
   about: { paddingVertical: 30, gap: 10, },
 
-  InputText: { borderColor: '#000', borderWidth: 1, borderRadius: 10, paddingHorizontal: 10, paddingVertical: 10, },
+  InputText: { borderWidth: 1, borderRadius: 20, paddingHorizontal: 20, paddingVertical: 13, fontFamily: 'Outfit', fontSize: 16, },
 
   button: { width: '100%', paddingVertical: 10, justifyContent: 'center', alignItems: 'center', borderRadius: 20, marginTop: 15, marginBottom: 30 },
 
