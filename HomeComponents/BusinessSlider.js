@@ -35,8 +35,8 @@ const BusinessSlider = ({ navigation }) => {
                 return;
             }
             const data = await response.json();
-            if (data.data) {
-                setBusinessData(data.data);
+            if (data.message) {
+                setBusinessData(data.message);
             }
         } catch (err) {
             console.error('Error From Busines Slider :', err);

@@ -17,6 +17,7 @@ const MyBusiness = ({ route, navigation }) => {
     };
 
     const renderItem = ({ item }) => {
+        let isenable = !item.website;
         return (
             <TouchableWithoutFeedback onPress={() => navigation.navigate("Business_Info", { item: item, Owner: "Mine" })}>
                 <View style={styles.card}>
@@ -34,7 +35,7 @@ const MyBusiness = ({ route, navigation }) => {
                     </View>
 
                     {/* Website Button */}
-                    <TouchableOpacity style={styles.websiteButton} onPress={() => openWebsite(item.website)}>
+                    <TouchableOpacity style={isenable ? styles.disble : styles.websiteButton} onPress={() => openWebsite(item.website)} disabled={isenable}>
                         <Text style={styles.websiteButtonText}>Visit Website</Text>
                     </TouchableOpacity>
                 </View>
@@ -60,88 +61,122 @@ const MyBusiness = ({ route, navigation }) => {
         </View>
     );
 };
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#f5f5f5',
-        padding: 10,
+        backgroundColor: '#f8f9fa',
+        padding: 15,
     },
     card: {
         backgroundColor: '#fff',
-        borderRadius: 10,
-        marginBottom: 20,
+        borderRadius: 20,
+        marginBottom: 25,
         overflow: 'hidden',
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 8,
-        elevation: 5,
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.15,
+        shadowRadius: 12,
+        elevation: 8,
+        borderWidth: 1,
+        borderColor: 'rgba(0,0,0,0.05)',
     },
     image: {
         width: '100%',
-        height: 180,
+        height: 200,
         resizeMode: 'cover',
     },
     infoContainer: {
-        padding: 15,
+        padding: 20,
     },
     name: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: '#333',
+        fontSize: 24,
+        fontWeight: '800',
+        color: '#2d3436',
+        marginBottom: 8,
+        fontFamily: 'Outfit-Bold',
     },
     category: {
-        fontSize: 14,
+        fontSize: 16,
         fontWeight: '600',
-        color: '#888',
-        marginTop: 5,
-        marginBottom: 5,
+        color: '#00b894',
+        marginBottom: 12,
+        textTransform: 'uppercase',
+        letterSpacing: 1,
     },
     about: {
-        fontSize: 14,
-        color: '#666',
-        marginBottom: 10,
+        fontSize: 16,
+        color: '#636e72',
+        marginBottom: 15,
+        lineHeight: 24,
     },
     address: {
-        fontSize: 13,
-        color: '#666',
-        marginBottom: 5,
+        fontSize: 14,
+        color: '#636e72',
+        marginBottom: 8,
+        fontFamily: 'Outfit-Regular',
     },
     contact: {
-        fontSize: 13,
-        color: '#666',
+        fontSize: 14,
+        color: '#636e72',
+        marginBottom: 8,
+        fontFamily: 'Outfit-Regular',
     },
     rating: {
-        fontSize: 13,
-        fontWeight: '600',
-        color: '#666',
-        marginTop: 10,
+        fontSize: 16,
+        fontWeight: '700',
+        color: '#fdcb6e',
+        marginTop: 8,
     },
     websiteButton: {
-        backgroundColor: '#4CAF50',
-        padding: 10,
+        backgroundColor: '#6c5ce7',
+        padding: 15,
+        margin: 15,
+        borderRadius: 12,
         justifyContent: 'center',
         alignItems: 'center',
+        shadowColor: '#6c5ce7',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
+        elevation: 4,
     },
     websiteButtonText: {
         color: '#fff',
-        fontWeight: 'bold',
+        fontWeight: '700',
+        fontSize: 16,
+        letterSpacing: 1,
     },
-    // Styles for the empty state
     emptyContainer: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+        paddingVertical: 40,
     },
     emptyText: {
-        fontSize: 20,
-        fontFamily: 'Outfit-bold',
-        color: '#333',
+        fontSize: 22,
+        fontFamily: 'Outfit-Bold',
+        color: '#2d3436',
+        textAlign: 'center',
     },
     flatListEmpty: {
         flexGrow: 1,
         justifyContent: 'center',
     },
+    disble : {
+        backgroundColor: '#6c5ce7',
+        padding: 15,
+        margin: 15,
+        borderRadius: 12,
+        justifyContent: 'center',
+        alignItems: 'center',
+        shadowColor: '#6c5ce7',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
+        elevation: 4,
+        opacity: 0.5
+    }
 });
 
 export default MyBusiness;

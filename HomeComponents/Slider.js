@@ -21,6 +21,7 @@ const Slider = ({ navigation }) => {
     const initializingShops = async () => {
         if (!token) { return }
         try {
+
             const response = await axios.get(`${BASE_URL}/business`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -32,9 +33,10 @@ const Slider = ({ navigation }) => {
             }
             const data = response.data;
 
-            if (data.data) {
-                setData(data.data);
+            if (data.message) {
+                setData(data.message);
             }
+
         } catch (err) {
             console.error('Error:', err);
         }

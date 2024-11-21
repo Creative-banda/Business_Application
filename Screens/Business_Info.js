@@ -155,7 +155,7 @@ const Business_Info = ({ route, navigation }) => {
 
         <View style={styles.businessInfoContainer}>
           <View>
-            <Text style={{ fontFamily: 'Outfit-bold', fontSize: 24, color: 'rgba(0,0,0,0.9)' }}>{item.name}</Text>
+            <Text style={{ fontFamily: 'Outfit-bold', fontSize: 24, color: 'rgba(0,0,0,0.9)' }}>{item.shopName}</Text>
             <Text style={{ fontFamily: 'Outfit' }}> {item.address}</Text>
           </View>
           {Owner && <TouchableOpacity onPress={() => setIsDeleteVisible(true)}>

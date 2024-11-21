@@ -38,8 +38,9 @@ const SearchScreen = ({ navigation }) => {
                 return;
             }
             const data = response.data;
-            if (data.data) {
-                setData(data.data);
+            
+            if (data.message) {
+                setData(data.message);               
             }
         } catch (err) {
             console.error('Error From Business Slider:', err);

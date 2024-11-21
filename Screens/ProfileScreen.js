@@ -7,9 +7,7 @@ import * as SecureStore from 'expo-secure-store';
 
 const ProfileScreen = ({ navigation }) => {
     const [alertVisible, setAlertVisible] = useState(false);
-    const { textColor, userDetails } = useContext(ThemeContext);  
-    console.log(userDetails);
-     
+    const { textColor, userDetails } = useContext(ThemeContext);       
 
     const handleLogout = async () => {
         try {
