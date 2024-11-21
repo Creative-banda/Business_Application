@@ -20,8 +20,8 @@ const BusinessSlider = ({ navigation }) => {
     }, [])
 
     const initShop = async () => {
-        console.log('Token:', token);
         const token = await SecureStore.getItemAsync('token');
+        console.log('Token:', token);
 
         try {
             const response = await fetch(`${BASE_URL}/business`, {
