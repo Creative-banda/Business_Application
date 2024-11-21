@@ -60,8 +60,6 @@ const App = () => {
 
   const checkUserAuthentication = async () => {
     const token = await SecureStore.getItemAsync('token');
-
-
     if (token) {
       setInitialRoute('HomeScreen');
     } else {

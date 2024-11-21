@@ -1,57 +1,55 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { StyleSheet, View, Text, FlatList, Image, Dimensions, TouchableWithoutFeedback } from 'react-native';
 import { BASE_URL } from '@env';
-import * as SecureStore from 'expo-secure-store';
+import { ThemeContext } from '../Globals/ThemeContext';
+import axios from 'axios';
+import { useIsFocused } from '@react-navigation/native';
 
-
-// Get screen width to adjust image size dynamically
 const screenWidth = Dimensions.get('window').width;
 
-const Slider = ({navigation}) => {
-
+const Slider = ({ navigation }) => {
     const [data, setData] = useState([]);
+    const { token } = useContext(ThemeContext);
+    const isFocused = useIsFocused();
 
     useEffect(() => {
-        initializingShops()
-    }, [])
+        if (isFocused) {
+            initializingShops();
+        }
+    }, [isFocused, token]);
 
     const initializingShops = async () => {
-        
-        const token = await SecureStore.getItemAsync('token');
+        if (!token) { return }
         try {
-            const response = await fetch(`${BASE_URL}/business`,{
+            const response = await axios.get(`${BASE_URL}/business`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 },
             });
-    
-            // Check if the response status is OK (status 200-299)
-            if (!response.ok) {
-                console.error(`Error: ${response.status} ${response.statusText}`);
+            if (!response) {
+                console.error(`Error from Slider: ${response.status} ${response.statusText}`);
                 return;
             }
-    
-            const data = await response.json(); 
-            
+            const data = response.data;
+
             if (data.data) {
-                setData(data.data); // Set the relevant data
+                setData(data.data);
             }
         } catch (err) {
             console.error('Error:', err);
         }
     };
-    
 
-    const renderItem = ({ item }) => {      
+    const renderItem = ({ item }) => {
         return (
-            <TouchableWithoutFeedback onPress={()=>navigation.navigate("Business_Info", { item: item })}>
+            <TouchableWithoutFeedback onPress={() => navigation.navigate("Business_Info", { item: item })}>
                 <View style={styles.sliderItem}>
                     <Image source={{ uri: item.image }} style={styles.image} />
                 </View>
             </TouchableWithoutFeedback>
         )
     }
-    
+
     return (
         <View style={styles.container}>
             <Text style={[styles.specialText, { color: '#000' }]}>Shops at Your Fingertips</Text>

@@ -8,9 +8,7 @@ import { ThemeContext } from '../Globals/ThemeContext';
 
 const HomeScreen = ({ navigation }) => {
     const { textColor, userDetails } = useContext(ThemeContext);
-    const [Search, Setsearch] = useState('');
-    console.log(userDetails);
-    
+    const [Search, Setsearch] = useState('');    
     return (
         <ScrollView style={[styles.container, { backgroundColor: textColor }]}>
             <HeaderContainer

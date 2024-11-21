@@ -3,61 +3,57 @@ import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet, View, Text, FlatList, Image, Dimensions, TouchableWithoutFeedback } from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import { ThemeContext } from '../Globals/ThemeContext';
+import { BASE_URL } from '@env';
+import { useIsFocused } from '@react-navigation/native';
 
 // Get screen width to adjust image size dynamically
 const screenWidth = Dimensions.get('window').width;
 
 
 const BusinessSlider = ({ navigation }) => {
-    const { textColor } = useContext(ThemeContext)
+    const { textColor, token } = useContext(ThemeContext)
     const [businessData, setBusinessData] = useState([])
-    console.log("Business Data : ", businessData);
-
+    const isFocused = useIsFocused();
 
 
     useEffect(() => {
-        initShop()
-    }, [])
+        if (isFocused) {
+            initShop()
+        }
+    }, [token, isFocused])
 
     const initShop = async () => {
-        const token = await SecureStore.getItemAsync('token');
-        console.log('Token:', token);
-
+        if (!token) { return }        
         try {
             const response = await fetch(`${BASE_URL}/business`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 },
             });
-            if (!response) {
-                console.error(`Error: ${response.status} ${response.statusText}`);
+            if (!response.ok) {
+                console.error(`Error from Business Slider: ${response.status} ${response.statusText}`);
                 return;
             }
-
             const data = await response.json();
             if (data.data) {
-                console.log("DATA : ", data.data);
-
-                setBusinessData(data.data); // Set the relevant data
+                setBusinessData(data.data);
             }
         } catch (err) {
-            console.error('Error:', err);
+            console.error('Error From Busines Slider :', err);
         }
     };
 
     const renderItem = ({ item }) => {
-        console.log("ITEM : ", item);
-
         return (
             <TouchableWithoutFeedback onPress={() => navigation.navigate("Business_Info", { item: item })}>
                 <View style={[styles.sliderItem, { backgroundColor: textColor }]} >
                     <Image source={{ uri: item.image }} style={styles.image} />
                     <Text style={styles.BusinessName}>
-                        {item.name}
+                        {item.shopName}
                     </Text>
                     <Text style={{ fontFamily: 'Outfit', fontSize: 16, paddingLeft: 10 }}>{item.address}</Text>
                     <View style={styles.businessInfo}>
-                        <Text style={{ fontFamily: 'Outfit-bold', fontSize: 16 }}>{item.rating}</Text>
+                        <Text style={{ fontFamily: 'Outfit-bold', fontSize: 16 }}>{item.currentrating}</Text>
                         <Icon name="star" color='#FFD700' size={24} />
                     </View>
                 </View>

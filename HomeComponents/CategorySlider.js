@@ -6,9 +6,7 @@ import Category from '../GlobalComponents/Category.js'
 const CategorySlider = ({ navigation }) => {
     const { themeColor } = useContext(ThemeContext);
 
-    const CategorySelected = (category) => {
-        console.log(category);
-        
+    const CategorySelected = (category) => {        
         navigation.navigate('CateGorySelection',{Category :  category});
     }
 

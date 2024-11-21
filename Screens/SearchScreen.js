@@ -4,6 +4,9 @@ import InputText from '../GlobalComponents/InputText';
 import Category from '../GlobalComponents/Category';
 import { ThemeContext } from '../Globals/ThemeContext';
 import ItemCard from '../SearchComponents/ItemCard';
+import { BASE_URL } from '@env';
+import axios from 'axios';
+import { useIsFocused } from '@react-navigation/native';
 
 const SearchScreen = ({ navigation }) => {
 
@@ -11,40 +14,37 @@ const SearchScreen = ({ navigation }) => {
     const [selectedCategory, setSelectedCategory] = useState('');
     const [data, setData] = useState([]);
     const [search, setSearch] = useState('');
-    const { themeColor, textColor } = useContext(ThemeContext);
+    const { themeColor, textColor, token } = useContext(ThemeContext);
+    const isFocused = useIsFocused();
+
 
     // Listener for real-time updates
     useEffect(() => {
-        initializingShops();
-    }, []);
+        if (isFocused) {
+            initializingShops();
+        }
+    }, [token, isFocused]);
 
     const initializingShops = async () => {
-        console.log("Initializing Shops");
-        
-        const token = await SecureStore.getItemAsync('token');
+        if (!token) { return; }        
         try {
-            const response = await fetch(`${BASE_URL}/business`,{
+            const response = await axios.get(`${BASE_URL}/business`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 },
             });
-            // Check if the response status is OK (status 200-299)
-            if (!response.ok) {
-                console.error(`Error: ${response.status} ${response.statusText}`);
+            if (response.status !== 200) {
+                console.error(`Error from Business Slider: ${response.status} ${response.statusText}`);
                 return;
             }
-    
-            const data = await response.json(); 
-            
+            const data = response.data;
             if (data.data) {
-                setData(data.data); // Set the relevant data
+                setData(data.data);
             }
         } catch (err) {
-            console.error('Error:', err);
+            console.error('Error From Business Slider:', err);
         }
     };
-
-    // Filter data by selected category
     useEffect(() => {
         if (selectedCategory) {
             const filteredData = data.filter(store => store.category === selectedCategory);
@@ -57,7 +57,7 @@ const SearchScreen = ({ navigation }) => {
     const handleSearch = (value) => {
         setSearch(value);
         const searchData = data.filter(item =>
-            item.name.toLowerCase().includes(value.toLowerCase()) ||
+            item.shopName.toLowerCase().includes(value.toLowerCase()) ||
             item.category.toLowerCase().includes(value.toLowerCase())
         );
         setFilteredData(searchData);

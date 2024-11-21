@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "ShopShpere",
-    "slug": "ShopShpere",
+    "slug": "shopsphere",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/AppIcon.png",
@@ -19,13 +19,20 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.ahz_khn_05.shopsphere"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
       "expo-secure-store"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "c33173c4-b360-46b1-80e1-a22210bba03e"
+      }
+    },
+    "owner": "ahz_khn_05"
   }
 }
