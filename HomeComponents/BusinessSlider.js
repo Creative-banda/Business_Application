@@ -70,7 +70,6 @@ const BusinessSlider = ({ navigation }) => {
                 showsHorizontalScrollIndicator={false}
                 keyExtractor={(item) => item._id}
                 renderItem={renderItem}
-                pagingEnabled
             />
         </View>
     );
@@ -87,7 +86,7 @@ const styles = StyleSheet.create({
         marginBottom: 7,
     },
     sliderItem: {
-        width: screenWidth * 0.85,
+        width: screenWidth * 0.8,
         marginHorizontal: 10,
         alignItems: 'flex-start',
         marginBottom: 30,

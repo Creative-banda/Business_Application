@@ -78,10 +78,8 @@ const styles = StyleSheet.create({
         marginBottom: 7,
     },
     sliderItem: {
-        width: screenWidth * 0.85,
+        width: screenWidth * 0.8,
         marginHorizontal: 10,
-        justifyContent: 'center',
-        alignItems: 'center',
         elevation: 5,
         borderRadius: 10,
         backgroundColor: 'white',
