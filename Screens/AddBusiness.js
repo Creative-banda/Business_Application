@@ -1,10 +1,14 @@
 import * as Location from 'expo-location';
 import * as ImagePicker from 'expo-image-picker';
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Picker } from '@react-native-picker/picker';
 import { Entypo, MaterialIcons } from '@expo/vector-icons';
 import CustomAlert from '../GlobalComponents/Customalert';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView, Image, Alert } from 'react-native';
+import axios from 'axios';
+import { BASE_URL } from '@env';
+import * as FileSystem from 'expo-file-system';
+import { ThemeContext } from './../Globals/ThemeContext';
 
 const AddBusiness = () => {
   const [name, setName] = useState('');
@@ -18,6 +22,7 @@ const AddBusiness = () => {
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const [alertType, setAlertType] = useState('success');
+  const { userDetails } = useContext(ThemeContext);
 
   const getCurrentLocation = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
@@ -40,106 +45,6 @@ const AddBusiness = () => {
     setAddress(`${street}, ${city}, ${region}, ${country}`);
   };
 
-  const generateUniqueId = () => `${Date.now()}-${Math.floor(Math.random() * 10000)}`;
-
-  const handleSubmit = async () => {
-    const auth = getAuth(); 
-    const user = auth.currentUser; 
-
-    if (!user) {
-      setAlertMessage('You must be signed in to add a business');
-      setAlertType('error');
-      setAlertVisible(true);
-      return;
-    }
-  
-    if (!name || !contact || !address || !selectedCategory || !image) {
-      setAlertMessage('Please fill in all required fields');
-      setAlertType('error');
-      setAlertVisible(true);
-    } else {
-      const id = generateUniqueId();
-      const newBusinessData = {
-        name,
-        contact,
-        website,
-        address,
-        category: selectedCategory,
-        image,
-        about,
-        id,
-      };
-  
-      try {
-        const db = getDatabase();
-        const userEmail = user.email.replace(/\./g, '_'); 
-        const allBusinessRef = ref(db, `All_Business/${id.replace(/\s+/g, '_')}`); 
-  
-        // Add the business to the user's specific node (email-based node)
-        const userSpecificBusinessRef = ref(db, `Users/${userEmail}/${id.replace(/\s+/g, '_')}`);
-        await set(userSpecificBusinessRef, newBusinessData);
-
-        await set(allBusinessRef, newBusinessData);
-  
-        // Success feedback
-        setAlertMessage('Business added successfully!');
-        setAlertType('success');
-        setAlertVisible(true);
-  
-        // Clear form fields
-        setName('');
-        setContact('');
-        setWebsite('');
-        setAbout('');
-        setAddress('');
-        setSelectedCategory('');
-      } catch (error) {
-        console.error('Error adding business:', error);
-        setAlertMessage('Error adding business. Please try again.');
-        setAlertType('error');
-        setAlertVisible(true);
-      }
-    }
-  };
-
-  const handleSendImage = async (url) => {
-    storage = getStorage()
-    try {
-      if (!url) {
-        console.error("No image URI found");
-        return;
-      }
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error("Failed to fetch image");
-      }
-
-      const blob = await response.blob();
-      const filename = url.substring(url.lastIndexOf('/') + 1);
-      const storageReference = storageRef(storage, `/${filename}`);
-
-      await uploadBytes(storageReference, blob);
-      const downloadUrl = await getDownloadURL(storageReference);
-      setImage(downloadUrl)
-
-    } catch (error) {
-      console.error("Error sending image: ", error);
-    }
-  };
-
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 0.6,
-    });
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
-      handleSendImage(result.assets[0].uri)
-    }
-  };
-
   const handleImagePicker = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
@@ -148,6 +53,88 @@ const AddBusiness = () => {
     }
     pickImage();
   }
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.mediaTypes,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 0.6,
+    });
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+  };
+
+  const handleSubmit = async () => {      
+
+    if (!name || !contact || !address || !selectedCategory) {
+      setAlertVisible(true);
+      setAlertMessage('Please fill all the fields');
+      setAlertType('error');
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append('shopname', name);
+      formData.append('about', about);
+      formData.append('website', website);
+      formData.append('address', address);
+      formData.append('contact', contact);
+      formData.append('category', selectedCategory);
+
+      if (image) {
+        // Extract file details
+        const fileName = image.split('/').pop();
+
+        // Check if the file exists at the given URI
+        const fileInfo = await FileSystem.getInfoAsync(image);
+        if (!fileInfo.exists) {
+          console.log('File does not exist:', image);
+          throw new Error('Selected image file does not exist');
+        }
+
+        const fileObject = {
+          uri: image.uri,
+          name: fileName || 'default.jpg',
+          type: 'image/jpeg',
+        };
+
+        console.log('File Object:', fileObject);
+
+        formData.append('file', fileObject);
+
+        ;
+      }
+
+      console.log('FormData:', formData);
+
+      // Send the FormData using Axios
+      const response = await axios.post(`${BASE_URL}/business`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          "Authorization": `Bearer ${userDetails.token}`
+        },
+      });
+
+      if (response.status === 201) {
+        setAlertVisible(true);
+        setAlertMessage('Business added successfully');
+        setAlertType('success');
+        resetFormFields(); // Clear form fields after success
+      } else {
+        throw new Error('Failed to add business');
+      }
+    } catch (error) {
+      setAlertVisible(true);
+      setAlertMessage(error.message || 'An error occurred');
+      setAlertType('error');
+      console.log('Error details:', error.response || error);
+    }
+  };
+
+
 
   return (
     <View style={styles.container}>
