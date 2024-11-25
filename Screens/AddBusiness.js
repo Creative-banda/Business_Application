@@ -118,8 +118,8 @@ const AddBusiness = () => {
         console.log('Business added successfully:', response.data);
         
         resetFormFields(); // Clear form fields after success
-        const newBusiness = [...userDetails.userShop, response.data.business];
-        setUserDetails({ ...userDetails, userShop: newBusiness });
+        const newBusiness = [...userDetails, response.data.data];
+        setUserDetails(newBusiness);
 
       }
     } catch (error) {

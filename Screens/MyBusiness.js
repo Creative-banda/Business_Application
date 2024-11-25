@@ -19,7 +19,6 @@ const MyBusiness = ({ navigation }) => {
 
     }
     
-    
     const openWebsite = (websiteUrl) => {
         if (websiteUrl) {
             Linking.openURL(websiteUrl).catch((err) =>

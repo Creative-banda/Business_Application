@@ -28,6 +28,7 @@ const CategorySlider = ({ navigation }) => {
 const styles = StyleSheet.create({
     container: {
         justifyContent: 'center',
+        paddingHorizontal: 12,
     },
     categoryHolder: {
         flexDirection: 'row',

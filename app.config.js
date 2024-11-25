@@ -1,5 +1,4 @@
-import {EAS_PROJECT_ID} from '@env';
-
+import "dotenv/config";
 export default {
   expo: {
     name: "ShopShpere",
@@ -30,7 +29,7 @@ export default {
     plugins: ["expo-secure-store"],
     extra: {
       eas: {
-        projectId: EAS_PROJECT_ID,
+        projectId: process.env.EAS_PROJECT_ID,
       },
     },
     owner: "ahz_khn_05",

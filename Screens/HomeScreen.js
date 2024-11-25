@@ -34,7 +34,6 @@ const styles = StyleSheet.create({
     },
     sliderHolder: {
         flex: 1,
-        paddingHorizontal: 20,
         paddingVertical: 10,
         gap: 20,
     }

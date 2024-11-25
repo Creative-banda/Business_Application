@@ -126,6 +126,7 @@ const Business_Info = ({ route, navigation }) => {
       setType('success');
       setShowAlert(true);
       setInput('');
+      navigation.navigate("AddBusiness")
     }
     catch (error) {
       console.log(error);
