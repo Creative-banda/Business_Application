@@ -10,6 +10,7 @@ const truncateText = (text, wordLimit) => {
 };
 
 const ItemCard = ({ STORES_DATA, navigation }) => {
+    
     const renderItem = ({ item }) => {
         return (
             <TouchableWithoutFeedback onPress={() => navigation.navigate("Business_Info", { item: item })}>

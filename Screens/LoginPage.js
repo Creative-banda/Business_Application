@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import CustomAlert from '../GlobalComponents/Customalert';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, Animated, ActivityIndicator } from 'react-native';
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
 import { BASE_URL } from '@env';
 import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
@@ -38,7 +38,6 @@ const LoginScreen = ({ navigation }) => {
                 await SecureStore.setItemAsync('id', response.data.user._id);   
               
                 setUserDetails(response.data.user);
-                console.log("Login Successful");
                 navigation.navigate('HomeScreen');
                 
             }

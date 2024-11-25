@@ -8,7 +8,8 @@ import { ThemeContext } from '../Globals/ThemeContext';
 
 const HomeScreen = ({ navigation }) => {
     const { textColor, userDetails } = useContext(ThemeContext);
-    const [Search, Setsearch] = useState('');    
+    const [Search, Setsearch] = useState('');
+
     return (
         <ScrollView style={[styles.container, { backgroundColor: textColor }]}>
             <HeaderContainer
@@ -18,8 +19,8 @@ const HomeScreen = ({ navigation }) => {
                 Username={userDetails?.userName}
                 mail={userDetails?.email}
             />
+            <Slider navigation={navigation} />
             <View style={styles.sliderHolder}>
-                <Slider navigation={navigation} />
                 <CategorySlider navigation={navigation} />
                 <BusinessSlider navigation={navigation} />
             </View>

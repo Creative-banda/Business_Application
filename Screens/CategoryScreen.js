@@ -1,54 +1,47 @@
 import React from 'react';
 import ItemCard from '../SearchComponents/ItemCard';
+import { BASE_URL } from '@env';
 import { StyleSheet, View, Text, FlatList } from 'react-native';
+import * as SecureStore from 'expo-secure-store';
+import axios from 'axios';
 
 const CategoryScreen = ({ navigation, route }) => {
     const [data, setData] = React.useState([]);
     const { Category } = route.params;
 
     React.useEffect(() => {
-        initializingUsers();
+        initShop();
     }, []);
 
-    const initializingUsers = async () => {
+    const initShop = async () => {
         try {
-            let userDataRef = ref(database, 'All_Business');
-            const snapshot = await get(userDataRef);
-            if (snapshot.exists()) {
-                const userData = snapshot.val();
-                const formattedData = Object.values(userData);
-                const filteredData = formattedData.filter(item => item.category === Category);
-                setData(filteredData);
-            } else {
-                console.log('No data available');
+            const token = await SecureStore.getItemAsync('token');
+            const response = await axios.get(`${BASE_URL}/business/category/${Category}`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            })
+            if (response.data.sucess) {
+                const data = response.data.message;
+                setData(data);
             }
-        } catch (err) {
-            console.log('Error:', err);
+            else {
+                console.log('Error from Category Screen:', response.data.message);
+            }
+        } catch (error) {
+            console.log('Error from Category Screen:', error)
         }
-    };
 
-    const renderHeader = () => (
-        <View style={styles.header}>
-            <Text style={styles.title}>Explore {Category}</Text>
-            <Text style={styles.subtitle}>Find the best businesses in this category</Text>
-        </View>
-    );
-
-    const renderItemCard = () => {
-        return <ItemCard STORES_DATA={data} navigation={navigation} />;
-    };
-
+    }
     return (
         <View style={styles.container}>
-            <FlatList
-                data={data} 
-                ListHeaderComponent={renderHeader}
-                renderItem={renderItemCard}
-                keyExtractor={(item) => item.id}
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={styles.flatListContent}
-                ListEmptyComponent={<Text style={styles.noDataText}>No businesses found in this category.</Text>}
-            />
+            <View style={styles.header}>
+                <Text style={styles.title}>Explore {Category}</Text>
+                <Text style={styles.subtitle}>Find the best businesses in this category</Text>
+            </View>
+            <View style={{flex : 1, justifyContent : 'center'}}>
+                {data.length != 0 ? <ItemCard STORES_DATA={data} navigation={navigation} /> : <Text style={styles.noDataText}>Sorry, No data Available</Text>}
+            </View>
         </View>
     );
 }
@@ -58,7 +51,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#F4F7FC',
         paddingHorizontal: 20,
-        paddingTop : 20    
+        paddingTop: 20
     },
     header: {
         marginBottom: 20,
@@ -82,9 +75,6 @@ const styles = StyleSheet.create({
         fontFamily: 'Outfit',
         color: '#f0f0f0',
         marginTop: 5,
-    },
-    flatListContent: {
-        paddingBottom: 20,
     },
     noDataText: {
         textAlign: 'center',

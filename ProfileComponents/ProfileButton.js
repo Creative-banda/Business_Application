@@ -19,7 +19,7 @@ const ProfileButton = ({ title, Icon, IconName, bgColor, handleProfileButton }) 
 
     return (
         <TouchableOpacity style={styles.container} onPress={handleProfileButton}>
-            <View style={[styles.iconContainer,{ backgroundColor: bgColor }]}>{renderIcon()}</View>
+            <View style={[styles.iconContainer]}>{renderIcon()}</View>
             <Text style={styles.title}>{title}</Text>
         </TouchableOpacity>
     );
@@ -42,7 +42,6 @@ const styles = StyleSheet.create({
 
     },
     iconContainer: {
-        backgroundColor: '#f5f5f5',
         padding: 10,
         borderRadius: 50,
         marginRight: 10,

@@ -69,20 +69,6 @@ const Business_Info = ({ route, navigation }) => {
     }
   };
 
-  const handleDelete = () => {
-    const userEmail = email.replace(/\./g, '_');
-    const nodeRef = ref(database, `Users/${userEmail}/${item.id}`);
-
-    remove(nodeRef)
-      .then(() => {
-        console.log("Node deleted successfully.");
-        navigation.navigate("MyBusiness", { email: email })
-      })
-      .catch((error) => {
-        console.error("Error deleting node:", error);
-      });
-  };
-
   const handleRating = (newRating) => {
     setRating(newRating);
     Animated.spring(animation, {
@@ -91,6 +77,7 @@ const Business_Info = ({ route, navigation }) => {
       useNativeDriver: true,
     }).start();
   };
+
   const renderStars = () => {
     const stars = [];
     for (let i = 1; i <= 5; i++) {
@@ -124,11 +111,11 @@ const Business_Info = ({ route, navigation }) => {
       user: userDetails._id,
       business: item._id
 
-    }   
-    try { 
+    }
+    try {
       const response = await axios.post(`${BASE_URL}/review`, feedback, {
         headers: {
-          'Authorization' : `Bearer ${userDetails.token}`
+          'Authorization': `Bearer ${userDetails.token}`
         }
       })
       if (!response) {
@@ -207,12 +194,10 @@ const Business_Info = ({ route, navigation }) => {
 
       </View>
       <CustomAlert message={alertMessage} onClose={() => setShowAlert(false)} visible={showAlert} type={type} />
-      <AreYouSure visible={IsdeleteVisible} handleCancel={() => setIsDeleteVisible(false)} handleDelete={handleDelete} />
+      <AreYouSure visible={IsdeleteVisible} handleCancel={() => setIsDeleteVisible(false)} id={item._id} />
     </ScrollView>
   )
 }
-
-export default Business_Info
 
 const styles = StyleSheet.create({
   container: {
@@ -242,3 +227,4 @@ const styles = StyleSheet.create({
   selectedStar: { fontSize: 32, color: '#FFD700', marginHorizontal: 8, }
 
 })
+export default Business_Info

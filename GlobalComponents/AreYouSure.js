@@ -1,7 +1,39 @@
 import React from 'react';
-import { StyleSheet, View, Modal, Text, TouchableOpacity } from 'react-native';
+import axios from 'axios';
+import { BASE_URL } from '@env';
+import * as ExpoSecureStore from 'expo-secure-store';
+import { StyleSheet, View, Modal, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { ThemeContext } from '../Globals/ThemeContext';
 
-const AreYouSure = ({ visible, handleCancel, handleDelete }) => {
+const AreYouSure = ({ visible, handleCancel, id }) => {
+    const { userDetails, setUserDetails } = React.useContext(ThemeContext);
+    const [loading, setLoading] = React.useState(false)
+
+    const handleDelete = async () => {
+        setLoading(true);
+        const token = await ExpoSecureStore.getItemAsync('token');
+        try {
+            const response = await axios.delete(`${BASE_URL}/business/delete/${id}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+            })
+
+            if (response.data.success) {
+                const newBusinesses = userDetails.userShop.filter((business) => business._id !== id);
+                setUserDetails({ ...userDetails, businesses: newBusinesses });
+                handleCancel();
+            }
+        }
+        catch (error) {
+            console.log(error)
+        }
+        finally{
+            setLoading(false)
+        }
+    }
+
     return (
         <Modal visible={visible} animationType="slide" transparent={true}>
             <View style={styles.holder}>
@@ -24,7 +56,7 @@ const AreYouSure = ({ visible, handleCancel, handleDelete }) => {
                             onPress={handleDelete}
                             activeOpacity={0.7}
                         >
-                            <Text style={styles.deleteText}>Delete</Text>
+                            {!loading ? <Text style={styles.deleteText}>Delete</Text> : <ActivityIndicator size='small' color={"#fff"}/>}
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -50,13 +82,13 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.3,
         shadowRadius: 5,
-        elevation: 5,  
+        elevation: 5,
     },
     header: {
         paddingBottom: 15,
         borderBottomColor: '#ddd',
         borderBottomWidth: 1,
-        paddingHorizontal : 15,
+        paddingHorizontal: 15,
 
     },
     headerText: {
@@ -70,16 +102,16 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#666',
         fontFamily: 'Outfit',
-        borderBottomColor : '#ddd',
-        borderBottomWidth : 1,
-        paddingHorizontal : 15,
+        borderBottomColor: '#ddd',
+        borderBottomWidth: 1,
+        paddingHorizontal: 15,
     },
     buttonContainer: {
         flexDirection: 'row',
         justifyContent: 'flex-end',
         marginTop: 20,
         paddingHorizontal: 5,
-        gap : 20
+        gap: 20
     },
     cancelButton: {
         paddingVertical: 10,

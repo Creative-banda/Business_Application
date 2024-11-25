@@ -1,8 +1,23 @@
 import React from 'react';
 import { StyleSheet, View, FlatList, Text, Image, TouchableOpacity, Linking, TouchableWithoutFeedback } from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
+import { ThemeContext } from '../Globals/ThemeContext';
 
-const MyBusiness = ({ route, navigation }) => {
-    const { data } = route.params;
+const MyBusiness = ({ navigation }) => {
+    const [data, setData] = React.useState([]);
+    const isFocused = useIsFocused();
+    const { userDetails } = React.useContext(ThemeContext);
+    React.useEffect(() => {
+        fetchBusinesses();
+    }, [isFocused]);
+
+    const fetchBusinesses = async () => {
+        console.log("fetching");
+        
+        const business = userDetails.userShop;
+        setData(business);
+
+    }
     
     
     const openWebsite = (websiteUrl) => {
@@ -53,7 +68,7 @@ const MyBusiness = ({ route, navigation }) => {
         <View style={styles.container}>
             <FlatList
                 data={data}
-                keyExtractor={(item) => item._id}
+                keyExtractor={(item) => item.shopName}
                 renderItem={renderItem}
                 ListEmptyComponent={emptyListComponent}
                 contentContainerStyle={data.length === 0 ? styles.flatListEmpty : null}

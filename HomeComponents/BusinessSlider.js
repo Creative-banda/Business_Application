@@ -5,6 +5,7 @@ import Icon from 'react-native-vector-icons/AntDesign';
 import { ThemeContext } from '../Globals/ThemeContext';
 import { BASE_URL } from '@env';
 import { useIsFocused } from '@react-navigation/native';
+import axios from 'axios';
 
 // Get screen width to adjust image size dynamically
 const screenWidth = Dimensions.get('window').width;
@@ -23,23 +24,23 @@ const BusinessSlider = ({ navigation }) => {
     }, [token, isFocused])
 
     const initShop = async () => {
-        if (!token) { return }        
+        if (!token) { return }
         try {
-            const response = await fetch(`${BASE_URL}/business`, {
+            const response = await axios.get(`${BASE_URL}/business`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 },
             });
-            if (!response.ok) {
+            if (response.status !== 200) {
                 console.error(`Error from Business Slider: ${response.status} ${response.statusText}`);
                 return;
             }
-            const data = await response.json();
+            const data = response.data;
             if (data.message) {
                 setBusinessData(data.message);
             }
         } catch (err) {
-            console.error('Error From Busines Slider :', err);
+            console.error('Error From Business Slider:', err);
         }
     };
 

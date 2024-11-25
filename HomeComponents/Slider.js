@@ -10,7 +10,7 @@ const screenWidth = Dimensions.get('window').width;
 const Slider = ({ navigation }) => {
     const [data, setData] = useState([]);
     const { token } = useContext(ThemeContext);
-    const isFocused = useIsFocused();
+    const isFocused = useIsFocused();   
 
     useEffect(() => {
         if (isFocused) {
@@ -76,10 +76,11 @@ const styles = StyleSheet.create({
         fontFamily: 'Outfit-bold',
         marginTop: 14,
         marginBottom: 7,
+        marginLeft: 20
     },
     sliderItem: {
-        width: screenWidth * 0.8,
-        marginHorizontal: 10,
+        width: screenWidth * 0.9,
+        marginHorizontal: screenWidth * 0.05,
         elevation: 5,
         borderRadius: 10,
         backgroundColor: 'white',

@@ -4,10 +4,9 @@ import React, { useState, useContext } from 'react';
 import { Picker } from '@react-native-picker/picker';
 import { Entypo, MaterialIcons } from '@expo/vector-icons';
 import CustomAlert from '../GlobalComponents/Customalert';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView, Image, Alert } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView, Image, Alert, ActivityIndicator } from 'react-native';
 import axios from 'axios';
 import { BASE_URL } from '@env';
-import * as FileSystem from 'expo-file-system';
 import { ThemeContext } from './../Globals/ThemeContext';
 
 const AddBusiness = () => {
@@ -17,12 +16,13 @@ const AddBusiness = () => {
   const [address, setAddress] = useState('');
   const [contact, setContact] = useState('');
   const [image, setImage] = useState('');
+  const [isLoaded, setIsLoaded] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [useCurrentLocation, setUseCurrentLocation] = useState(false);
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const [alertType, setAlertType] = useState('success');
-  const { userDetails } = useContext(ThemeContext);
+  const { userDetails, setUserDetails } = useContext(ThemeContext); 
 
   const getCurrentLocation = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
@@ -65,19 +65,28 @@ const AddBusiness = () => {
       setImage(result.assets[0].uri);
     }
   };
+  const resetFormFields = () => {
+    setName('');
+    setAbout('');
+    setWebsite('');
+    setAddress('');
+    setContact('');
+    setImage('');
+    setSelectedCategory('');
+  }
 
-  const handleSubmit = async () => {      
-
+  const handleSubmit = async () => {    
     if (!name || !contact || !address || !selectedCategory) {
       setAlertVisible(true);
       setAlertMessage('Please fill all the fields');
       setAlertType('error');
       return;
     }
-
     try {
+      setIsLoaded(true);
       const formData = new FormData();
-      formData.append('shopname', name);
+      formData.append('shopName', name);
+      formData.append('mail', userDetails.mail);
       formData.append('about', about);
       formData.append('website', website);
       formData.append('address', address);
@@ -85,52 +94,42 @@ const AddBusiness = () => {
       formData.append('category', selectedCategory);
 
       if (image) {
-        // Extract file details
         const fileName = image.split('/').pop();
-
-        // Check if the file exists at the given URI
-        const fileInfo = await FileSystem.getInfoAsync(image);
-        if (!fileInfo.exists) {
-          console.log('File does not exist:', image);
-          throw new Error('Selected image file does not exist');
-        }
-
         const fileObject = {
-          uri: image.uri,
+          uri: image,
           name: fileName || 'default.jpg',
           type: 'image/jpeg',
         };
-
-        console.log('File Object:', fileObject);
-
         formData.append('file', fileObject);
-
-        ;
       }
-
-      console.log('FormData:', formData);
-
-      // Send the FormData using Axios
-      const response = await axios.post(`${BASE_URL}/business`, formData, {
+      const response = await axios.post(`http://192.168.53.178:3000/business`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           "Authorization": `Bearer ${userDetails.token}`
         },
       });
-
-      if (response.status === 201) {
+      console.log(response.data);
+      
+     
+      if (response.data.success) {
         setAlertVisible(true);
-        setAlertMessage('Business added successfully');
+        setAlertMessage(response.data.message);
         setAlertType('success');
+        console.log('Business added successfully:', response.data);
+        
         resetFormFields(); // Clear form fields after success
-      } else {
-        throw new Error('Failed to add business');
+        const newBusiness = [...userDetails.userShop, response.data.business];
+        setUserDetails({ ...userDetails, userShop: newBusiness });
+
       }
     } catch (error) {
       setAlertVisible(true);
       setAlertMessage(error.message || 'An error occurred');
       setAlertType('error');
       console.log('Error details:', error.response || error);
+    }
+    finally{
+      setIsLoaded(false);
     }
   };
 
@@ -221,7 +220,8 @@ const AddBusiness = () => {
         </View>
 
         <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-          <Text style={styles.buttonText}>Add New Business</Text>
+          {!isLoaded ? <Text style={styles.buttonText}>Add New Business</Text> : 
+          <ActivityIndicator size="small" color="#fff" />}
         </TouchableOpacity>
       </ScrollView>
     </View>

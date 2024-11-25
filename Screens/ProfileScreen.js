@@ -7,7 +7,7 @@ import * as SecureStore from 'expo-secure-store';
 
 const ProfileScreen = ({ navigation }) => {
     const [alertVisible, setAlertVisible] = useState(false);
-    const { textColor, userDetails } = useContext(ThemeContext);       
+    const { textColor, userDetails } = useContext(ThemeContext);
 
     const handleLogout = async () => {
         try {
@@ -32,10 +32,10 @@ const ProfileScreen = ({ navigation }) => {
                 <Text style={styles.userEmail}>{userDetails.mail}</Text>
             </View>
             <View style={styles.iconHolder}>
-                <ProfileButton title="Add Business" Icon="MaterialIcons" IconName="add-business" bgColor="#FFD8C5" handleProfileButton={() => navigation.navigate("AddBusiness")} />
-                <ProfileButton title="My Business" Icon="Ionicons" IconName="business" bgColor="#E4C7FF" handleProfileButton={() => navigation.navigate("MyBusiness", { data: userDetails.userShop })} />
-                <ProfileButton title="Share App" Icon="MaterialIcons" IconName="share" bgColor="#FFD8C5" />
-                <ProfileButton title="Logout" Icon="MaterialIcons" IconName="logout" bgColor="#E4C7FF" handleProfileButton={() => setAlertVisible(true)} />
+                <ProfileButton title="Add Business" Icon="MaterialIcons" IconName="add-business" handleProfileButton={() => navigation.navigate("AddBusiness")} />
+                <ProfileButton title="My Business" Icon="Ionicons" IconName="business" handleProfileButton={() => navigation.navigate("MyBusiness")} />
+                <ProfileButton title="Share App" Icon="MaterialIcons" IconName="share" />
+                <ProfileButton title="Logout" Icon="MaterialIcons" IconName="logout" handleProfileButton={() => setAlertVisible(true)} />
             </View>
             <View style={styles.footer}>
                 <Text>Developed by Mohd Ahtesham © 2024</Text>
