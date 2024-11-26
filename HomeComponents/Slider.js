@@ -6,6 +6,8 @@ import axios from 'axios';
 import { useIsFocused } from '@react-navigation/native';
 
 const screenWidth = Dimensions.get('window').width;
+console.log(BASE_URL);
+
 
 const Slider = ({ navigation }) => {
     const [data, setData] = useState([]);
@@ -21,6 +23,8 @@ const Slider = ({ navigation }) => {
     const initializingShops = async () => {
         if (!token) { return }
         try {
+            console.log("Running");
+            
 
             const response = await axios.get(`${BASE_URL}/business`, {
                 headers: {

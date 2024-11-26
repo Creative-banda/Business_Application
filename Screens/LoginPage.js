@@ -23,7 +23,9 @@ const LoginScreen = ({ navigation }) => {
             mail: email,
             password: password
         };
-        try {
+        console.log(`${BASE_URL}/auth/login`);
+        
+        try {           
             const response = await axios.post( `${BASE_URL}/auth/login`, payload, {
                 headers: {
                     'Content-Type': 'application/json'

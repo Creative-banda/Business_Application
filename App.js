@@ -20,8 +20,6 @@ import Feedback from './Screens/Feedback';
 import CategoryScreen from './Screens/CategoryScreen';
 import Toast from 'react-native-toast-message';
 import { toastConfig } from './GlobalComponents/Customalert';
-console.log(BASE_URL);
-
 
 const Stack = createStackNavigator();
 

@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
 
     container: { flex: 1, alignItems: 'center', paddingVertical: 20 },
 
-    TopImage: { resizeMode: 'contain', height: "55%", width: '100%', },
+    TopImage: { resizeMode: 'contain', height: "55%", width: '100%',marginTop: 20 },
 
     TextContainer: { flex: 1, alignItems: 'center', paddingHorizontal: 15, paddingVertical: 20, width: '100%' },
 
