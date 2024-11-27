@@ -1,20 +1,21 @@
 import React from 'react';
 import { ThemeContext } from '../Globals/ThemeContext';
+import axios from 'axios';
+import { BASE_URL } from "@env"
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import CustomAlert from '../GlobalComponents/Customalert';
 import ThankYouMessage from '../FeedbackComponents/ThankYouMessage';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, FlatList, KeyboardAvoidingView, Platform, ScrollView, ActivityIndicator } from 'react-native';
 
-const Feedback = ({ navigation, route }) => {
-    const { mail } = route.params;
+const Feedback = ({ navigation }) => {
     const [emoji, setEmoji] = React.useState('');
-    const {themeColor, textColor} = React.useContext(ThemeContext)
+    const { themeColor, textColor, userDetails } = React.useContext(ThemeContext)
     const [message, setMessage] = React.useState('');
     const [loading, setLoading] = React.useState(false);
     const [feedback, setFeedback] = React.useState('');
     const [visible, setVisible] = React.useState(false);
     const [alertVisible, setAlertVisible] = React.useState(false);
-
+    const [isReviewEnable, setReviewEnable] = React.useState(true);
     const emojiData = [
         { id: 1, emoji: '😡', label: 'Very Bad' },
         { id: 2, emoji: '😞', label: 'Bad' },
@@ -23,8 +24,34 @@ const Feedback = ({ navigation, route }) => {
         { id: 5, emoji: '😍', label: 'Very Good' }
     ];
 
+    React.useEffect(() => {
+        fetchPreviousFeedback();
+    }, []);
+
+    const fetchPreviousFeedback = async () => {
+        try {
+            const response = await axios.get(
+                `${BASE_URL}/appreview/${userDetails._id}`,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${userDetails.token}`,
+                    },
+                }
+            );
+
+            if (response.data) {
+                setReviewEnable(false);
+                setFeedback(response.data.data[0].review);
+                setEmoji(response.data.data[0].rating);
+            }
+        } catch (error) {
+            console.error('Error fetching feedback:', error);
+        }
+    };
+
+
     const handleSubmit = async () => {
-        const userEmail = mail.replace(/\./g, '_');
         if (!feedback || !emoji) {
             setMessage('Please fill the required fields.');
             setAlertVisible(true);
@@ -34,30 +61,31 @@ const Feedback = ({ navigation, route }) => {
         try {
             setLoading(true);
             const newMessage = {
-                reaction: emoji,
-                Comment: feedback,
-                timestamp: new Date().toISOString(),
-                email: userEmail
+                user: userDetails._id,
+                rating: emoji,
+                review: feedback,
             };
-            const userRatingRef = ref(database, `Rating/${userEmail}`);
+            console.log(newMessage);
 
-            const snapshot = await get(userRatingRef);
-
-            if (snapshot.exists()) {
-                await update(userRatingRef, newMessage);
-            } else {
-                await set(userRatingRef, newMessage);
+            const response = await axios.post('http://10.0.13.126:3000/appReview', newMessage, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${userDetails.token}`,
+                },
+            });
+            if (response.status !== 200) {
+                setMessage('Failed to Add Rating');
+                setAlertVisible(true);
+                return;
             }
-
-            setVisible(true);
-            setLoading(false);
+            setMessage('Rating Added Successfully');
         }
         catch (err) {
             setMessage('Failed to Add Rating');
             setAlertVisible(true);
             console.log(err);
         }
-        finally{
+        finally {
             setVisible(true);
             setLoading(false);
         }
@@ -66,14 +94,14 @@ const Feedback = ({ navigation, route }) => {
         return (
             <TouchableOpacity
                 style={[styles.emojiItem]}
-                onPress={() => setEmoji(item.label)}
+                onPress={() => setEmoji(item.id)}
             >
                 <Text
-                    style={[styles.emoji,emoji === item.label && styles.selectedEmoji  ]}>
+                    style={[styles.emoji, emoji === item.id && styles.selectedEmoji]}>
                     {item.emoji}
                 </Text>
                 <Text
-                    style={[styles.emojiText,emoji === item.label && styles.selectedEmojiText ]}
+                    style={[styles.emojiText, emoji === item.label && styles.selectedEmojiText]}
                 >
                     {item.label}
                 </Text>
@@ -83,7 +111,7 @@ const Feedback = ({ navigation, route }) => {
 
     return (
         <KeyboardAvoidingView
-            style={[styles.container, {backgroundColor : textColor}]}
+            style={[styles.container, { backgroundColor: textColor }]}
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
             <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -96,7 +124,7 @@ const Feedback = ({ navigation, route }) => {
                 <Text style={styles.inputHeader}>Email Addresses</Text>
                 <TextInput
                     scrollEnabled={false}
-                    value={mail}
+                    value={userDetails.mail}
                     placeholder='Enter your email address'
                     style={styles.Input}
                     editable={false}
@@ -119,9 +147,9 @@ const Feedback = ({ navigation, route }) => {
                     value={feedback}
                     onChangeText={setFeedback}
                     multiline={true}
-                />
-                <TouchableOpacity style={[styles.submitButton, {backgroundColor : themeColor}]} onPress={handleSubmit}>
-                    {loading ? <ActivityIndicator size="small" color={textColor}/> : <Text style={[styles.submitButtonText, {color : textColor}]}>Publish Feedback</Text>}
+                    editable={isReviewEnable} />
+                <TouchableOpacity style={[styles.submitButton, { backgroundColor: themeColor }, isReviewEnable ? {opacity : 1} : {opacity : 0.6 }]} onPress={handleSubmit} disabled={!isReviewEnable}>
+                    {loading ? <ActivityIndicator size="small" color={textColor} /> : <Text style={[styles.submitButtonText, { color: textColor }]}>Publish Feedback</Text>}
                 </TouchableOpacity>
             </ScrollView>
             <ThankYouMessage visible={visible} handleClose={() => setVisible(false)} handleGoHome={() => { setVisible(false); navigation.navigate("HomeScreen") }} />
@@ -131,33 +159,33 @@ const Feedback = ({ navigation, route }) => {
 };
 
 const styles = StyleSheet.create({
-    container: { flex: 1,},
-    
-    scrollContainer: {padding: 10},
+    container: { flex: 1, },
 
-    headerContainer: { width: '100%', justifyContent: 'space-between', paddingTop: 40, padding: 10, gap: 10, marginBottom: 40, paddingLeft: 20},
+    scrollContainer: { padding: 10 },
 
-    header: {fontSize: 28,fontFamily: 'Outfit-bold'},
+    headerContainer: { width: '100%', justifyContent: 'space-between', paddingTop: 40, padding: 10, gap: 10, marginBottom: 40, paddingLeft: 20 },
 
-    Input: { borderWidth: 1, borderColor: '#ccc', padding: 10, marginBottom: 20, borderRadius: 10, width: '95%', marginTop: 5, marginLeft: 10},
+    header: { fontSize: 28, fontFamily: 'Outfit-bold' },
 
-    inputHeader: { fontSize: 16, marginBottom: 10, fontFamily: 'Outfit', marginLeft: 10},
+    Input: { borderWidth: 1, borderColor: '#ccc', padding: 10, marginBottom: 20, borderRadius: 10, width: '95%', marginTop: 5, marginLeft: 10 },
 
-    emojiItem: { marginHorizontal: 2, alignItems: 'center', paddingLeft: 10, height: 80,},
+    inputHeader: { fontSize: 16, marginBottom: 10, fontFamily: 'Outfit', marginLeft: 10 },
 
-    emoji: { fontSize: 36, marginHorizontal: 5},
+    emojiItem: { marginHorizontal: 2, alignItems: 'center', paddingLeft: 10, height: 80, },
+
+    emoji: { fontSize: 36, marginHorizontal: 5 },
 
     emojiText: { fontSize: 14, fontFamily: 'Outfit', textAlign: 'center' },
-    
-    input: { borderWidth: 1, borderColor: '#ccc', padding: 10, marginBottom: 10, borderRadius: 10, width: '95%', marginTop: 5, marginLeft: 10, height: 130, textAlignVertical: 'top'},
 
-    submitButton: {padding: 10,borderRadius: 7,marginTop: 20,width: '95%',alignSelf: 'center'},
+    input: { borderWidth: 1, borderColor: '#ccc', padding: 10, marginBottom: 10, borderRadius: 10, width: '95%', marginTop: 5, marginLeft: 10, height: 130, textAlignVertical: 'top' },
 
-    submitButtonText: { color: '#fff', fontSize: 18, fontFamily: 'Outfit-bold', textAlign: 'center'},
+    submitButton: { padding: 10, borderRadius: 7, marginTop: 20, width: '95%', alignSelf: 'center' },
 
-    selectedEmoji: { color: '#4A81AB', fontSize: 36, backgroundColor: 'rgba(0,0,0,0.2)', borderRadius : 100   , justifyContent: 'center', alignContent: 'center'   },
+    submitButtonText: { color: '#fff', fontSize: 18, fontFamily: 'Outfit-bold', textAlign: 'center' },
 
-    selectedEmojiText: { color: 'rgba(0,0,0,0.5)', fontSize : 12 },
+    selectedEmoji: { color: '#4A81AB', fontSize: 36, backgroundColor: 'rgba(0,0,0,0.2)', borderRadius: 100, justifyContent: 'center', alignContent: 'center' },
+
+    selectedEmojiText: { color: 'rgba(0,0,0,0.5)', fontSize: 12 },
 });
 
 export default Feedback;

@@ -13,17 +13,16 @@ import { ThemeContext } from './ThemeContext';
 const Tab = createBottomTabNavigator();
 
 export default function Tab_Navigation() {
-  const {setUserDetails} = useContext(ThemeContext);
+  const { setUserDetails } = useContext(ThemeContext);
   const [loading, setLoading] = useState(true);
   const { themeColor, textColor } = useContext(ThemeContext);
 
 
-  // Fetch user data inside useEffect
   useEffect(() => {
     const fetchuserData = async () => {
       const id = await SecureStore.getItemAsync('id');
       const token = await SecureStore.getItemAsync('token');
-      
+
       if (id && token) {
         try {
           console.log("Fetching user data...");
@@ -46,8 +45,8 @@ export default function Tab_Navigation() {
       }
     };
 
-    fetchuserData(); 
-  }, []);  
+    fetchuserData();
+  }, []);
 
   return (
     <>
@@ -70,10 +69,10 @@ export default function Tab_Navigation() {
 
               return <Icon name={iconName} size={size} color={color} />;
             },
-            tabBarActiveTintColor: themeColor, 
+            tabBarActiveTintColor: themeColor,
             tabBarInactiveTintColor: themeColor,
             tabBarStyle: {
-              backgroundColor: textColor, 
+              backgroundColor: textColor,
               borderTopWidth: 0,
             },
           })}
