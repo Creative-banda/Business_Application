@@ -18,7 +18,7 @@ const Business_Info = ({ route, navigation }) => {
   const [alertMessage, setAlertMessage] = useState('');
   const [loading, setLoading] = useState(false)
   const { themeColor, textColor, userDetails } = useContext(ThemeContext)
-  const [IsdeleteVisible, setIsDeleteVisible] = useState(false);  
+  const [IsdeleteVisible, setIsDeleteVisible] = useState(false);
 
   const makePhoneCall = (phoneNumber) => {
     let phoneUrl = `tel:${phoneNumber}`;
@@ -118,15 +118,14 @@ const Business_Info = ({ route, navigation }) => {
           'Authorization': `Bearer ${userDetails.token}`
         }
       })
-      if (!response) {
-        console.error(`Error from Business Info: ${response.status} ${response.statusText}`);
-        return;
+      
+      if (response.data.success) {
+        setAlertMessage(response.data.message)
+        setType('success');
+        setShowAlert(true);
+        setInput('');
       }
-      setAlertMessage("Thank you for your feedback!")
-      setType('success');
-      setShowAlert(true);
-      setInput('');
-      navigation.navigate("AddBusiness")
+
     }
     catch (error) {
       console.log(error);
@@ -164,9 +163,9 @@ const Business_Info = ({ route, navigation }) => {
             <MaterialCommunityIcons name='web' size={30} color={'#fff'} />
           </TouchableOpacity>
 
-          <View style={[styles.iconBackground, { backgroundColor: '#AFC73A' }]}>
-            <MaterialIcons name='share' size={30} color={'#fff'} />
-          </View>
+          <TouchableOpacity style={[styles.iconBackground, { backgroundColor: '#AFC73A' }]}  onPress={()=>navigation.navigate("SeeReview", { item: item, Owner: "Mine" })}>
+            <MaterialIcons name='star' size={30} color={'#fff'} />
+          </TouchableOpacity>
 
         </View>
 
@@ -195,7 +194,7 @@ const Business_Info = ({ route, navigation }) => {
 
       </View>
       <CustomAlert message={alertMessage} onClose={() => setShowAlert(false)} visible={showAlert} type={type} />
-      <AreYouSure visible={IsdeleteVisible} handleCancel={() => setIsDeleteVisible(false)} id={item._id} Navigation={navigation}/>
+      <AreYouSure visible={IsdeleteVisible} handleCancel={() => setIsDeleteVisible(false)} id={item._id} Navigation={navigation} />
     </ScrollView>
   )
 }

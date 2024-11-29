@@ -20,6 +20,7 @@ import Feedback from './Screens/Feedback';
 import CategoryScreen from './Screens/CategoryScreen';
 import Toast from 'react-native-toast-message';
 import { toastConfig } from './GlobalComponents/Customalert';
+import SeeReview from './Screens/SeeReview';
 
 const Stack = createStackNavigator();
 
@@ -85,10 +86,11 @@ const App = () => {
           <Stack.Screen name="OpenMail" component={OpenMail} options={{ headerShown: false }} />
           <Stack.Screen name="Feedback" component={Feedback} options={{ headerShown: false }} />
           <Stack.Screen name="CateGorySelection" component={CategoryScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="SeeReview" component={SeeReview} options={{ headerShown: false }} />
         </Stack.Navigator>
       </NavigationContainer>
       <Toast
-        config={toastConfig} // Add this line
+        config={toastConfig}
         position='bottom'
         bottomOffset={80}
       />
