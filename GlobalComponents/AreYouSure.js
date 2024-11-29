@@ -5,13 +5,13 @@ import { StyleSheet, View, Modal, Text, TouchableOpacity, ActivityIndicator } fr
 import { ThemeContext } from '../Globals/ThemeContext';
 
 const AreYouSure = ({ visible, handleCancel, id, Navigation }) => {
-    const { userDetails, setUserDetails } = React.useContext(ThemeContext);
+    const { userDetails } = React.useContext(ThemeContext);
     const [loading, setLoading] = React.useState(false)
 
     const handleDelete = async () => {
         setLoading(true);
         try {
-            const response = await axios.delete(`http://10.0.13.126:3000/business/delete/${id}`, {
+            const response = await axios.delete(`${BASE_URL}/business/delete/${id}`, {
                 headers: {
                     'Authorization': `Bearer ${userDetails.token}`,
                     'Content-Type': 'application/json'
@@ -19,8 +19,6 @@ const AreYouSure = ({ visible, handleCancel, id, Navigation }) => {
             })
 
             if (response.data.success) {
-                const newBusinesses = userDetails.userShop.filter((business) => business._id !== id);
-                setUserDetails(newBusinesses);
                 handleCancel();
                 Navigation.navigate("MyBusiness");
             }

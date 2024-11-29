@@ -1,21 +1,39 @@
 import React from 'react';
-import { StyleSheet, View, FlatList, Text, Image, TouchableOpacity, Linking, TouchableWithoutFeedback } from 'react-native';
+import { StyleSheet, View, FlatList, Text, Image, TouchableOpacity, Linking, TouchableWithoutFeedback, ActivityIndicator } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
-import { ThemeContext } from '../Globals/ThemeContext';
+import axios from 'axios';
+import { BASE_URL } from '@env';
+import { ThemeContext } from './../Globals/ThemeContext';
 
 const MyBusiness = ({ navigation }) => {
     const [data, setData] = React.useState([]);
+    const { userDetails, themeColor } = React.useContext(ThemeContext);
+    const [isLoading, setIsLoading] = React.useState(false);
     const isFocused = useIsFocused();
-    const { userDetails } = React.useContext(ThemeContext);
     React.useEffect(() => {
         fetchBusinesses();
     }, [isFocused]);
 
-    const fetchBusinesses = async () => {
-        const business = userDetails.userShop;
-        setData(business);
-    }
+    const fetchBusinesses = async () => {        
+        try {           
+            setIsLoading(true);
+            const response = await axios.get(`${BASE_URL}/business/usershop/${userDetails.mail}`, {
+                headers: {
+                  'Content-Type': 'application/json',
+                  "Authorization": `Bearer ${userDetails.token}`
+                },
+              });
+            if (response.data.sucess) {                
+                setData(response.data.message);
+            }
+        } catch (err) {
+            console.log(err);
 
+        }
+        finally {
+            setIsLoading(false);
+        }
+    }
     const openWebsite = (websiteUrl) => {
         if (websiteUrl) {
             Linking.openURL(websiteUrl).catch((err) =>
@@ -37,7 +55,7 @@ const MyBusiness = ({ navigation }) => {
 
                     {/* Business Info */}
                     <View style={styles.infoContainer}>
-                        <Text style={styles.name}>{item.name}</Text>
+                        <Text style={styles.name}>{item.shopName}</Text>
                         <Text style={styles.category}>{item.category}</Text>
                         <Text style={styles.about}>{item.about}</Text>
                         <Text style={styles.address}>{item.address}</Text>
@@ -62,13 +80,13 @@ const MyBusiness = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
-            <FlatList
+            {isLoading ? <ActivityIndicator size='large' color={themeColor}/> : <FlatList
                 data={data}
                 keyExtractor={(item) => item.shopName}
                 renderItem={renderItem}
                 ListEmptyComponent={emptyListComponent}
                 contentContainerStyle={data.length === 0 ? styles.flatListEmpty : null}
-            />
+            />}
         </View>
     );
 };
@@ -78,6 +96,8 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#f8f9fa',
         padding: 15,
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     card: {
         backgroundColor: '#fff',

@@ -22,7 +22,7 @@ const AddBusiness = () => {
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const [alertType, setAlertType] = useState('success');
-  const { userDetails, setUserDetails } = useContext(ThemeContext);
+  const { userDetails } = useContext(ThemeContext);
 
   const getCurrentLocation = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
@@ -115,11 +115,7 @@ const AddBusiness = () => {
         setAlertMessage(response.data.message);
         setAlertType('success');
 
-        resetFormFields(); // Clear form fields after success
-        const newBusiness = Array.isArray(userDetails)
-          ? [...userDetails, response.data.data]
-          : [response.data.data];
-        setUserDetails(newBusiness);
+        resetFormFields(); 
       }
     } catch (error) {
       const errorMessage = error.response?.data?.message || error.message || 'An error occurred';
