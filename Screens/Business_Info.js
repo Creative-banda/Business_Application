@@ -195,7 +195,7 @@ const Business_Info = ({ route, navigation }) => {
 
       </View>
       <CustomAlert message={alertMessage} onClose={() => setShowAlert(false)} visible={showAlert} type={type} />
-      <AreYouSure visible={IsdeleteVisible} handleCancel={() => setIsDeleteVisible(false)} id={item._id} />
+      <AreYouSure visible={IsdeleteVisible} handleCancel={() => setIsDeleteVisible(false)} id={item._id} Navigation={navigation}/>
     </ScrollView>
   )
 }

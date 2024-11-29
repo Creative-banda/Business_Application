@@ -12,13 +12,10 @@ const MyBusiness = ({ navigation }) => {
     }, [isFocused]);
 
     const fetchBusinesses = async () => {
-        console.log("fetching");
-        
         const business = userDetails.userShop;
         setData(business);
-
     }
-    
+
     const openWebsite = (websiteUrl) => {
         if (websiteUrl) {
             Linking.openURL(websiteUrl).catch((err) =>
@@ -177,7 +174,7 @@ const styles = StyleSheet.create({
         flexGrow: 1,
         justifyContent: 'center',
     },
-    disble : {
+    disble: {
         backgroundColor: '#6c5ce7',
         padding: 15,
         margin: 15,

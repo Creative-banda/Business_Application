@@ -1,29 +1,28 @@
 import React from 'react';
 import axios from 'axios';
 import { BASE_URL } from '@env';
-import * as ExpoSecureStore from 'expo-secure-store';
 import { StyleSheet, View, Modal, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { ThemeContext } from '../Globals/ThemeContext';
 
-const AreYouSure = ({ visible, handleCancel, id }) => {
+const AreYouSure = ({ visible, handleCancel, id, Navigation }) => {
     const { userDetails, setUserDetails } = React.useContext(ThemeContext);
     const [loading, setLoading] = React.useState(false)
 
     const handleDelete = async () => {
         setLoading(true);
-        const token = await ExpoSecureStore.getItemAsync('token');
         try {
-            const response = await axios.delete(`${BASE_URL}/business/delete/${id}`, {
+            const response = await axios.delete(`http://10.0.13.126:3000/business/delete/${id}`, {
                 headers: {
-                    'Authorization': `Bearer ${token}`,
+                    'Authorization': `Bearer ${userDetails.token}`,
                     'Content-Type': 'application/json'
                 },
             })
 
             if (response.data.success) {
                 const newBusinesses = userDetails.userShop.filter((business) => business._id !== id);
-                setUserDetails({ ...userDetails, businesses: newBusinesses });
+                setUserDetails(newBusinesses);
                 handleCancel();
+                Navigation.navigate("MyBusiness");
             }
         }
         catch (error) {
