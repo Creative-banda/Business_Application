@@ -22,7 +22,7 @@ const AddBusiness = () => {
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const [alertType, setAlertType] = useState('success');
-  const { userDetails, setUserDetails } = useContext(ThemeContext); 
+  const { userDetails, setUserDetails } = useContext(ThemeContext);
 
   const getCurrentLocation = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
@@ -75,7 +75,7 @@ const AddBusiness = () => {
     setSelectedCategory('');
   }
 
-  const handleSubmit = async () => {    
+  const handleSubmit = async () => {
     if (!name || !contact || !address || !selectedCategory) {
       setAlertVisible(true);
       setAlertMessage('Please fill all the fields');
@@ -102,38 +102,35 @@ const AddBusiness = () => {
         };
         formData.append('file', fileObject);
       }
-      const response = await axios.post(`http://192.168.53.178:3000/business`, formData, {
+
+      const response = await axios.post(`${BASE_URL}/business`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           "Authorization": `Bearer ${userDetails.token}`
         },
       });
-      console.log(response.data);
-      
-     
+
       if (response.data.success) {
         setAlertVisible(true);
         setAlertMessage(response.data.message);
         setAlertType('success');
-        console.log('Business added successfully:', response.data);
-        
-        resetFormFields(); // Clear form fields after success
-        const newBusiness = [...userDetails, response.data.data];
-        setUserDetails(newBusiness);
 
+        resetFormFields(); // Clear form fields after success
+        const newBusiness = Array.isArray(userDetails)
+          ? [...userDetails, response.data.data]
+          : [response.data.data];
+        setUserDetails(newBusiness);
       }
     } catch (error) {
+      const errorMessage = error.response?.data?.message || error.message || 'An error occurred';
       setAlertVisible(true);
-      setAlertMessage(error.message || 'An error occurred');
+      setAlertMessage(errorMessage);
       setAlertType('error');
-      console.log('Error details:', error.response || error);
-    }
-    finally{
+      console.error('Error details:', error);
+    } finally {
       setIsLoaded(false);
     }
   };
-
-
 
   return (
     <View style={styles.container}>
@@ -220,8 +217,8 @@ const AddBusiness = () => {
         </View>
 
         <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-          {!isLoaded ? <Text style={styles.buttonText}>Add New Business</Text> : 
-          <ActivityIndicator size="small" color="#fff" />}
+          {!isLoaded ? <Text style={styles.buttonText}>Add New Business</Text> :
+            <ActivityIndicator size="small" color="#fff" />}
         </TouchableOpacity>
       </ScrollView>
     </View>
