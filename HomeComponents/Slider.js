@@ -12,7 +12,7 @@ console.log(BASE_URL);
 const Slider = ({ navigation }) => {
     const [data, setData] = useState([]);
     const { token } = useContext(ThemeContext);
-    const isFocused = useIsFocused();   
+    const isFocused = useIsFocused();     
 
     useEffect(() => {
         if (isFocused) {
@@ -23,9 +23,6 @@ const Slider = ({ navigation }) => {
     const initializingShops = async () => {
         if (!token) { return }
         try {
-            console.log("Running");
-            
-
             const response = await axios.get(`${BASE_URL}/business`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -35,7 +32,7 @@ const Slider = ({ navigation }) => {
                 console.error(`Error from Slider: ${response.status} ${response.statusText}`);
                 return;
             }
-            const data = response.data;
+            const data = response.data;           
 
             if (data.message) {
                 setData(data.message);

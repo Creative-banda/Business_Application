@@ -98,6 +98,8 @@ const Business_Info = ({ route, navigation }) => {
   };
 
   const handleSubmit = async () => {
+    console.log(`${BASE_URL}/review`);
+    
     if (!rating & !Input) {
       setAlertMessage("Please fill the required fields.")
       setType('error');
@@ -112,6 +114,8 @@ const Business_Info = ({ route, navigation }) => {
       business: item._id
 
     }
+    console.log(feedback);
+    
     try {
       const response = await axios.post(`${BASE_URL}/review`, feedback, {
         headers: {

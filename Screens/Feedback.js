@@ -6,6 +6,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import CustomAlert from '../GlobalComponents/Customalert';
 import ThankYouMessage from '../FeedbackComponents/ThankYouMessage';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, FlatList, KeyboardAvoidingView, Platform, ScrollView, ActivityIndicator } from 'react-native';
+import Feather from 'react-native-vector-icons/Feather';
 
 const Feedback = ({ navigation }) => {
     const [emoji, setEmoji] = React.useState('');
@@ -16,6 +17,8 @@ const Feedback = ({ navigation }) => {
     const [visible, setVisible] = React.useState(false);
     const [alertVisible, setAlertVisible] = React.useState(false);
     const [isReviewEnable, setReviewEnable] = React.useState(true);
+    const [buttonText, setButtonText] = React.useState("Publish Feedback");
+
     const emojiData = [
         { id: 1, emoji: '😡', label: 'Very Bad' },
         { id: 2, emoji: '😞', label: 'Bad' },
@@ -29,6 +32,7 @@ const Feedback = ({ navigation }) => {
     }, []);
 
     const fetchPreviousFeedback = async () => {
+
         try {
             const response = await axios.get(
                 `${BASE_URL}/appreview/${userDetails._id}`,
@@ -40,7 +44,8 @@ const Feedback = ({ navigation }) => {
                 }
             );
 
-            if (response.data) {
+            if (response.data.message !== '') {
+
                 setReviewEnable(false);
                 setFeedback(response.data.data[0].review);
                 setEmoji(response.data.data[0].rating);
@@ -67,18 +72,21 @@ const Feedback = ({ navigation }) => {
             };
             console.log(newMessage);
 
-            const response = await axios.post('http://10.0.13.126:3000/appReview', newMessage, {
+            const response = await axios.post(`${BASE_URL}/appReview`, newMessage, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${userDetails.token}`,
                 },
             });
-            if (response.status !== 200) {
+            console.log(response.data);
+
+            if (response.data.sucess === false) {
                 setMessage('Failed to Add Rating');
                 setAlertVisible(true);
                 return;
             }
             setMessage('Rating Added Successfully');
+            setButtonText("Publish Feedback")
         }
         catch (err) {
             setMessage('Failed to Add Rating');
@@ -140,16 +148,20 @@ const Feedback = ({ navigation }) => {
                 />
 
                 <Text style={[styles.inputHeader, { marginTop: 20 }]}>Describe your experience</Text>
-
-                <TextInput
-                    placeholder="Share your experience"
-                    style={styles.input}
-                    value={feedback}
-                    onChangeText={setFeedback}
-                    multiline={true}
-                    editable={isReviewEnable} />
-                <TouchableOpacity style={[styles.submitButton, { backgroundColor: themeColor }, isReviewEnable ? {opacity : 1} : {opacity : 0.6 }]} onPress={handleSubmit} disabled={!isReviewEnable}>
-                    {loading ? <ActivityIndicator size="small" color={textColor} /> : <Text style={[styles.submitButtonText, { color: textColor }]}>Publish Feedback</Text>}
+                <View>
+                    <TouchableOpacity onPress={()=>{setReviewEnable(true); setButtonText("Update Feedback")}}>
+                        <Feather name='edit-3' size={24} color={themeColor} style={{ position: 'absolute', top: 15, right: 20 }} />
+                    </TouchableOpacity>
+                    <TextInput
+                        placeholder="Share your experience"
+                        style={styles.input}
+                        value={feedback}
+                        onChangeText={setFeedback}
+                        multiline={true}
+                        editable={isReviewEnable} />
+                </View>
+                <TouchableOpacity style={[styles.submitButton, { backgroundColor: themeColor }, isReviewEnable ? { opacity: 1 } : { opacity: 0.6 }]} onPress={handleSubmit} disabled={!isReviewEnable}>
+                    {loading ? <ActivityIndicator size="small" color={textColor} /> : <Text style={[styles.submitButtonText, { color: textColor }]}>{ buttonText }</Text>}
                 </TouchableOpacity>
             </ScrollView>
             <ThankYouMessage visible={visible} handleClose={() => setVisible(false)} handleGoHome={() => { setVisible(false); navigation.navigate("HomeScreen") }} />

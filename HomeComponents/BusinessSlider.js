@@ -23,9 +23,7 @@ const BusinessSlider = ({ navigation }) => {
         }
     }, [token, isFocused])
 
-    const initShop = async () => {
-        console.log(`${BASE_URL}/business`);
-        
+    const initShop = async () => {        
         if (!token) { return }
         try {
             const response = await axios.get(`${BASE_URL}/business`, {

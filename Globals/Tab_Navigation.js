@@ -34,7 +34,7 @@ export default function Tab_Navigation() {
           const data = await response.data;
           setUserDetails(data);
         } catch (error) {
-          console.error("Error fetching user data:", error);
+          console.error("Error fetching user data from Tab Navigation:", error);
           navigation.navigate('Login');
         } finally {
           setLoading(false);

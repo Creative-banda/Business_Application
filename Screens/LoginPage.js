@@ -15,7 +15,7 @@ const LoginScreen = ({ navigation }) => {
     const [alertType, setAlertType] = useState('success');
     const [loading, setLoading] = useState(false);
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-    const {setUserDetails} = useContext(ThemeContext);
+    const {setUserDetails} = useContext(ThemeContext);   
 
     const handleLogin = async () => { 
         setLoading(true);
