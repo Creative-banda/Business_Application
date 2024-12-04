@@ -189,6 +189,7 @@ const AddBusiness = () => {
           value={address}
           onChangeText={(text) => setAddress(text)}
           editable={!useCurrentLocation}
+          multiline = {true}
         />
 
         <View style={styles.pickerContainer}>

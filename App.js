@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import * as SecureStore from 'expo-secure-store';
-import {BASE_URL} from "@env"
 
 import InitalizePage from './Screens/InitalizePage';
 import Tab_Navigation from './Globals/Tab_Navigation';
