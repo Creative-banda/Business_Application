@@ -1,13 +1,13 @@
 import * as Location from 'expo-location';
 import * as ImagePicker from 'expo-image-picker';
 import React, { useState, useContext } from 'react';
-import { Picker } from '@react-native-picker/picker';
 import { Entypo, MaterialIcons } from '@expo/vector-icons';
 import CustomAlert from '../GlobalComponents/Customalert';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView, Image, Alert, ActivityIndicator } from 'react-native';
 import axios from 'axios';
 import { BASE_URL } from '@env';
 import { ThemeContext } from './../Globals/ThemeContext';
+import CustomDropdown from '../GlobalComponents/CustomDropdown';
 
 const AddBusiness = () => {
   const [name, setName] = useState('');
@@ -149,7 +149,6 @@ const AddBusiness = () => {
           )}
         </TouchableOpacity>
 
-
         <TextInput style={styles.input} placeholder="Name" placeholderTextColor="#999" value={name} onChangeText={setName} />
         <TextInput style={styles.input} placeholder="Contact" keyboardType="phone-pad" placeholderTextColor="#999" value={contact} onChangeText={setContact} />
         <TextInput style={styles.input} placeholder="Website (optional)" placeholderTextColor="#999" value={website} onChangeText={setWebsite} />
@@ -189,22 +188,22 @@ const AddBusiness = () => {
           value={address}
           onChangeText={(text) => setAddress(text)}
           editable={!useCurrentLocation}
-          multiline = {true}
+          multiline={true}
         />
 
         <View style={styles.pickerContainer}>
-          <Picker
+          <CustomDropdown
             selectedValue={selectedCategory}
             onValueChange={(itemValue) => setSelectedCategory(itemValue)}
-            style={styles.picker}
-          >
-            <Picker.Item label="Select a category..." value="" />
-            <Picker.Item label="Grocery" value="Grocery" />
-            <Picker.Item label="Shopping" value="Shopping" />
-            <Picker.Item label="Plumber" value="Plumber" />
-            <Picker.Item label="Salon" value="Salon" />
-            <Picker.Item label="Restaurant" value="Restaurant" />
-          </Picker>
+            options={[
+              { label: 'Select a category...', value: '' },
+              { label: 'Grocery', value: 'Grocery' },
+              { label: 'Shopping', value: 'Shopping' },
+              { label: 'Plumber', value: 'Plumber' },
+              { label: 'Salon', value: 'Salon' },
+              { label: 'Restaurant', value: 'Restaurant' },
+            ]}
+          />
           <CustomAlert
             visible={alertVisible}
             message={alertMessage}

@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, FlatList, Image, TouchableWithoutFeedback } from 'react-native';
+import { ThemeContext } from '../Globals/ThemeContext';
 
 const truncateText = (text, wordLimit) => {
   const words = text.split(' ');
@@ -10,13 +11,14 @@ const truncateText = (text, wordLimit) => {
 };
 
 const ItemCard = ({ STORES_DATA, navigation }) => {
+    const { themeColor, textColor } = React.useContext(ThemeContext);
     
     const renderItem = ({ item }) => {
         return (
             <TouchableWithoutFeedback onPress={() => navigation.navigate("Business_Info", { item: item })}>
                 <View style={styles.sliderItem}>
                     <Image source={{ uri: item.image }} style={styles.image} />
-                    <View style={styles.businessInfo}>
+                    <View style={[styles.businessInfo , {backgroundColor : textColor}]}>
                         <Text style={styles.BusinessName}>{item.shopName}</Text>
                         <Text style={styles.addressText} numberOfLines={1} ellipsizeMode="tail">
                             {truncateText(item.address, 8)}
@@ -54,7 +56,6 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         elevation: 5,
         borderRadius: 10,
-        backgroundColor: 'white',
         shadowColor: 'black',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.26,

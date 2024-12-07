@@ -4,7 +4,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { ThemeContext } from '../Globals/ThemeContext';
 
-const ProfileButton = ({ title, Icon, IconName, bgColor, handleProfileButton }) => {
+const ProfileButton = ({ title, Icon, IconName, handleProfileButton }) => {
     const { themeColor } = useContext(ThemeContext);
     const renderIcon = () => {
         switch (Icon) {
@@ -18,7 +18,7 @@ const ProfileButton = ({ title, Icon, IconName, bgColor, handleProfileButton }) 
     };
 
     return (
-        <TouchableOpacity style={styles.container} onPress={handleProfileButton}>
+        <TouchableOpacity style={[styles.container, {borderColor : themeColor}]} onPress={handleProfileButton}>
             <View style={[styles.iconContainer]}>{renderIcon()}</View>
             <Text style={styles.title}>{title}</Text>
         </TouchableOpacity>
@@ -38,13 +38,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderRadius: 10,
         borderWidth: 1.5,
-        borderColor: '#673fd2',
 
     },
     iconContainer: {
         padding: 10,
         borderRadius: 50,
         marginRight: 10,
+        
     },
     title: {
         fontFamily: 'Outfit-bold',
