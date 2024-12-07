@@ -17,7 +17,7 @@ const InitalizePage = ({ navigation }) => {
     };
     return (
         <View style={styles.container}>
-            <Image source={require('../assets/Images/Home.png')} style={styles.TopImage} />
+            <Image source={require('../assets/Images/home.png')} style={styles.TopImage} />
             <View style={styles.TextContainer}>
                 <Text style={styles.Text}>
                     Your Ultimate <Text style={[styles.Text, { color: themeColor }]}>
