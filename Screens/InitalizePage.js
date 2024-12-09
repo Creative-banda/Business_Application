@@ -5,6 +5,8 @@ import * as SecureStore from 'expo-secure-store';
 
 const InitalizePage = ({ navigation }) => {
     const { themeColor } = useContext(ThemeContext);
+    console.log("Loading InitalizePage.js");
+    
 
     const handleClick = async () => {
         try {

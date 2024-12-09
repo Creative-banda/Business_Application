@@ -26,6 +26,8 @@ const Stack = createStackNavigator();
 const App = () => {
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [initialRoute, setInitialRoute] = useState(null);
+  console.log("Loading App.js");
+  
 
   useEffect(() => {
     loadFonts();
@@ -38,17 +40,25 @@ const App = () => {
       'Outfit': require('./assets/Fonts/Outfit.ttf'),
     });
     setFontsLoaded(true);
+    console.log("Fonts Loaded");
+    
   };
 
   const checkInitialLaunch = async () => {
+    console.log("Checking Initial Launch");
+    
     try {
       const hasOpenedBefore = await SecureStore.getItemAsync('hasOpenedBefore');
+      console.log("Has Opened Before: ", hasOpenedBefore);
+      
 
       if (!hasOpenedBefore) {
         await SecureStore.setItemAsync('hasOpenedBefore', 'true');
         setInitialRoute('InitPage');
+        console.log("Navigation To InitPage");
       } else {
         checkUserAuthentication();
+        console.log("Checking User Authentication")
       }
     } catch (error) {
       console.log('Error reading from SecureStore:', error);
@@ -57,11 +67,18 @@ const App = () => {
   };
 
   const checkUserAuthentication = async () => {
+    console.log("Checking User Authentication");
+    
     const token = await SecureStore.getItemAsync('token');
+    console.log("Token: ", token);
+    
     if (token) {
       setInitialRoute('HomeScreen');
+      console.log("Navigation To HomeScreen");
+      
     } else {
       setInitialRoute('Login');
+      console.log("Navigation To Login");
     }
   };
 

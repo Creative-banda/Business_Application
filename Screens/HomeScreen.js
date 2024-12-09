@@ -9,6 +9,7 @@ import { ThemeContext } from '../Globals/ThemeContext';
 const HomeScreen = ({ navigation }) => {
     const { textColor, userDetails } = useContext(ThemeContext);
     const [Search, Setsearch] = useState('');
+    console.log("Loading HomeScreen.js");
 
     return (
         <ScrollView style={[styles.container, { backgroundColor: textColor }]}>

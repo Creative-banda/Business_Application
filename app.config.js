@@ -24,7 +24,6 @@ export default {
         backgroundColor: "#ffffff"
       },
       package: "com.ahz_khn_05.shopsphere",
-      "enablePngCrunchInReleaseBuilds": false
     },
     web: {
       favicon: "./assets/favicon.png"
