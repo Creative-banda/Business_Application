@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import * as SecureStore from 'expo-secure-store';
+import { enableScreens } from 'react-native-screens';
+
 
 import InitalizePage from './Screens/InitalizePage';
 import Tab_Navigation from './Globals/Tab_Navigation';
@@ -22,6 +24,7 @@ import { toastConfig } from './GlobalComponents/Customalert';
 import SeeReview from './Screens/SeeReview';
 
 const Stack = createStackNavigator();
+enableScreens();
 
 const App = () => {
   const [fontsLoaded, setFontsLoaded] = useState(false);
