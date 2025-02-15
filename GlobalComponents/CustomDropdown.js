@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 
-const CustomDropdown = ({ options }) => {
-    const [selectedOption, setSelectedOption] = useState(null);
+const CustomDropdown = ({ options, selectedValue, setSelectedCategory }) => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
     const toggleDropdown = () => {
@@ -10,7 +9,7 @@ const CustomDropdown = ({ options }) => {
     };
 
     const selectOption = (option) => {
-        setSelectedOption(option);
+        setSelectedCategory(option);
         setIsDropdownOpen(false);
     };
 
@@ -18,7 +17,7 @@ const CustomDropdown = ({ options }) => {
         <View style={styles.container}>
             <TouchableOpacity style={styles.dropdown} onPress={toggleDropdown}>
                 <Text style={styles.selectedText}>
-                    {selectedOption ? selectedOption.label : 'Select an option'}
+                    {selectedValue ? selectedValue.label : 'Select an option'}
                 </Text>
             </TouchableOpacity>
             {isDropdownOpen && (

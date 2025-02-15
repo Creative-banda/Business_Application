@@ -70,7 +70,6 @@ const App = () => {
   };
 
   const checkUserAuthentication = async () => {
-    console.log("Checking User Authentication");
     
     const token = await SecureStore.getItemAsync('token');
     console.log("Token: ", token);

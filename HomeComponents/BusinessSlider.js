@@ -26,6 +26,7 @@ const BusinessSlider = ({ navigation }) => {
     const initShop = async () => {        
         if (!token) { return }
         try {
+            
             const response = await axios.get(`${BASE_URL}/business`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,

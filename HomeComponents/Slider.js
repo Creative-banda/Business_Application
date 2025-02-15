@@ -6,7 +6,6 @@ import axios from 'axios';
 import { useIsFocused } from '@react-navigation/native';
 
 const screenWidth = Dimensions.get('window').width;
-console.log(BASE_URL);
 
 
 const Slider = ({ navigation }) => {
@@ -33,6 +32,8 @@ const Slider = ({ navigation }) => {
                 return;
             }
             const data = response.data;           
+            console.log("Data from Slider:", data);
+            
 
             if (data.message) {
                 setData(data.message);

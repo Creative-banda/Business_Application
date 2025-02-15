@@ -23,6 +23,9 @@ const AddBusiness = () => {
   const [alertMessage, setAlertMessage] = useState('');
   const [alertType, setAlertType] = useState('success');
   const { userDetails } = useContext(ThemeContext);
+  
+  console.log(BASE_URL);
+  
 
   const getCurrentLocation = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
@@ -76,6 +79,8 @@ const AddBusiness = () => {
   }
 
   const handleSubmit = async () => {
+    console.log(selectedCategory);
+    
     if (!name || !contact || !address || !selectedCategory) {
       setAlertVisible(true);
       setAlertMessage('Please fill all the fields');
@@ -91,7 +96,7 @@ const AddBusiness = () => {
       formData.append('website', website);
       formData.append('address', address);
       formData.append('contact', contact);
-      formData.append('category', selectedCategory);
+      formData.append('category', selectedCategory.label);
 
       if (image) {
         const fileName = image.split('/').pop();
@@ -194,7 +199,7 @@ const AddBusiness = () => {
         <View style={styles.pickerContainer}>
           <CustomDropdown
             selectedValue={selectedCategory}
-            onValueChange={(itemValue) => setSelectedCategory(itemValue)}
+            setSelectedCategory={setSelectedCategory}
             options={[
               { label: 'Select a category...', value: '' },
               { label: 'Grocery', value: 'Grocery' },
@@ -302,9 +307,7 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   pickerContainer: {
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
-    borderRadius: 12,
+    borderWidth: 0,
     marginBottom: 24,
   },
   picker: {

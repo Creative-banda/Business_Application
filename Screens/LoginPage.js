@@ -25,6 +25,7 @@ const LoginScreen = ({ navigation }) => {
         };
         console.log(`${BASE_URL}/auth/login`);
         
+        
         try {           
             const response = await axios.post( `${BASE_URL}/auth/login`, payload, {
                 headers: {
