@@ -1,6 +1,6 @@
 # ShopSphere
 
-**ShopSphere** is a mobile app project built using **React Native** and **Firebase**. This app serves as a platform for discovering and managing local businesses, showcasing essential features such as user authentication, shop searches, and business profile management. The UI design is inspired by a YouTube channel that I found appealing, and I've infused my own creativity into it to develop this app.
+**ShopSphere** is a mobile app project built using **React Native** and **Express**. This app serves as a platform for discovering and managing local businesses, showcasing essential features such as user authentication, shop searches, and business profile management. The UI design is inspired by a YouTube channel that I found appealing, and I've infused my own creativity into it to develop this app.
 
 ## Features
 
@@ -27,7 +27,7 @@
 ## Tech Stack
 
 - **React Native**: For building the cross-platform app.
-- **Firebase**: For user authentication and data management (authentication, real-time database).
+- **Express**: For user authentication and data management (authentication, database).
 - **Expo-location**: To fetch real-time geolocation for business locations.
 
 ## Features
@@ -67,7 +67,7 @@ To set up the project locally, follow these steps:
    ```bash
    npm install
 
-4. Create a `.env` file in the root directory and add your Firebase configuration details to it.
+4. Create a `.env` file in the root directory and add your Server configuration details to it.
 
 5. Install Dependencies:
    ```bash
@@ -85,7 +85,6 @@ Once the app is running, you can:
 ## Future Plans
 
 - Enhance the app with push notifications for real-time updates.
-- Implement a more robust backend using Node.js and Express.
 
 ## Contributing
 
