@@ -3,68 +3,15 @@ import SearchScreen from '../Screens/SearchScreen';
 import HomeScreen from '../Screens/HomeScreen';
 import ProfileScreen from '../Screens/ProfileScreen';
 import Icon from 'react-native-vector-icons/Ionicons';
-<<<<<<< HEAD
-import React, { useContext } from 'react';
-=======
 import React, { useEffect, useState, useContext } from 'react';
 import { BASE_URL } from '@env';
 import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
 import { ActivityIndicator } from 'react-native';
->>>>>>> a1b059bed495c65f960444ccb4eca280479d54b2
 import { ThemeContext } from './ThemeContext';
 
 const Tab = createBottomTabNavigator();
 
-<<<<<<< HEAD
-export default function Tab_Navigation({ route }) {
-  const { themeColor, textColor } = useContext(ThemeContext);
-  const { userDetails } = route.params || {}; // Get userDetails from route params
-
-  return (
-    <Tab.Navigator
-      screenOptions={({ route }) => ({
-        headerShown: false,
-        tabBarIcon: ({ focused, color, size }) => {
-          let iconName;
-
-          if (route.name === 'Home') {
-            iconName = focused ? 'home' : 'home-outline';
-          } else if (route.name === 'Search') {
-            iconName = focused ? 'search' : 'search-outline';
-          } else if (route.name === 'Profile') {
-            iconName = focused ? 'person' : 'person-outline';
-          }
-
-          return <Icon name={iconName} size={size} color={color} />;
-        },
-        tabBarActiveTintColor: themeColor,
-        tabBarInactiveTintColor: 'gray',
-        tabBarStyle: {
-          backgroundColor: textColor,
-          borderTopWidth: 0,
-        },
-      })}
-    >
-      <Tab.Screen 
-        name="Home" 
-        component={HomeScreen} 
-        initialParams={{ userDetails }}
-      />
-      <Tab.Screen 
-        name="Search" 
-        component={SearchScreen} 
-        initialParams={{ userDetails }}
-      />
-      <Tab.Screen 
-        name="Profile" 
-        component={ProfileScreen} 
-        initialParams={{ userDetails }}
-      />
-    </Tab.Navigator>
-  );
-}
-=======
 export default function Tab_Navigation() {
   const { setUserDetails } = useContext(ThemeContext);
   const [loading, setLoading] = useState(true);
@@ -151,4 +98,3 @@ export default function Tab_Navigation() {
     </>
   );
 }
->>>>>>> a1b059bed495c65f960444ccb4eca280479d54b2

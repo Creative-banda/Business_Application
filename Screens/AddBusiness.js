@@ -1,12 +1,5 @@
 import * as Location from 'expo-location';
 import * as ImagePicker from 'expo-image-picker';
-<<<<<<< HEAD
-import React, { useState } from 'react';
-import { Picker } from '@react-native-picker/picker';
-import { Entypo, MaterialIcons } from '@expo/vector-icons';
-import CustomAlert from '../GlobalComponents/Customalert';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView, Image, Alert } from 'react-native';
-=======
 import React, { useState, useContext } from 'react';
 import { Entypo, MaterialIcons } from '@expo/vector-icons';
 import CustomAlert from '../GlobalComponents/Customalert';
@@ -15,7 +8,6 @@ import axios from 'axios';
 import { BASE_URL } from '@env';
 import { ThemeContext } from './../Globals/ThemeContext';
 import CustomDropdown from '../GlobalComponents/CustomDropdown';
->>>>>>> a1b059bed495c65f960444ccb4eca280479d54b2
 
 const AddBusiness = () => {
   const [name, setName] = useState('');
@@ -24,23 +16,16 @@ const AddBusiness = () => {
   const [address, setAddress] = useState('');
   const [contact, setContact] = useState('');
   const [image, setImage] = useState('');
-<<<<<<< HEAD
-=======
   const [isLoaded, setIsLoaded] = useState(false);
->>>>>>> a1b059bed495c65f960444ccb4eca280479d54b2
   const [selectedCategory, setSelectedCategory] = useState('');
   const [useCurrentLocation, setUseCurrentLocation] = useState(false);
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const [alertType, setAlertType] = useState('success');
-<<<<<<< HEAD
-
-=======
   const { userDetails } = useContext(ThemeContext);
   
   console.log(BASE_URL);
   
->>>>>>> a1b059bed495c65f960444ccb4eca280479d54b2
 
   const getCurrentLocation = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
@@ -63,109 +48,6 @@ const AddBusiness = () => {
     setAddress(`${street}, ${city}, ${region}, ${country}`);
   };
 
-<<<<<<< HEAD
-  const generateUniqueId = () => `${Date.now()}-${Math.floor(Math.random() * 10000)}`;
-
-  const handleSubmit = async () => {
-    const auth = getAuth(); 
-    const user = auth.currentUser; 
-
-    if (!user) {
-      setAlertMessage('You must be signed in to add a business');
-      setAlertType('error');
-      setAlertVisible(true);
-      return;
-    }
-  
-    if (!name || !contact || !address || !selectedCategory || !image) {
-      setAlertMessage('Please fill in all required fields');
-      setAlertType('error');
-      setAlertVisible(true);
-    } else {
-      const id = generateUniqueId();
-      const newBusinessData = {
-        name,
-        contact,
-        website,
-        address,
-        category: selectedCategory,
-        image,
-        about,
-        id,
-      };
-  
-      try {
-        const db = getDatabase();
-        const userEmail = user.email.replace(/\./g, '_'); 
-        const allBusinessRef = ref(db, `All_Business/${id.replace(/\s+/g, '_')}`); 
-  
-        // Add the business to the user's specific node (email-based node)
-        const userSpecificBusinessRef = ref(db, `Users/${userEmail}/${id.replace(/\s+/g, '_')}`);
-        await set(userSpecificBusinessRef, newBusinessData);
-
-        await set(allBusinessRef, newBusinessData);
-  
-        // Success feedback
-        setAlertMessage('Business added successfully!');
-        setAlertType('success');
-        setAlertVisible(true);
-  
-        // Clear form fields
-        setName('');
-        setContact('');
-        setWebsite('');
-        setAbout('');
-        setAddress('');
-        setSelectedCategory('');
-      } catch (error) {
-        console.error('Error adding business:', error);
-        setAlertMessage('Error adding business. Please try again.');
-        setAlertType('error');
-        setAlertVisible(true);
-      }
-    }
-  };
-
-  const handleSendImage = async (url) => {
-    storage = getStorage()
-    try {
-      if (!url) {
-        console.error("No image URI found");
-        return;
-      }
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error("Failed to fetch image");
-      }
-
-      const blob = await response.blob();
-      const filename = url.substring(url.lastIndexOf('/') + 1);
-      const storageReference = storageRef(storage, `/${filename}`);
-
-      await uploadBytes(storageReference, blob);
-      const downloadUrl = await getDownloadURL(storageReference);
-      setImage(downloadUrl)
-
-    } catch (error) {
-      console.error("Error sending image: ", error);
-    }
-  };
-
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 0.6,
-    });
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
-      handleSendImage(result.assets[0].uri)
-    }
-  };
-
-=======
->>>>>>> a1b059bed495c65f960444ccb4eca280479d54b2
   const handleImagePicker = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
@@ -175,8 +57,6 @@ const AddBusiness = () => {
     pickImage();
   }
 
-<<<<<<< HEAD
-=======
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.mediaTypes,
@@ -253,7 +133,6 @@ const AddBusiness = () => {
     }
   };
 
->>>>>>> a1b059bed495c65f960444ccb4eca280479d54b2
   return (
     <View style={styles.container}>
       <ScrollView
@@ -275,10 +154,6 @@ const AddBusiness = () => {
           )}
         </TouchableOpacity>
 
-<<<<<<< HEAD
-
-=======
->>>>>>> a1b059bed495c65f960444ccb4eca280479d54b2
         <TextInput style={styles.input} placeholder="Name" placeholderTextColor="#999" value={name} onChangeText={setName} />
         <TextInput style={styles.input} placeholder="Contact" keyboardType="phone-pad" placeholderTextColor="#999" value={contact} onChangeText={setContact} />
         <TextInput style={styles.input} placeholder="Website (optional)" placeholderTextColor="#999" value={website} onChangeText={setWebsite} />
@@ -318,23 +193,6 @@ const AddBusiness = () => {
           value={address}
           onChangeText={(text) => setAddress(text)}
           editable={!useCurrentLocation}
-<<<<<<< HEAD
-        />
-
-        <View style={styles.pickerContainer}>
-          <Picker
-            selectedValue={selectedCategory}
-            onValueChange={(itemValue) => setSelectedCategory(itemValue)}
-            style={styles.picker}
-          >
-            <Picker.Item label="Select a category..." value="" />
-            <Picker.Item label="Grocery" value="Grocery" />
-            <Picker.Item label="Shopping" value="Shopping" />
-            <Picker.Item label="Plumber" value="Plumber" />
-            <Picker.Item label="Salon" value="Salon" />
-            <Picker.Item label="Restaurant" value="Restaurant" />
-          </Picker>
-=======
           multiline={true}
         />
 
@@ -351,7 +209,6 @@ const AddBusiness = () => {
               { label: 'Restaurant', value: 'Restaurant' },
             ]}
           />
->>>>>>> a1b059bed495c65f960444ccb4eca280479d54b2
           <CustomAlert
             visible={alertVisible}
             message={alertMessage}
@@ -361,12 +218,8 @@ const AddBusiness = () => {
         </View>
 
         <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-<<<<<<< HEAD
-          <Text style={styles.buttonText}>Add New Business</Text>
-=======
           {!isLoaded ? <Text style={styles.buttonText}>Add New Business</Text> :
             <ActivityIndicator size="small" color="#fff" />}
->>>>>>> a1b059bed495c65f960444ccb4eca280479d54b2
         </TouchableOpacity>
       </ScrollView>
     </View>
@@ -454,13 +307,7 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   pickerContainer: {
-<<<<<<< HEAD
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
-    borderRadius: 12,
-=======
     borderWidth: 0,
->>>>>>> a1b059bed495c65f960444ccb4eca280479d54b2
     marginBottom: 24,
   },
   picker: {

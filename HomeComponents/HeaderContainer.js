@@ -4,10 +4,7 @@ import InputText from '../GlobalComponents/InputText';
 import { ThemeContext } from '../Globals/ThemeContext';
 import CustomNotification from '../GlobalComponents/Customalert';
 import { StyleSheet, View, Text, Image, TouchableWithoutFeedback } from 'react-native';
-<<<<<<< HEAD
-=======
 import * as SecureStore from 'expo-secure-store';
->>>>>>> a1b059bed495c65f960444ccb4eca280479d54b2
 
 const HeaderContainer = ({ Search, onChangeText, navigation, Username, mail }) => {
     const { themeColor, textColor } = useContext(ThemeContext);
@@ -23,20 +20,11 @@ const HeaderContainer = ({ Search, onChangeText, navigation, Username, mail }) =
 
     const handleLogout = async () => {
         try {
-<<<<<<< HEAD
-            await signOut(auth);
-            navigation.navigate("Login")
-            console.log("Sign out");
-            setAlertVisible(false);
-
-
-=======
             await SecureStore.deleteItemAsync('token');
             await SecureStore.deleteItemAsync('id');
             navigation.navigate("Login");
             console.log("Sign out");
             setAlertVisible(false);
->>>>>>> a1b059bed495c65f960444ccb4eca280479d54b2
         } catch (error) {
             console.log("Error logging out: ", error);
         }

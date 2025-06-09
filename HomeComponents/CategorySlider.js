@@ -6,13 +6,7 @@ import Category from '../GlobalComponents/Category.js'
 const CategorySlider = ({ navigation }) => {
     const { themeColor } = useContext(ThemeContext);
 
-<<<<<<< HEAD
-    const CategorySelected = (category) => {
-        console.log(category);
-        
-=======
     const CategorySelected = (category) => {        
->>>>>>> a1b059bed495c65f960444ccb4eca280479d54b2
         navigation.navigate('CateGorySelection',{Category :  category});
     }
 
@@ -34,10 +28,7 @@ const CategorySlider = ({ navigation }) => {
 const styles = StyleSheet.create({
     container: {
         justifyContent: 'center',
-<<<<<<< HEAD
-=======
         paddingHorizontal: 12,
->>>>>>> a1b059bed495c65f960444ccb4eca280479d54b2
     },
     categoryHolder: {
         flexDirection: 'row',
