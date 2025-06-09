@@ -4,7 +4,11 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { ThemeContext } from '../Globals/ThemeContext';
 
+<<<<<<< HEAD
+const ProfileButton = ({ title, Icon, IconName, bgColor, handleProfileButton }) => {
+=======
 const ProfileButton = ({ title, Icon, IconName, handleProfileButton }) => {
+>>>>>>> a1b059bed495c65f960444ccb4eca280479d54b2
     const { themeColor } = useContext(ThemeContext);
     const renderIcon = () => {
         switch (Icon) {
@@ -18,8 +22,13 @@ const ProfileButton = ({ title, Icon, IconName, handleProfileButton }) => {
     };
 
     return (
+<<<<<<< HEAD
+        <TouchableOpacity style={styles.container} onPress={handleProfileButton}>
+            <View style={[styles.iconContainer,{ backgroundColor: bgColor }]}>{renderIcon()}</View>
+=======
         <TouchableOpacity style={[styles.container, {borderColor : themeColor}]} onPress={handleProfileButton}>
             <View style={[styles.iconContainer]}>{renderIcon()}</View>
+>>>>>>> a1b059bed495c65f960444ccb4eca280479d54b2
             <Text style={styles.title}>{title}</Text>
         </TouchableOpacity>
     );
@@ -38,6 +47,16 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderRadius: 10,
         borderWidth: 1.5,
+<<<<<<< HEAD
+        borderColor: '#673fd2',
+
+    },
+    iconContainer: {
+        backgroundColor: '#f5f5f5',
+        padding: 10,
+        borderRadius: 50,
+        marginRight: 10,
+=======
 
     },
     iconContainer: {
@@ -45,6 +64,7 @@ const styles = StyleSheet.create({
         borderRadius: 50,
         marginRight: 10,
         
+>>>>>>> a1b059bed495c65f960444ccb4eca280479d54b2
     },
     title: {
         fontFamily: 'Outfit-bold',

@@ -9,10 +9,35 @@
     "web": "expo start --web"
   },
   "dependencies": {
+<<<<<<< HEAD
+    "@react-native-picker/picker": "^2.9.0",
+=======
+>>>>>>> a1b059bed495c65f960444ccb4eca280479d54b2
     "@react-navigation/bottom-tabs": "^7.0.3",
     "@react-navigation/native": "^7.0.2",
     "@react-navigation/stack": "^7.0.2",
     "axios": "^1.7.7",
+<<<<<<< HEAD
+    "expo": "^52.0.7",
+    "expo-font": "^13.0.1",
+    "expo-image-picker": "^16.0.2",
+    "expo-intent-launcher": "^12.0.1",
+    "expo-linear-gradient": "^14.0.1",
+    "expo-location": "^18.0.1",
+    "expo-secure-store": "~14.0.0",
+    "expo-status-bar": "~2.0.0",
+    "lodash.pick": "^3.1.0",
+    "lodash.template": "^4.5.0",
+    "node-fetch": "^2.6.7",
+    "react": "18.3.1",
+    "react-native": "0.76.2",
+    "react-native-dotenv": "^3.4.11",
+    "react-native-email-link": "^1.16.1",
+    "react-native-svg": "15.8.0",
+    "react-native-toast-message": "^2.2.1",
+    "react-native-vector-icons": "^10.2.0",
+    "semver": "^7.6.3"
+=======
     "expo": "^52.0.35",
     "expo-dev-client": "~5.0.12",
     "expo-font": "^13.0.1",
@@ -32,6 +57,7 @@
     "react-native-svg": "15.8.0",
     "react-native-toast-message": "^2.2.1",
     "react-native-vector-icons": "^10.2.0"
+>>>>>>> a1b059bed495c65f960444ccb4eca280479d54b2
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

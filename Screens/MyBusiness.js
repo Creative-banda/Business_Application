@@ -1,4 +1,37 @@
 import React from 'react';
+<<<<<<< HEAD
+import { StyleSheet, View, FlatList, Text, Image, TouchableOpacity, Linking, TouchableWithoutFeedback } from 'react-native';
+
+const MyBusiness = ({ route, navigation }) => {
+    const [data, setData] = React.useState([]);
+    const { email } = route.params;
+    
+    React.useEffect(() => {
+        // Create a reference to the database node
+        const userEmail = email.replace(/\./g, '_');
+        const dbRef = ref(database, `Users/${userEmail}`);
+        
+        // Set up the real-time listener
+        onValue(dbRef, (snapshot) => {
+            if (snapshot.exists()) {
+                const userData = snapshot.val();
+                const formattedData = Object.values(userData);
+                setData(formattedData);
+            } else {
+                console.log('No data available');
+                setData([]);
+            }
+        }, (error) => {
+            console.error('Error setting up listener:', error);
+        });
+
+        // Cleanup function to remove the listener when component unmounts
+        return () => {
+            off(dbRef);
+        };
+    }, []);
+
+=======
 import { StyleSheet, View, FlatList, Text, Image, TouchableOpacity, Linking, TouchableWithoutFeedback, ActivityIndicator } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import axios from 'axios';
@@ -34,6 +67,7 @@ const MyBusiness = ({ navigation }) => {
             setIsLoading(false);
         }
     }
+>>>>>>> a1b059bed495c65f960444ccb4eca280479d54b2
     const openWebsite = (websiteUrl) => {
         if (websiteUrl) {
             Linking.openURL(websiteUrl).catch((err) =>
@@ -46,25 +80,42 @@ const MyBusiness = ({ navigation }) => {
     };
 
     const renderItem = ({ item }) => {
+<<<<<<< HEAD
+        return (
+            <TouchableWithoutFeedback onPress={() => navigation.navigate("Business_Info", { item: item, Owner: "Mine", email: email })}>
+=======
         let isenable = !item.website;
         return (
             <TouchableWithoutFeedback onPress={() => navigation.navigate("Business_Info", { item: item, Owner: "Mine" })}>
+>>>>>>> a1b059bed495c65f960444ccb4eca280479d54b2
                 <View style={styles.card}>
                     {/* Image */}
                     <Image source={{ uri: item.image }} style={styles.image} />
 
                     {/* Business Info */}
                     <View style={styles.infoContainer}>
+<<<<<<< HEAD
+                        <Text style={styles.name}>{item.name}</Text>
+=======
                         <Text style={styles.name}>{item.shopName}</Text>
+>>>>>>> a1b059bed495c65f960444ccb4eca280479d54b2
                         <Text style={styles.category}>{item.category}</Text>
                         <Text style={styles.about}>{item.about}</Text>
                         <Text style={styles.address}>{item.address}</Text>
                         <Text style={styles.contact}>Contact: {item.contact}</Text>
+<<<<<<< HEAD
+                        <Text style={styles.rating}>Rating: {item.rating ? item.rating : "Not Rating"}</Text>
+                    </View>
+
+                    {/* Website Button */}
+                    <TouchableOpacity style={styles.websiteButton} onPress={() => openWebsite(item.website)}>
+=======
                         <Text style={styles.rating}>Rating: {item.currentrating}</Text>
                     </View>
 
                     {/* Website Button */}
                     <TouchableOpacity style={isenable ? styles.disble : styles.websiteButton} onPress={() => openWebsite(item.website)} disabled={isenable}>
+>>>>>>> a1b059bed495c65f960444ccb4eca280479d54b2
                         <Text style={styles.websiteButtonText}>Visit Website</Text>
                     </TouchableOpacity>
                 </View>
@@ -80,6 +131,86 @@ const MyBusiness = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
+<<<<<<< HEAD
+            <FlatList
+                data={data}
+                keyExtractor={(item) => item.id}
+                renderItem={renderItem}
+                ListEmptyComponent={emptyListComponent}
+                contentContainerStyle={data.length === 0 ? styles.flatListEmpty : null}
+            />
+        </View>
+    );
+};
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#f5f5f5',
+        padding: 10,
+    },
+    card: {
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        marginBottom: 20,
+        overflow: 'hidden',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 8,
+        elevation: 5,
+    },
+    image: {
+        width: '100%',
+        height: 180,
+        resizeMode: 'cover',
+    },
+    infoContainer: {
+        padding: 15,
+    },
+    name: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#333',
+    },
+    category: {
+        fontSize: 14,
+        fontWeight: '600',
+        color: '#888',
+        marginTop: 5,
+        marginBottom: 5,
+    },
+    about: {
+        fontSize: 14,
+        color: '#666',
+        marginBottom: 10,
+    },
+    address: {
+        fontSize: 13,
+        color: '#666',
+        marginBottom: 5,
+    },
+    contact: {
+        fontSize: 13,
+        color: '#666',
+    },
+    rating: {
+        fontSize: 13,
+        fontWeight: '600',
+        color: '#666',
+        marginTop: 10,
+    },
+    websiteButton: {
+        backgroundColor: '#4CAF50',
+        padding: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    websiteButtonText: {
+        color: '#fff',
+        fontWeight: 'bold',
+    },
+    // Styles for the empty state
+=======
             {isLoading ? <ActivityIndicator size='large' color={themeColor}/> : <FlatList
                 data={data}
                 keyExtractor={(item) => item.shopName}
@@ -178,10 +309,18 @@ const styles = StyleSheet.create({
         fontSize: 16,
         letterSpacing: 1,
     },
+>>>>>>> a1b059bed495c65f960444ccb4eca280479d54b2
     emptyContainer: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+<<<<<<< HEAD
+    },
+    emptyText: {
+        fontSize: 20,
+        fontFamily: 'Outfit-bold',
+        color: '#333',
+=======
         paddingVertical: 40,
     },
     emptyText: {
@@ -189,11 +328,14 @@ const styles = StyleSheet.create({
         fontFamily: 'Outfit-Bold',
         color: '#2d3436',
         textAlign: 'center',
+>>>>>>> a1b059bed495c65f960444ccb4eca280479d54b2
     },
     flatListEmpty: {
         flexGrow: 1,
         justifyContent: 'center',
     },
+<<<<<<< HEAD
+=======
     disble: {
         backgroundColor: '#6c5ce7',
         padding: 15,
@@ -208,6 +350,7 @@ const styles = StyleSheet.create({
         elevation: 4,
         opacity: 0.5
     }
+>>>>>>> a1b059bed495c65f960444ccb4eca280479d54b2
 });
 
 export default MyBusiness;

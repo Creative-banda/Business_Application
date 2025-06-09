@@ -4,9 +4,12 @@ import InputText from '../GlobalComponents/InputText';
 import Category from '../GlobalComponents/Category';
 import { ThemeContext } from '../Globals/ThemeContext';
 import ItemCard from '../SearchComponents/ItemCard';
+<<<<<<< HEAD
+=======
 import { BASE_URL } from '@env';
 import axios from 'axios';
 import { useIsFocused } from '@react-navigation/native';
+>>>>>>> a1b059bed495c65f960444ccb4eca280479d54b2
 
 const SearchScreen = ({ navigation }) => {
 
@@ -14,6 +17,32 @@ const SearchScreen = ({ navigation }) => {
     const [selectedCategory, setSelectedCategory] = useState('');
     const [data, setData] = useState([]);
     const [search, setSearch] = useState('');
+<<<<<<< HEAD
+    const { themeColor, textColor } = useContext(ThemeContext);
+
+    // Listener for real-time updates
+    useEffect(() => {
+        const userDataRef = ref(database, 'All_Business');
+        
+        const unsubscribe = onValue(userDataRef, (snapshot) => {
+            if (snapshot.exists()) {
+                const userData = snapshot.val();
+                const formattedData = Object.values(userData);
+                setData(formattedData);
+                setFilteredData(formattedData); // Initially set the filtered data to all data
+            } else {
+                console.log('No data available');
+            }
+        }, (error) => {
+            console.log('Error:', error);
+        });
+
+        // Cleanup the listener when component unmounts
+        return () => unsubscribe();
+    }, []);
+
+    // Filter data by selected category
+=======
     const { themeColor, textColor, token } = useContext(ThemeContext);
     const isFocused = useIsFocused();
 
@@ -46,6 +75,7 @@ const SearchScreen = ({ navigation }) => {
             console.error('Error From Business Slider:', err);
         }
     };
+>>>>>>> a1b059bed495c65f960444ccb4eca280479d54b2
     useEffect(() => {
         if (selectedCategory) {
             const filteredData = data.filter(store => store.category === selectedCategory);
@@ -58,7 +88,11 @@ const SearchScreen = ({ navigation }) => {
     const handleSearch = (value) => {
         setSearch(value);
         const searchData = data.filter(item =>
+<<<<<<< HEAD
+            item.name.toLowerCase().includes(value.toLowerCase()) ||
+=======
             item.shopName.toLowerCase().includes(value.toLowerCase()) ||
+>>>>>>> a1b059bed495c65f960444ccb4eca280479d54b2
             item.category.toLowerCase().includes(value.toLowerCase())
         );
         setFilteredData(searchData);

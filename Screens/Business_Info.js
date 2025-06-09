@@ -3,6 +3,13 @@ import { ThemeContext } from '../Globals/ThemeContext'
 import AreYouSure from '../GlobalComponents/AreYouSure'
 import CustomAlert from '../GlobalComponents/Customalert'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+<<<<<<< HEAD
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import { StyleSheet, Text, View, Image, TextInput, ScrollView, TouchableOpacity, Linking, Animated } from 'react-native'
+
+const Business_Info = ({ route, navigation }) => {
+  const { item, Owner, email } = route.params;
+=======
 import { BASE_URL } from '@env'
 import axios from 'axios'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -10,15 +17,22 @@ import { StyleSheet, Text, View, Image, TextInput, ScrollView, TouchableOpacity,
 
 const Business_Info = ({ route, navigation }) => {
   const { item, Owner } = route.params;
+>>>>>>> a1b059bed495c65f960444ccb4eca280479d54b2
   const [Input, setInput] = useState('');
   const [rating, setRating] = useState(0);
   const [type, setType] = useState("error");
   const [showAlert, setShowAlert] = useState(false);
   const [animation] = useState(new Animated.Value(0))
   const [alertMessage, setAlertMessage] = useState('');
+<<<<<<< HEAD
+  const { themeColor, textColor } = useContext(ThemeContext)
+  const [IsdeleteVisible, setIsDeleteVisible] = useState(false);
+  
+=======
   const [loading, setLoading] = useState(false)
   const { themeColor, textColor, userDetails } = useContext(ThemeContext)
   const [IsdeleteVisible, setIsDeleteVisible] = useState(false);
+>>>>>>> a1b059bed495c65f960444ccb4eca280479d54b2
 
   const makePhoneCall = (phoneNumber) => {
     let phoneUrl = `tel:${phoneNumber}`;
@@ -45,7 +59,11 @@ const Business_Info = ({ route, navigation }) => {
       })
       .catch((err) => console.error('An error occurred', err));
   };
+<<<<<<< HEAD
+  
+=======
 
+>>>>>>> a1b059bed495c65f960444ccb4eca280479d54b2
   const openWebsite = (websiteUrl) => {
     if (websiteUrl) {
       try {
@@ -69,6 +87,23 @@ const Business_Info = ({ route, navigation }) => {
     }
   };
 
+<<<<<<< HEAD
+  const handleDelete = () => {
+    const userEmail = email.replace(/\./g, '_');
+    const nodeRef = ref(database,  `Users/${userEmail}/${item.id}`);
+
+    remove(nodeRef)
+      .then(() => {
+        console.log("Node deleted successfully.");
+        navigation.navigate("MyBusiness", {email : email})
+      })
+      .catch((error) => {
+        console.error("Error deleting node:", error);
+      });
+  };
+
+=======
+>>>>>>> a1b059bed495c65f960444ccb4eca280479d54b2
   const handleRating = (newRating) => {
     setRating(newRating);
     Animated.spring(animation, {
@@ -77,7 +112,10 @@ const Business_Info = ({ route, navigation }) => {
       useNativeDriver: true,
     }).start();
   };
+<<<<<<< HEAD
+=======
 
+>>>>>>> a1b059bed495c65f960444ccb4eca280479d54b2
   const renderStars = () => {
     const stars = [];
     for (let i = 1; i <= 5; i++) {
@@ -97,6 +135,25 @@ const Business_Info = ({ route, navigation }) => {
     return stars;
   };
 
+<<<<<<< HEAD
+  const handleSubmit = () => {
+    if (rating & Input) {
+
+      const feedback = {
+        rating: rating,
+        comment: Input
+      }
+
+      setAlertMessage("Thank you for your feedback!")
+      setType('success');
+      setShowAlert(true);
+      setInput('');
+    }
+    else {
+      setAlertMessage("Please fill the required fields.")
+      setType('error');
+      setShowAlert(true);
+=======
   const handleSubmit = async () => {
     console.log(`${BASE_URL}/review`);
     
@@ -136,6 +193,7 @@ const Business_Info = ({ route, navigation }) => {
     }
     finally {
       setLoading(false)
+>>>>>>> a1b059bed495c65f960444ccb4eca280479d54b2
     }
   }
 
@@ -146,7 +204,11 @@ const Business_Info = ({ route, navigation }) => {
 
         <View style={styles.businessInfoContainer}>
           <View>
+<<<<<<< HEAD
+            <Text style={{ fontFamily: 'Outfit-bold', fontSize: 24, color: 'rgba(0,0,0,0.9)' }}>{item.name}</Text>
+=======
             <Text style={{ fontFamily: 'Outfit-bold', fontSize: 24, color: 'rgba(0,0,0,0.9)' }}>{item.shopName}</Text>
+>>>>>>> a1b059bed495c65f960444ccb4eca280479d54b2
             <Text style={{ fontFamily: 'Outfit' }}> {item.address}</Text>
           </View>
           {Owner && <TouchableOpacity onPress={() => setIsDeleteVisible(true)}>
@@ -167,9 +229,15 @@ const Business_Info = ({ route, navigation }) => {
             <MaterialCommunityIcons name='web' size={30} color={'#fff'} />
           </TouchableOpacity>
 
+<<<<<<< HEAD
+          <View style={[styles.iconBackground, { backgroundColor: '#AFC73A' }]}>
+            <MaterialIcons name='share' size={30} color={'#fff'} />
+          </View>
+=======
           <TouchableOpacity style={[styles.iconBackground, { backgroundColor: '#AFC73A' }]}  onPress={()=>navigation.navigate("SeeReview", { item: item, Owner: "Mine" })}>
             <MaterialIcons name='star' size={30} color={'#fff'} />
           </TouchableOpacity>
+>>>>>>> a1b059bed495c65f960444ccb4eca280479d54b2
 
         </View>
 
@@ -185,24 +253,41 @@ const Business_Info = ({ route, navigation }) => {
           <TextInput
             numberOfLines={5}
             placeholder="Enter Your Review"
+<<<<<<< HEAD
+            style={styles.InputText}
+=======
             style={[styles.InputText, { borderColor: themeColor }]}
+>>>>>>> a1b059bed495c65f960444ccb4eca280479d54b2
             value={Input}
             onChangeText={setInput}
             multiline={true}
             textAlignVertical="top"
           />
           <TouchableOpacity style={[styles.button, { backgroundColor: themeColor }]} onPress={handleSubmit}>
+<<<<<<< HEAD
+            <Text style={{ fontFamily: 'Outfit-bold', color: textColor }}> Submit </Text>
+=======
             {loading ? <ActivityIndicator size={"small"} color={textColor} /> : <Text style={{ fontFamily: 'Outfit-bold', color: textColor }}> Submit </Text>}
+>>>>>>> a1b059bed495c65f960444ccb4eca280479d54b2
           </TouchableOpacity>
         </View>}
 
       </View>
       <CustomAlert message={alertMessage} onClose={() => setShowAlert(false)} visible={showAlert} type={type} />
+<<<<<<< HEAD
+      <AreYouSure visible={IsdeleteVisible} handleCancel={() => setIsDeleteVisible(false)} handleDelete={handleDelete} />
+=======
       <AreYouSure visible={IsdeleteVisible} handleCancel={() => setIsDeleteVisible(false)} id={item._id} Navigation={navigation} />
+>>>>>>> a1b059bed495c65f960444ccb4eca280479d54b2
     </ScrollView>
   )
 }
 
+<<<<<<< HEAD
+export default Business_Info
+
+=======
+>>>>>>> a1b059bed495c65f960444ccb4eca280479d54b2
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -220,7 +305,11 @@ const styles = StyleSheet.create({
 
   about: { paddingVertical: 30, gap: 10, },
 
+<<<<<<< HEAD
+  InputText: { borderColor: '#000', borderWidth: 1, borderRadius: 10, paddingHorizontal: 10, paddingVertical: 10, },
+=======
   InputText: { borderWidth: 1, borderRadius: 8, paddingHorizontal: 20, paddingVertical: 13, fontFamily: 'Outfit', fontSize: 16, },
+>>>>>>> a1b059bed495c65f960444ccb4eca280479d54b2
 
   button: { width: '100%', paddingVertical: 10, justifyContent: 'center', alignItems: 'center', borderRadius: 20, marginTop: 15, marginBottom: 30 },
 
@@ -230,5 +319,9 @@ const styles = StyleSheet.create({
 
   selectedStar: { fontSize: 32, color: '#FFD700', marginHorizontal: 8, }
 
+<<<<<<< HEAD
+})
+=======
 })
 export default Business_Info
+>>>>>>> a1b059bed495c65f960444ccb4eca280479d54b2

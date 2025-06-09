@@ -5,8 +5,11 @@ import * as SecureStore from 'expo-secure-store';
 
 const InitalizePage = ({ navigation }) => {
     const { themeColor } = useContext(ThemeContext);
+<<<<<<< HEAD
+=======
     console.log("Loading InitalizePage.js");
     
+>>>>>>> a1b059bed495c65f960444ccb4eca280479d54b2
 
     const handleClick = async () => {
         try {
@@ -19,7 +22,11 @@ const InitalizePage = ({ navigation }) => {
     };
     return (
         <View style={styles.container}>
+<<<<<<< HEAD
+            <Image source={require('../assets/Images/Home.png')} style={styles.TopImage} />
+=======
             <Image source={require('../assets/Images/home.png')} style={styles.TopImage} />
+>>>>>>> a1b059bed495c65f960444ccb4eca280479d54b2
             <View style={styles.TextContainer}>
                 <Text style={styles.Text}>
                     Your Ultimate <Text style={[styles.Text, { color: themeColor }]}>
@@ -43,9 +50,15 @@ const InitalizePage = ({ navigation }) => {
 
 const styles = StyleSheet.create({
 
+<<<<<<< HEAD
+    container: { flex: 1, alignItems: 'center', paddingVertical: 30 },
+
+    TopImage: { resizeMode: 'contain', height: 500, width: '100%', },
+=======
     container: { flex: 1, alignItems: 'center', paddingVertical: 20 },
 
     TopImage: { resizeMode: 'contain', height: "55%", width: '100%',marginTop: 20 },
+>>>>>>> a1b059bed495c65f960444ccb4eca280479d54b2
 
     TextContainer: { flex: 1, alignItems: 'center', paddingHorizontal: 15, paddingVertical: 20, width: '100%' },
 

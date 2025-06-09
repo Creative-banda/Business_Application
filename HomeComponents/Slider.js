@@ -1,3 +1,39 @@
+<<<<<<< HEAD
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, View, Text, FlatList, Image, Dimensions, TouchableWithoutFeedback } from 'react-native';
+import {BASE_URL} from '@env';
+
+// Get screen width to adjust image size dynamically
+const screenWidth = Dimensions.get('window').width;
+
+const Slider = ({navigation}) => {
+
+    const [data, setData] = useState([]);
+
+    useEffect(() => {
+        initializingShops()
+    }, [])
+
+    const initializingShops = async () => {
+        try {
+            const response = await fetch(`${BASE_URL}/businesses`);
+            const json = await response.json();
+            console.log(json);
+            
+            if (json.success) {
+                setData(json.businesses);
+            }
+        } catch (err) {
+            console.log('Error:', err);
+        }
+    };
+    
+
+    const renderItem = ({ item }) => {
+
+        return (
+            <TouchableWithoutFeedback onPress={()=>navigation.navigate("Business_Info", { item: item })}>
+=======
 import { useEffect, useState, useContext } from 'react';
 import { StyleSheet, View, Text, FlatList, Image, Dimensions, TouchableWithoutFeedback } from 'react-native';
 import { BASE_URL } from '@env';
@@ -47,13 +83,18 @@ const Slider = ({ navigation }) => {
     const renderItem = ({ item }) => {
         return (
             <TouchableWithoutFeedback onPress={() => navigation.navigate("Business_Info", { item: item })}>
+>>>>>>> a1b059bed495c65f960444ccb4eca280479d54b2
                 <View style={styles.sliderItem}>
                     <Image source={{ uri: item.image }} style={styles.image} />
                 </View>
             </TouchableWithoutFeedback>
         )
     }
+<<<<<<< HEAD
+    
+=======
 
+>>>>>>> a1b059bed495c65f960444ccb4eca280479d54b2
     return (
         <View style={styles.container}>
             <Text style={[styles.specialText, { color: '#000' }]}>Shops at Your Fingertips</Text>
@@ -61,7 +102,11 @@ const Slider = ({ navigation }) => {
                 data={data}
                 horizontal
                 showsHorizontalScrollIndicator={false}
+<<<<<<< HEAD
+                keyExtractor={(item) => item.id}
+=======
                 keyExtractor={(item) => item._id}
+>>>>>>> a1b059bed495c65f960444ccb4eca280479d54b2
                 renderItem={renderItem}
                 pagingEnabled
             />
@@ -78,11 +123,20 @@ const styles = StyleSheet.create({
         fontFamily: 'Outfit-bold',
         marginTop: 14,
         marginBottom: 7,
+<<<<<<< HEAD
+    },
+    sliderItem: {
+        width: screenWidth * 0.85,
+        marginHorizontal: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+=======
         marginLeft: 20
     },
     sliderItem: {
         width: screenWidth * 0.9,
         marginHorizontal: screenWidth * 0.05,
+>>>>>>> a1b059bed495c65f960444ccb4eca280479d54b2
         elevation: 5,
         borderRadius: 10,
         backgroundColor: 'white',

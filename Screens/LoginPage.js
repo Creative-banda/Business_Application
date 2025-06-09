@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import CustomAlert from '../GlobalComponents/Customalert';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, Animated, ActivityIndicator } from 'react-native';
 import { BASE_URL } from '@env';
 import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
@@ -15,34 +15,33 @@ const LoginScreen = ({ navigation }) => {
     const [alertType, setAlertType] = useState('success');
     const [loading, setLoading] = useState(false);
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-    const {setUserDetails} = useContext(ThemeContext);   
+    const {setUserDetails} = useContext(ThemeContext);
 
-    const handleLogin = async () => { 
+    const handleLogin = async () => {
         setLoading(true);
         const payload = {
             mail: email,
             password: password
         };
-        console.log(`${BASE_URL}/auth/login`);
         
-        
-        try {           
+
+        try {
             const response = await axios.post( `${BASE_URL}/auth/login`, payload, {
                 headers: {
                     'Content-Type': 'application/json'
                 }
             });
+            
             if (response.data.success) {
                 setAlertMessage('Login Successful');
                 setAlertType('success');
                 setAlertVisible(true);
-               
+                console.log(response.data.user.token);
+                
                 await SecureStore.setItemAsync('token', response.data.user.token);   
-                await SecureStore.setItemAsync('id', response.data.user._id);   
-              
+                console.log("Token Set in AsyncStorage");
                 setUserDetails(response.data.user);
                 navigation.navigate('HomeScreen');
-                
             }
         } catch (error) {
                 console.log('Error Response:', error.response.data);
@@ -53,6 +52,7 @@ const LoginScreen = ({ navigation }) => {
             setLoading(false);
         }
     };
+
 
     return (
         <KeyboardAvoidingView
